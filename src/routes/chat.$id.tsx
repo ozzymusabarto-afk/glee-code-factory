@@ -67,18 +67,17 @@ function ChatInterface() {
         .eq('level', skillLevel)
         .order('sort_order', { ascending: true });
 
-      if (data && !error) {
+      if (data && data.length > 0) {
         setLessons(data);
-        if (data.length > 0) {
-          const firstMsg: Message = {
-            id: '1',
-            sender: 'bot',
-            text: data[0].message_text,
-          };
-          setMessages([firstMsg]);
-          playText(data[0].message_text);
-        }
+        const firstMsg: Message = {
+          id: '1',
+          sender: 'bot',
+          text: data[0].message_text,
+        };
+        setMessages([firstMsg]);
+        playText(data[0].message_text);
       }
+
       setIsLoading(false);
     };
     fetchLessons();
