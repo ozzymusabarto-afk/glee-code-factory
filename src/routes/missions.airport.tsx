@@ -463,19 +463,22 @@ function AbsorbStep({ onComplete }: { onComplete: () => void }) {
             onClick={() => setSelected(i)}
             disabled={selected !== null}
             className={cn(
-              "p-8 text-left border-[3px] rounded-[2.5rem] transition-all duration-300 group relative",
+              "p-8 text-left border-[3px] rounded-[2.5rem] transition-all duration-300 group relative shadow-[0_4px_20px_rgba(0,0,0,0.02)]",
               selected === i 
                 ? i === 0 
-                  ? "bg-poly-green/10 border-poly-green shadow-lg shadow-poly-green/10" 
-                  : "bg-destructive/10 border-destructive shadow-lg shadow-destructive/10"
-                : "bg-white border-transparent hover:border-poly-blue/20 shadow-[0_4px_20px_rgba(0,0,0,0.02)]"
+                  ? (isAdult ? "bg-cyan-500/10 border-cyan-500 shadow-cyan-500/10" : "bg-poly-green/10 border-poly-green shadow-poly-green/10")
+                  : "bg-destructive/10 border-destructive shadow-destructive/10"
+                : (isAdult ? "bg-slate-800 border-transparent hover:border-cyan-500/20" : "bg-white border-transparent hover:border-poly-blue/20")
             )}
           >
             <div className="flex items-center justify-between">
               <span className={cn(
-                "text-xl font-black",
-                selected === i ? "text-poly-navy" : "text-poly-navy/80"
+                "text-xl font-black transition-colors",
+                selected === i 
+                  ? (isAdult ? (i === 0 ? "text-cyan-400" : "text-destructive") : "text-poly-navy")
+                  : (isAdult ? "text-slate-400" : "text-poly-navy/80")
               )}>{ans}</span>
+
               {selected === i && (
                 <div className={cn(
                   "h-8 w-8 rounded-full flex items-center justify-center text-white",
