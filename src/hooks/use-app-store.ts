@@ -6,7 +6,11 @@ export type AppMode = 'adult' | 'kids';
 
 interface AppState {
   appMode: AppMode;
+  skillLevel: number;
+  displayName: string;
   setAppMode: (mode: AppMode) => void;
+  setSkillLevel: (level: number) => void;
+  setDisplayName: (name: string) => void;
   syncProfile: () => Promise<void>;
   updateStreak: () => Promise<void>;
 }
@@ -15,6 +19,8 @@ export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
       appMode: 'kids',
+      skillLevel: 1,
+      displayName: '',
       setAppMode: async (mode) => {
         set({ appMode: mode });
         const { data: { session } } = await supabase.auth.getSession();
@@ -25,17 +31,41 @@ export const useAppStore = create<AppState>()(
             .eq('id', session.user.id);
         }
       },
+      setSkillLevel: async (level) => {
+        set({ skillLevel: level });
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          await supabase
+            .from('profiles')
+            .update({ skill_level: level })
+            .eq('id', session.user.id);
+        }
+      },
+      setDisplayName: async (name) => {
+        set({ displayName: name });
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          await supabase
+            .from('profiles')
+            .update({ display_name: name })
+            .eq('id', session.user.id);
+        }
+      },
       syncProfile: async () => {
         const { data: { session } } = await supabase.auth.getSession();
         if (session) {
           const { data, error } = await supabase
             .from('profiles')
-            .select('app_mode')
+            .select('app_mode, skill_level, display_name')
             .eq('id', session.user.id)
             .single();
           
           if (data && !error) {
-            set({ appMode: data.app_mode as AppMode });
+            set({ 
+              appMode: (data.app_mode as AppMode) || 'kids',
+              skillLevel: data.skill_level || 1,
+              displayName: data.display_name || ''
+            });
           }
         }
       },
@@ -73,3 +103,4 @@ export const useAppStore = create<AppState>()(
     }
   )
 );
+
