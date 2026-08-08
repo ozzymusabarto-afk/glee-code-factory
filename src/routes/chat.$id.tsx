@@ -152,11 +152,6 @@ function ChatInterface() {
     }
   }, [messages, isLoading]);
 
-  const playText = (text: string) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    window.speechSynthesis.speak(utterance);
-  };
 
   const calculateSimilarity = (s1: string, s2: string) => {
     const str1 = s1.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "").trim();
