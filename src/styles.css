@@ -94,9 +94,18 @@
   }
 
   body {
-    background-color: var(--color-background);
+    background-color: #f8fafc;
     color: var(--color-foreground);
+    font-family: 'Plus Jakarta Sans', sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  .font-space {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .font-jakarta {
+    font-family: 'Plus Jakarta Sans', sans-serif;
   }
 }
 
