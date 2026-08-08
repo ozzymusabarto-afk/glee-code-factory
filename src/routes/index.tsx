@@ -290,7 +290,7 @@ function AppEntry() {
 }
 
 function MainApp() {
-  const { appMode, displayName } = useAppStore();
+  const { appMode, displayName, resetAll } = useAppStore();
   const navigate = useNavigate();
   const isAdult = appMode === 'adult';
 
