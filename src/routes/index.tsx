@@ -286,7 +286,3 @@ function Onboarding() {
   );
 }
 
-import { cn } from "@/lib/utils";
-import { useEffect } from "react";
-  );
-}
