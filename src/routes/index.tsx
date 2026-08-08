@@ -212,6 +212,18 @@ function Onboarding() {
         <PolyMascot size="full" className="origin-bottom" expression={isAdult ? "focused" : "excited"} />
       </div>
 
+      <footer className="w-full py-8 px-8 flex justify-center items-center">
+        <button 
+          onClick={() => navigate({ to: "/privacy" })}
+          className={cn(
+            "text-sm font-bold opacity-50 hover:opacity-100 transition-opacity",
+            isAdult ? "text-slate-400" : "text-slate-500"
+          )}
+        >
+          POLÍTICA DE PRIVACIDADE
+        </button>
+      </footer>
+
       <AnimatePresence>
         {isGoalReached && (
           <motion.div 
