@@ -98,9 +98,10 @@ function AppEntry() {
             onClick={() => navigate({ to: "/auth" })}
             className="w-full py-8 rounded-2xl bg-[#1976D2] hover:bg-[#0D47A1] text-white font-black text-xl shadow-xl transition-all flex items-center justify-center gap-3"
           >
-            ENTRAR / CADASTRAR
+            ENTRAR / CRIAR CONTA
             <ArrowRight className="h-6 w-6" />
           </Button>
+
         </motion.div>
       </div>
     );
