@@ -35,7 +35,7 @@ type Message = {
 function ChatInterface() {
   const { id } = useParams({ from: '/chat/$id' });
   const { appMode, displayName, skillLevel, updateStreak } = useAppStore();
-  const { timeLeft, isRunning, formatTime } = useDailyTimer();
+  const { remainingSeconds, isActive: isTimerActive } = useDailyTimer();
   const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
