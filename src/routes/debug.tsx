@@ -7,7 +7,7 @@ export const Route = createFileRoute("/debug")({
 function DebugPage() {
   return (
     <div className="p-20 whitespace-pre-wrap">
-      Implemente um modo de anonimização nos exports CSV/PDF/JSON para eu ocultar dados sensíveis antes de enviar ao suporte.Inclua um resumo executivo automático no PDF e no JSON de exportação (contagem por código de erro, top payloads, taxas de sucesso/erro e insights) para eu compartilhar com suporte rapidamente.Adicione uma busca dentro dos detalhes estruturados (payload enviado, resposta recebida e stacktrace) para eu encontrar rapidamente ocorrências por termos ou campos.Construa uma timeline cronológica de falhas de sync na aba de diagnóstico para eu visualizar sequência de eventos e correlação entre sessões e tentativas.Implemente filtros avançados na aba de diagnóstico (por período, idioma, limiar, código de erro e status de tentativa) para eu localizar falhas específicas mais rápido.
+      Implemente a lógica de Temporizador de Sessão Diária de 10 minutos. 1. Crie um hook 'useDailyTimer' que persista no localStorage o tempo gasto hoje. 2. Ao atingir 10 minutos de uso ativo em lições, dispare um componente de Overlay de celebração chamado 'DailyGoalReached'. 3. Este overlay deve dizer: '🏆 Meta do Dia Concluída!'. Adicione uma mensagem pedagógica: 'Seu cérebro atingiu o pico de absorção. Para consolidar este conhecimento, o PolyBot recomenda o descanso.'. 4. Ofereça dois botões no Overlay: [Finalizar Dia] (redireciona ao dashboard) e [Revisão Livre] (permite continuar apenas no modo SRS de frases já aprendidas, bloqueando novos conteúdos).
     </div>
   );
 }
