@@ -2,6 +2,8 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
 interface PolyMascotProps {
+  expression?: "happy" | "thinking" | "excited" | "proud" | "neutral" | "surprised" | "confident" | "focused" | "reading";
+  pose?: "neutral" | "waving" | "pointing" | "celebrating" | "thinking" | "explaining" | "reading";
   size?: "sm" | "md" | "lg" | "xl" | "full";
   className?: string;
 }
