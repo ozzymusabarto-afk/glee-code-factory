@@ -123,7 +123,10 @@ function AirportMission() {
           variant="ghost" 
           size="icon" 
           onClick={() => step === "learn" ? navigate({ to: "/" }) : setStep(step === "practice" ? "learn" : "practice")}
-          className="rounded-2xl text-poly-navy bg-poly-cream/50"
+          className={cn(
+            "rounded-2xl transition-colors",
+            isAdult ? "text-cyan-500 hover:bg-slate-800" : "text-poly-navy bg-poly-cream/50"
+          )}
         >
           <ChevronLeft className="h-6 w-6" />
         </Button>
