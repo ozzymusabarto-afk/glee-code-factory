@@ -606,14 +606,20 @@ function CompletedStep({ onFinish }: { onFinish: () => void }) {
 
 
         {/* Poly Feedback Bubble */}
-        <div className="flex items-center gap-4 bg-poly-blue/5 p-4 rounded-3xl border border-poly-blue/10 w-full mt-2">
+        <div className={cn(
+          "flex items-center gap-4 p-4 rounded-3xl border w-full mt-2 transition-colors",
+          isAdult ? "bg-cyan-500/10 border-cyan-500/20" : "bg-poly-blue/5 border-poly-blue/10"
+        )}>
           <div className="shrink-0">
             <PolyMascot size="sm" expression="proud" />
           </div>
-          <p className="text-sm font-bold text-poly-navy leading-tight text-left">
-            "Quase perfeito! Tente pronunciar o 'where' com o 'r' mais leve."
+          <p className={cn("text-sm font-bold leading-tight text-left transition-colors", isAdult ? "text-white" : "text-poly-navy")}>
+            {isAdult 
+              ? "Excelente desempenho. Seu perfil de proficiência foi atualizado." 
+              : "Incrível! Você brilhou nessa missão. Pronto para a próxima?"}
           </p>
         </div>
+
       </div>
 
       {/* Progress Map (Radar Chart Mockup) */}
