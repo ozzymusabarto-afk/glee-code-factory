@@ -281,6 +281,16 @@ function Onboarding() {
         )}
       </AnimatePresence>
 
+      <button 
+        onClick={() => navigate({ to: "/profile" })}
+        className={cn(
+          "fixed top-8 left-8 z-50 p-3 rounded-2xl border transition-all active:scale-95",
+          isAdult ? "bg-slate-800 border-slate-700 text-cyan-500" : "bg-white border-slate-200 text-[#1976D2]"
+        )}
+      >
+        <User size={24} />
+      </button>
+
       {/* Mode Switcher Button (Config) */}
       <button 
         onClick={() => setAppMode(isAdult ? 'kids' : 'adult')}
