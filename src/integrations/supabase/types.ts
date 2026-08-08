@@ -47,13 +47,54 @@ export type Database = {
         }
         Relationships: []
       }
+      lessons: {
+        Row: {
+          category: string
+          character_name: string
+          created_at: string | null
+          expected_response: string
+          id: string
+          language: string
+          level: number
+          message_text: string
+          phonetic_hint: string | null
+          sort_order: number | null
+        }
+        Insert: {
+          category: string
+          character_name: string
+          created_at?: string | null
+          expected_response: string
+          id?: string
+          language?: string
+          level?: number
+          message_text: string
+          phonetic_hint?: string | null
+          sort_order?: number | null
+        }
+        Update: {
+          category?: string
+          character_name?: string
+          created_at?: string | null
+          expected_response?: string
+          id?: string
+          language?: string
+          level?: number
+          message_text?: string
+          phonetic_hint?: string | null
+          sort_order?: number | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           app_mode: string | null
           created_at: string | null
           daily_timer_seconds: number | null
+          display_name: string | null
           id: string
           last_lesson_date: string | null
+          skill_level: number | null
           streak_count: number | null
           updated_at: string | null
         }
@@ -61,8 +102,10 @@ export type Database = {
           app_mode?: string | null
           created_at?: string | null
           daily_timer_seconds?: number | null
+          display_name?: string | null
           id: string
           last_lesson_date?: string | null
+          skill_level?: number | null
           streak_count?: number | null
           updated_at?: string | null
         }
@@ -70,8 +113,10 @@ export type Database = {
           app_mode?: string | null
           created_at?: string | null
           daily_timer_seconds?: number | null
+          display_name?: string | null
           id?: string
           last_lesson_date?: string | null
+          skill_level?: number | null
           streak_count?: number | null
           updated_at?: string | null
         }
