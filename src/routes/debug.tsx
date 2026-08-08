@@ -8,19 +8,7 @@ export const Route = createFileRoute("/debug")({
 function DebugPage() {
   return (
     <div className="p-20 whitespace-pre-wrap">
-      🛠️ Próximos Passos: Da Interface para a Inteligência
-
-      Agora que o PolyBot já "parece" um app, precisamos fazer ele "funcionar" como um professor. Aqui estão os 4 pilares da próxima fase:
-
-      1. Implementação do "Ouvido" do Robô (Web Speech API)
-
-      O diferencial do PolyBot é o Shadowing. Você precisa pedir ao Lovable para integrar o reconhecimento de voz nativo do navegador.
-
-      Ação: Crie um componente de Microfone que use a webkitSpeechRecognition.
-
-      Prompt Sugerido: "Implemente a lógica de reconhecimento de voz no estágio de Shadowing. Quando o usuário clicar no microfone, o app deve ouvir, transformar em texto e comparar com o 'Chunk' atual. Se a similaridade for maior que 80%, o Robô deve comemorar. Se for menor, ele deve pedir para repetir."
-
-      <PolyMascot size="sm" />
+      Configure permissões, estados de carregamento e tratamento de erros da API de voz (ex.: sem suporte, timeout, silêncio, negação de acesso) com mensagens amigáveis. Adicione um fluxo quando a similaridade for menor que 80%, exibindo uma mensagem clara para eu repetir e permitindo tentar novamente com um clique. Integre a lógica do Shadowing para comparar a fala transcrita com o Chunk atual e disparar animações de comemoração quando a similaridade for maior que 80%.Implemente um componente de Microfone que use a Web Speech API (webkitSpeechRecognition) para capturar fala e exibir a transcrição em tempo real.Adicione um fluxo quando a similaridade for menor que 80%, exibindo uma mensagem clara para eu repetir e permitindo tentar novamente com um clique. Integre a lógica do Shadowing para comparar a fala transcrita com o Chunk atual e disparar animações de comemoração quando a similaridade for maior que 80%.Implemente um componente de Microfone que use a Web Speech API (webkitSpeechRecognition) para capturar fala e exibir a transcrição em tempo real.
     </div>
   );
 }
