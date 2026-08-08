@@ -185,8 +185,13 @@ function LearnStep({ onComplete }: { onComplete: () => void }) {
   return (
     <div className="flex flex-col gap-10 animate-in fade-in slide-in-from-bottom-6 duration-700 pb-20">
       <div className="space-y-1">
-        <h2 className="text-3xl font-black text-poly-navy tracking-tight">Ouça o diálogo 👂</h2>
-        <p className="text-lg font-bold text-muted-foreground/80 leading-tight">Toque nas frases para entender.</p>
+        <h2 className={cn("text-3xl font-black tracking-tight transition-colors", isAdult ? "text-white" : "text-poly-navy")}>
+          {isAdult ? "Analise o diálogo 🧐" : "Ouça o diálogo 👂"}
+        </h2>
+        <p className={cn("text-lg font-bold leading-tight transition-colors", isAdult ? "text-slate-400" : "text-muted-foreground/80")}>
+          {isAdult ? "Toque nas sentenças para ver a tradução e áudio." : "Toque nas frases para entender."}
+        </p>
+
       </div>
 
       <div className="bg-white rounded-[32px] border border-slate-100 p-8 relative overflow-hidden shadow-xl">
