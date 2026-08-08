@@ -8,7 +8,7 @@ export const Route = createFileRoute("/debug")({
 function DebugPage() {
   return (
     <div className="p-20 whitespace-pre-wrap">
-      Adicione um controle para eu ajustar o tamanho da janela usada no Shadowing (quantos chunks anteriores/segundos entram na comparação) para eu testar como isso afeta a similaridade.Permita exportar o histórico e os logs em JSON ou CSV com filtros (por idioma, data, resultado) e com um nome de arquivo automático para eu analisar subconjuntos dos testes.Gere um painel de estatísticas a partir do histórico (taxa de acerto, média de similaridade, distribuição por idioma) para eu entender rapidamente meu desempenho nos testes.Implemente um gráfico com seleção de intervalo e marcas de eventos (início/pausa/resultado) para eu correlacionar mudanças na similaridade com as partes específicas da transcrição.Adicione uma calibração do medidor de áudio com um limiar configurável para eu detectar quando a captura realmente está captando fala e reduzir erros por silêncio.
+      Adicionar um assistente de calibração guiado com amostra de áudio e recomendação de limiar para eu reduzir detecções falsas por silêncio.Exibir os trechos/segmentos do Shadowing que mais influenciaram a similaridade (top-N) para eu entender por que o resultado mudou.Criar uma timeline clicável que mostre cada tentativa com a transcrição e o chunk comparado lado a lado para eu depurar facilmente.Salvar automaticamente janela do Shadowing, limiar do medidor de áudio e idioma usando localStorage para eu manter meus testes consistentes.
     </div>
   );
 }
