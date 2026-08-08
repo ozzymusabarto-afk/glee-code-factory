@@ -172,7 +172,10 @@ function AirportMission() {
 }
 
 function LearnStep({ onComplete }: { onComplete: () => void }) {
+  const appMode = useAppStore((state) => state.appMode);
+  const isAdult = appMode === 'adult';
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
   const dialogues = [
     { text: "Excuse me, where is gate A12?", audio: true },
     { text: "Go straight and turn right. It's next to the cafe.", audio: true },
