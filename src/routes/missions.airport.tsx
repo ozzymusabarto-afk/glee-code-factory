@@ -623,8 +623,14 @@ function CompletedStep({ onFinish }: { onFinish: () => void }) {
       </div>
 
       {/* Progress Map (Radar Chart Mockup) */}
-      <div className="poly-card bg-poly-navy border-none p-6 text-white overflow-hidden relative">
-        <h4 className="text-xs font-black uppercase tracking-widest text-white/60 mb-6 text-left">MEU MAPA DE PROGRESSO</h4>
+      <div className={cn(
+        "poly-card border-none p-6 text-white overflow-hidden relative transition-colors",
+        isAdult ? "bg-slate-800" : "bg-poly-navy"
+      )}>
+        <h4 className={cn("text-xs font-black uppercase tracking-widest mb-6 text-left transition-colors", isAdult ? "text-cyan-400" : "text-white/60")}>
+          {isAdult ? "MEU MAPA DE COMPETÊNCIAS" : "MEU MAPA DE PROGRESSO"}
+        </h4>
+
         <div className="aspect-square w-full max-w-[240px] mx-auto relative">
           {/* Hexagon Background */}
           <div className="absolute inset-0 flex items-center justify-center opacity-20">
