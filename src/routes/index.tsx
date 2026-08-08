@@ -173,18 +173,6 @@ function Index() {
           </div>
         </section>
 
-        {/* Tutor Interaction (Poly) */}
-        <section className="poly-card bg-white border-none shadow-[0_20px_50px_rgba(0,0,0,0.05)] relative overflow-visible mt-4">
-          <div className="absolute -top-12 -left-4">
-             <PolyMascot size="md" expression="excited" />
-          </div>
-          <div className="pl-24 py-2">
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-poly-blue block mb-2">Poly Tutor</span>
-            <p className="text-xl font-bold leading-tight text-poly-navy">
-              "Essa missão do aeroporto é fundamental para sua próxima viagem, Adriana. Você vai arrasar!"
-            </p>
-          </div>
-        </section>
       </main>
 
       <BottomNav active="home" />
