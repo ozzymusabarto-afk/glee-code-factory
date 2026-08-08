@@ -555,7 +555,11 @@ function CompletedStep({ onFinish }: { onFinish: () => void }) {
       </div>
 
 
-      <div className="bg-white rounded-[32px] border border-slate-100 shadow-2xl p-10 flex flex-col items-center gap-10 relative overflow-hidden">
+      <div className={cn(
+        "rounded-[32px] border shadow-2xl p-10 flex flex-col items-center gap-10 relative overflow-hidden transition-colors",
+        isAdult ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+      )}>
+
         <div className="relative w-40 h-40 flex items-center justify-center">
           <svg className="w-full h-full transform -rotate-90">
             <defs>
