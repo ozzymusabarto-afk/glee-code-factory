@@ -661,9 +661,16 @@ function CompletedStep({ onFinish }: { onFinish: () => void }) {
         </div>
       </div>
 
-      <Button onClick={onFinish} className="bg-[#1976D2] hover:bg-[#0D47A1] text-white font-black py-8 text-2xl w-full rounded-2xl shadow-xl shadow-blue-500/20">
+      <Button 
+        onClick={onFinish} 
+        className={cn(
+          "text-white font-black py-8 text-2xl w-full rounded-2xl shadow-xl transition-all",
+          isAdult ? "bg-cyan-600 hover:bg-cyan-500 shadow-cyan-500/20" : "bg-[#1976D2] hover:bg-[#0D47A1] shadow-blue-500/20"
+        )}
+      >
         VOLTAR AO INÍCIO 🏠
       </Button>
+
     </div>
   );
 }
