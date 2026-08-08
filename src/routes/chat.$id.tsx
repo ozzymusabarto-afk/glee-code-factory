@@ -35,7 +35,7 @@ type Message = {
 function ChatInterface() {
   const { id } = useParams({ from: '/chat/$id' });
   const { appMode, displayName, skillLevel, updateStreak } = useAppStore();
-  const { remainingSeconds, isActive: isTimerActive } = useDailyTimer();
+  const { remainingSeconds, isActive: isTimerActive, startTimer } = useDailyTimer();
   const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
@@ -44,9 +44,19 @@ function ChatInterface() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const isAdult = appMode === 'adult';
 
-  const { isListening, transcript, startListening, stopListening, resetTranscript } = useSpeechRecognition({
+  const { isListening, transcript, startListening, stopListening } = useSpeechRecognition({
     lang: 'en-US',
   });
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  useEffect(() => {
+    startTimer();
+  }, [startTimer]);
 
   useEffect(() => {
     const fetchLessons = async () => {
@@ -101,53 +111,57 @@ function ChatInterface() {
 
   const handleMicRelease = async () => {
     stopListening();
-    if (!transcript) return;
-
-    const currentLesson = lessons[currentLessonIndex];
-    const userMsg: Message = {
-      id: Date.now().toString(),
-      sender: 'user',
-      text: transcript,
-      status: 'pending'
-    };
-    
-    setMessages(prev => [...prev, userMsg]);
-    
-    const similarity = calculateSimilarity(transcript, currentLesson.expected_response);
     
     setTimeout(async () => {
-      if (similarity >= 80) {
-        setMessages(prev => prev.map(m => m.id === userMsg.id ? { ...m, status: 'success' } : m));
-        toast.success(isAdult ? "Exato!" : "Incrível! 🌟");
-        
-        if (currentLessonIndex < lessons.length - 1) {
-          const nextIndex = currentLessonIndex + 1;
-          setCurrentLessonIndex(nextIndex);
-          const nextMsg: Message = {
+      if (!transcript) return;
+
+      const currentLesson = lessons[currentLessonIndex];
+      if (!currentLesson) return;
+
+      const userMsg: Message = {
+        id: Date.now().toString(),
+        sender: 'user',
+        text: transcript,
+        status: 'pending'
+      };
+      
+      setMessages(prev => [...prev, userMsg]);
+      
+      const similarity = calculateSimilarity(transcript, currentLesson.expected_response);
+      
+      setTimeout(async () => {
+        if (similarity >= 80) {
+          setMessages(prev => prev.map(m => m.id === userMsg.id ? { ...m, status: 'success' } : m));
+          toast.success(isAdult ? "Exato!" : "Incrível! 🌟");
+          
+          if (currentLessonIndex < lessons.length - 1) {
+            const nextIndex = currentLessonIndex + 1;
+            setCurrentLessonIndex(nextIndex);
+            const nextMsg: Message = {
+              id: (Date.now() + 1).toString(),
+              sender: 'bot',
+              text: lessons[nextIndex].message_text
+            };
+            setMessages(prev => [...prev, nextMsg]);
+            playText(lessons[nextIndex].message_text);
+          } else {
+            await updateStreak();
+            toast.success("Missão concluída!");
+            setTimeout(() => navigate({ to: '/' }), 2000);
+          }
+        } else {
+          setMessages(prev => prev.map(m => m.id === userMsg.id ? { ...m, status: 'error' } : m));
+          toast.error(isAdult ? "Tente novamente." : "Quase lá! Vamos tentar de novo? 🤖");
+          
+          const retryMsg: Message = {
             id: (Date.now() + 1).toString(),
             sender: 'bot',
-            text: lessons[nextIndex].message_text
+            text: currentLesson.phonetic_hint || "Tente dizer: " + currentLesson.expected_response
           };
-          setMessages(prev => [...prev, nextMsg]);
-          playText(lessons[nextIndex].message_text);
-        } else {
-          await updateStreak();
-          toast.success("Missão concluída!");
-          setTimeout(() => navigate({ to: '/' }), 2000);
+          setMessages(prev => [...prev, retryMsg]);
         }
-      } else {
-        setMessages(prev => prev.map(m => m.id === userMsg.id ? { ...m, status: 'error' } : m));
-        toast.error(isAdult ? "Tente novamente." : "Quase lá! Vamos tentar de novo? 🤖");
-        
-        const retryMsg: Message = {
-          id: (Date.now() + 1).toString(),
-          sender: 'bot',
-          text: currentLesson.phonetic_hint || "Tente dizer: " + currentLesson.expected_response
-        };
-        setMessages(prev => [...prev, retryMsg]);
-      }
-      resetTranscript();
-    }, 1000);
+      }, 500);
+    }, 100);
   };
 
   if (isLoading) return null;
@@ -172,7 +186,7 @@ function ChatInterface() {
             </h2>
             <div className="flex items-center gap-2 text-[10px] font-bold opacity-60">
               <Clock size={12} />
-              <span>{formatTime(timeLeft)} RESTANTES</span>
+              <span>{formatTime(remainingSeconds)} RESTANTES</span>
             </div>
           </div>
         </div>
