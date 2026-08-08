@@ -497,15 +497,18 @@ function AbsorbStep({ onComplete }: { onComplete: () => void }) {
 
       {selected !== null && (
         <div className="animate-in zoom-in-95 duration-500">
-           <section className="poly-card bg-white border-none shadow-xl flex items-center gap-6 py-6 px-8 relative overflow-visible mt-6">
+           <section className={cn(
+             "poly-card border-none shadow-xl flex items-center gap-6 py-6 px-8 relative overflow-visible mt-6 transition-colors",
+             isAdult ? "bg-slate-800" : "bg-white"
+           )}>
              <div className="absolute -top-24 -left-10 w-44 h-44 drop-shadow-xl">
                 <PolyMascot size="full" pose={selected === 0 ? "celebrating" : "thinking"} />
              </div>
              <div className="pl-20">
-               <p className="text-lg font-black text-poly-navy leading-tight">
+               <p className={cn("text-lg font-black leading-tight transition-colors", isAdult ? "text-white" : "text-poly-navy")}>
                  {selected === 0 
-                   ? "Isso aí! Você está lembrando muito bem. 🌟" 
-                   : "Não foi dessa vez, mas Poly te ajuda a tentar de novo!"}
+                   ? (isAdult ? "Validação completa. Estrutura memorizada com sucesso. 🌟" : "Isso aí! Você está lembrando muito bem. 🌟")
+                   : (isAdult ? "Inconsistência detectada. Poly agendou uma revisão para amanhã." : "Não foi dessa vez, mas Poly te ajuda a tentar de novo!")}
                </p>
              </div>
            </section>
@@ -513,14 +516,17 @@ function AbsorbStep({ onComplete }: { onComplete: () => void }) {
            <Button 
              onClick={onComplete} 
              className={cn(
-               "py-8 text-xl w-full mt-8 shadow-2xl font-black uppercase tracking-widest rounded-[2rem]",
-               selected === 0 ? "bg-[#4CAF50] hover:bg-[#388E3C] text-white" : "bg-slate-200 text-slate-400"
+               "py-8 text-xl w-full mt-8 shadow-2xl font-black uppercase tracking-widest rounded-[2rem] transition-all",
+               selected === 0 
+                 ? (isAdult ? "bg-cyan-600 hover:bg-cyan-500 text-white" : "bg-[#4CAF50] hover:bg-[#388E3C] text-white")
+                 : (isAdult ? "bg-slate-700 text-slate-400" : "bg-slate-200 text-slate-400")
              )}
            >
-             {selected === 0 ? "CONCLUIR MISSÃO 🏆" : "CONTINUAR"}
+             {selected === 0 ? (isAdult ? "FINALIZAR AUDITORIA 🏆" : "CONCLUIR MISSÃO 🏆") : "CONTINUAR"}
            </Button>
         </div>
       )}
+
     </div>
   );
 }
