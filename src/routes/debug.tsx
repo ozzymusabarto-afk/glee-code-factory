@@ -7,7 +7,7 @@ export const Route = createFileRoute("/debug")({
 function DebugPage() {
   return (
     <div className="p-20 whitespace-pre-wrap">
-      Crie um recurso para eu salvar automaticamente as sessões e tentativas no banco e depois consultar por idioma e limiar na página de depuração. Adicione um indicador de status da conexão com o Supabase e mensagens de erro claras para eu saber quando o banco estiver indisponível.Configure as migrations e as políticas de RLS no Supabase para eu garantir que somente o usuário veja seus próprios dados.Implemente o salvamento automático do progresso do usuário no Supabase para eu não perder dados ao atualizar a página.
+      Configure as migrations e as políticas de RLS no Supabase para garantir que cada usuário só leia e atualize seus próprios dados de sessões, perfis e frases.Crie um indicador de status da conexão com o Supabase e mostre mensagens de erro claras com instruções de recuperação quando o banco estiver indisponível. Adicione filtros na página de depuração para eu consultar tentativas por idioma e limiar do medidor e também ordenar por score de similaridade e data antes de calcular estatísticas. Implemente o salvamento automático de sessões e tentativas no Supabase com tratamento de falhas e re-tentativas para eu não perder dados ao atualizar a página.
     </div>
   );
 }
