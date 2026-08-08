@@ -171,8 +171,8 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
   const [hasRecorded, setHasRecorded] = useState(false);
 
   return (
-    <div className="flex flex-col gap-10 animate-in fade-in slide-in-from-right-6 duration-700">
-      <div className="space-y-1">
+    <div className="flex flex-col gap-10 animate-in fade-in slide-in-from-right-6 duration-700 pb-20">
+      <div className="space-y-1 text-center">
         <h2 className="text-3xl font-black text-poly-navy tracking-tight">Agora é sua vez! 🎙️</h2>
         <p className="text-lg font-bold text-muted-foreground/80 leading-tight">Repita a frase com clareza.</p>
       </div>
@@ -190,16 +190,22 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
       </div>
 
       <div className="flex flex-col items-center gap-10 py-4">
-        {/* Visual Waveform Mockup */}
-        <div className="flex items-center gap-1.5 h-20 w-full max-w-sm px-6">
+        {/* Visual Waveform Mockup with blue/purple gradient */}
+        <div className="flex items-center gap-2 h-24 w-full max-w-md px-6">
           {[0.2, 0.4, 0.8, 0.6, 1, 0.7, 0.5, 0.9, 1, 0.6, 0.4, 0.3, 0.5, 0.8, 0.6, 0.4].map((h, i) => (
             <div 
               key={i} 
               className={cn(
                 "flex-1 rounded-full transition-all duration-500",
-                isRecording ? "bg-poly-blue animate-pulse" : "bg-poly-blue/20"
+                isRecording 
+                  ? "bg-gradient-to-t from-poly-blue to-purple-500 animate-pulse" 
+                  : "bg-poly-blue/10"
               )}
-              style={{ height: `${h * 100}%`, animationDelay: `${i * 0.05}s` }}
+              style={{ 
+                height: `${h * 100}%`, 
+                animationDelay: `${i * 0.05}s`,
+                opacity: isRecording ? 1 : 0.3
+              }}
             />
           ))}
         </div>
@@ -219,7 +225,11 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
                 : "bg-poly-blue hover:bg-poly-blue/95 hover:scale-105 shadow-poly-blue/30"
              )}
            >
-             {isRecording ? <div className="w-8 h-8 bg-white rounded-lg animate-pulse" /> : <Mic className="h-14 w-14" />}
+             {isRecording ? (
+               <div className="w-8 h-8 bg-white rounded-lg animate-pulse" />
+             ) : (
+               <Mic className="h-14 w-14 fill-white" />
+             )}
            </button>
         </div>
 
@@ -228,22 +238,27 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
         </p>
 
         <div className="flex gap-4 w-full pt-4">
-          <Button variant="ghost" className="flex-1 text-muted-foreground/60 font-black uppercase text-[10px] tracking-widest border border-border/50 rounded-[1.25rem] py-8 bg-white/50">
+          <Button variant="ghost" className="flex-1 text-muted-foreground/60 font-black uppercase text-xs tracking-widest hover:text-poly-navy hover:bg-transparent">
             PULAR
           </Button>
-          <Button variant="ghost" className="flex-1 text-muted-foreground/60 font-black uppercase text-[10px] tracking-widest border border-border/50 rounded-[1.25rem] py-8 bg-white/50">
+          <Button variant="ghost" className="flex-1 text-muted-foreground/60 font-black uppercase text-xs tracking-widest hover:text-poly-navy hover:bg-transparent">
             NÃO SEI
           </Button>
         </div>
       </div>
 
-      {hasRecorded && (
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-           <Button onClick={onComplete} className="poly-button-primary py-8 text-xl w-full shadow-2xl">
-             AVANÇAR 🚀
-           </Button>
+      <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-poly-cream via-poly-cream to-transparent z-40 md:left-20">
+        <div className="max-w-2xl mx-auto">
+          {hasRecorded && (
+            <Button 
+              onClick={onComplete} 
+              className="poly-button-primary py-8 text-xl w-full shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-500"
+            >
+              AVANÇAR 🚀
+            </Button>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
