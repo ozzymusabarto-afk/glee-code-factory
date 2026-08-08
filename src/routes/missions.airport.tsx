@@ -357,8 +357,8 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
 
         <div className="relative">
            <div className={cn(
-             "absolute inset-0 bg-poly-blue rounded-full blur-3xl opacity-0 transition-opacity duration-500",
-             isRecording && "opacity-40"
+             "absolute inset-0 rounded-full blur-3xl opacity-0 transition-opacity duration-500",
+             isRecording && (isAdult ? "bg-cyan-500 opacity-20" : "bg-poly-blue opacity-40")
            )} />
            <button 
              onMouseDown={() => setIsRecording(true)}
@@ -367,7 +367,7 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
                "h-32 w-32 rounded-full flex items-center justify-center text-white shadow-2xl transition-all duration-300 transform active:scale-90 relative z-10",
                isRecording 
                 ? "bg-destructive scale-110 shadow-destructive/40" 
-                : "bg-poly-blue hover:bg-poly-blue/95 hover:scale-105 shadow-poly-blue/30"
+                : isAdult ? "bg-cyan-600 hover:bg-cyan-500 shadow-cyan-500/30" : "bg-poly-blue hover:bg-poly-blue/95 hover:scale-105 shadow-poly-blue/30"
              )}
            >
              {isRecording ? (
@@ -378,9 +378,13 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
            </button>
         </div>
 
-        <p className="text-base font-black text-poly-navy/40 uppercase tracking-[0.2em]">
-           {isRecording ? "Gravando..." : "Segure para falar"}
+        <p className={cn(
+          "text-base font-black uppercase tracking-[0.2em] transition-colors",
+          isAdult ? "text-cyan-500/60" : "text-poly-navy/40"
+        )}>
+           {isRecording ? (isAdult ? "ANALISANDO..." : "Gravando...") : (isAdult ? "HOLD TO SPEAK" : "Segure para falar")}
         </p>
+
 
         <div className="flex gap-4 w-full pt-4">
           <Button variant="ghost" className="flex-1 text-muted-foreground/60 font-black uppercase text-xs tracking-widest hover:text-poly-navy hover:bg-transparent">
