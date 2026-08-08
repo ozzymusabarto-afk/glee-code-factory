@@ -83,20 +83,22 @@ function AirportMission() {
 }
 
 function LearnStep({ onComplete }: { onComplete: () => void }) {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const dialogues = [
-    { text: "Excuse me, where is gate A12?", audio: true, emphasis: true },
+    { text: "Excuse me, where is gate A12?", audio: true },
     { text: "Go straight and turn right. It's next to the cafe.", audio: true },
+    { text: "Thank you so much! Have a nice day.", audio: true },
   ];
 
   return (
-    <div className="flex flex-col gap-10 animate-in fade-in slide-in-from-bottom-6 duration-700">
+    <div className="flex flex-col gap-10 animate-in fade-in slide-in-from-bottom-6 duration-700 pb-20">
       <div className="space-y-1">
         <h2 className="text-3xl font-black text-poly-navy tracking-tight">Ouça o diálogo 👂</h2>
-        <p className="text-lg font-bold text-muted-foreground/80 leading-tight">Preste atenção na pronúncia.</p>
+        <p className="text-lg font-bold text-muted-foreground/80 leading-tight">Toque nas frases para entender.</p>
       </div>
 
       <div className="poly-card bg-poly-navy/5 border-none p-4 relative overflow-hidden group">
-        <div className="aspect-[16/10] rounded-[2rem] bg-poly-navy flex items-center justify-center relative overflow-hidden shadow-2xl">
+        <div className="aspect-[16/9] rounded-[2rem] bg-poly-navy flex items-center justify-center relative overflow-hidden shadow-2xl">
            {/* Contextual Illustration Mockup */}
            <div className="absolute inset-0 bg-gradient-to-br from-poly-blue/40 to-transparent z-10" />
            <div className="absolute inset-0 flex items-center justify-center opacity-40">
@@ -105,10 +107,20 @@ function LearnStep({ onComplete }: { onComplete: () => void }) {
            
            {/* Characters Scene */}
            <div className="relative z-20 flex items-end justify-center gap-12 h-full pb-8">
-              <div className="w-16 h-28 bg-white/10 rounded-t-full border-t-2 border-white/20 backdrop-blur-sm" />
-              <div className="w-20 h-36 bg-poly-blue rounded-t-[2.5rem] shadow-[0_0_30px_rgba(37,99,235,0.4)] border-t-4 border-white/30 flex flex-col items-center pt-6">
-                 <div className="w-12 h-1 bg-white/20 rounded-full mb-4" />
-                 <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10" />
+              {/* Character 1 Placeholder */}
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-20 h-20 bg-white/20 rounded-full border-2 border-white/40 backdrop-blur-md flex items-center justify-center">
+                   <div className="w-12 h-12 rounded-full bg-white/10" />
+                </div>
+                <div className="w-16 h-4 bg-white/10 rounded-full" />
+              </div>
+
+              {/* Character 2 Placeholder (Poly Mascot Style) */}
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-24 h-24 bg-poly-blue rounded-full shadow-[0_0_30px_rgba(37,99,235,0.4)] border-4 border-white/30 flex items-center justify-center overflow-hidden">
+                   <PolyMascot size="sm" expression="happy" />
+                </div>
+                <div className="w-16 h-4 bg-poly-blue/20 rounded-full" />
               </div>
            </div>
            
@@ -123,28 +135,33 @@ function LearnStep({ onComplete }: { onComplete: () => void }) {
         {dialogues.map((d, i) => (
           <button 
             key={i}
+            onClick={() => setActiveIndex(i)}
             className={cn(
               "flex items-center gap-5 p-6 bg-white rounded-[2rem] text-left border-2 transition-all duration-300 group shadow-[0_4px_20px_rgba(0,0,0,0.02)]",
-              d.emphasis ? "border-poly-blue/30 bg-poly-blue/5" : "border-transparent hover:border-poly-blue/20"
+              activeIndex === i ? "border-poly-blue bg-poly-blue/5 scale-[1.02]" : "border-transparent hover:border-poly-blue/20"
             )}
           >
             <div className={cn(
               "h-14 w-14 shrink-0 rounded-2xl flex items-center justify-center transition-all duration-300",
-              d.emphasis ? "bg-poly-blue text-white shadow-lg shadow-poly-blue/30" : "bg-poly-blue/10 text-poly-blue group-hover:bg-poly-blue group-hover:text-white"
+              activeIndex === i ? "bg-poly-blue text-white shadow-lg shadow-poly-blue/30" : "bg-poly-blue/10 text-poly-blue group-hover:bg-poly-blue group-hover:text-white"
             )}>
               <Volume2 className="h-6 w-6" />
             </div>
             <span className={cn(
-              "text-xl font-black leading-tight",
-              d.emphasis ? "text-poly-navy" : "text-poly-navy/80"
+              "text-xl font-black leading-tight transition-colors duration-300",
+              activeIndex === i ? "text-poly-navy" : "text-poly-navy/80"
             )}>{d.text}</span>
           </button>
         ))}
       </div>
 
-      <Button onClick={onComplete} className="poly-button-primary py-8 text-xl mt-4">
-        CONTINUAR 🚀
-      </Button>
+      <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-poly-cream via-poly-cream to-transparent z-40 md:left-20">
+        <div className="max-w-2xl mx-auto">
+          <Button onClick={onComplete} className="poly-button-primary py-8 text-xl w-full shadow-2xl">
+            CONTINUAR 🚀
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
