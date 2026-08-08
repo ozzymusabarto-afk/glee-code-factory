@@ -135,17 +135,27 @@ function AirportMission() {
             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-poly-navy/60">
               {step === "learn" ? "Aprender 1/3" : step === "practice" ? "Praticar 2/3" : "Absorver 3/3"}
             </span>
-            <div className="flex items-center gap-1.5 bg-white px-2 py-0.5 rounded-full border border-border/50 shadow-sm">
+            <div className={cn(
+              "flex items-center gap-1.5 px-2 py-0.5 rounded-full border shadow-sm transition-colors",
+              isAdult ? "bg-slate-800 border-slate-700" : "bg-white border-border/50"
+            )}>
               <Heart className="h-3 w-3 text-destructive fill-destructive" />
-              <span className="text-[10px] font-black text-poly-navy">5</span>
+              <span className={cn("text-[10px] font-black", isAdult ? "text-white" : "text-poly-navy")}>5</span>
             </div>
           </div>
-          <div className="h-2.5 w-full bg-poly-blue/10 rounded-full overflow-hidden">
+          <div className={cn(
+            "h-2.5 w-full rounded-full overflow-hidden transition-colors",
+            isAdult ? "bg-cyan-500/10" : "bg-poly-blue/10"
+          )}>
              <div 
-               className="h-full bg-poly-blue transition-all duration-700 ease-out" 
+               className={cn(
+                 "h-full transition-all duration-700 ease-out",
+                 isAdult ? "bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.5)]" : "bg-poly-blue"
+               )} 
                style={{ width: `${progress}%` }}
              />
           </div>
+
         </div>
         <div className="w-10" /> {/* Spacer */}
       </header>
