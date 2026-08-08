@@ -243,21 +243,36 @@ function LearnStep({ onComplete }: { onComplete: () => void }) {
             key={i}
             onClick={() => setActiveIndex(i)}
             className={cn(
-              "flex items-center gap-5 p-8 bg-white rounded-[24px] text-left border-2 transition-all duration-300 group shadow-lg",
-              activeIndex === i ? "border-[#1976D2] bg-blue-50/30 scale-[1.02]" : "border-slate-50 hover:border-blue-100"
+              "flex items-center gap-5 p-8 rounded-[24px] text-left border-2 transition-all duration-300 group shadow-lg",
+              activeIndex === i 
+                ? isAdult 
+                  ? "border-cyan-500 bg-cyan-500/5 scale-[1.02]" 
+                  : "border-[#1976D2] bg-blue-50/30 scale-[1.02]"
+                : isAdult 
+                  ? "bg-slate-800 border-slate-700 hover:border-cyan-500/30" 
+                  : "bg-white border-slate-50 hover:border-blue-100"
             )}
           >
             <div className={cn(
               "h-14 w-14 shrink-0 rounded-2xl flex items-center justify-center transition-all duration-300",
-              activeIndex === i ? "bg-poly-blue text-white shadow-lg shadow-poly-blue/30" : "bg-poly-blue/10 text-poly-blue group-hover:bg-poly-blue group-hover:text-white"
+              activeIndex === i 
+                ? isAdult 
+                  ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/30" 
+                  : "bg-poly-blue text-white shadow-lg shadow-poly-blue/30"
+                : isAdult 
+                  ? "bg-slate-900 text-cyan-500 group-hover:bg-cyan-500 group-hover:text-white" 
+                  : "bg-poly-blue/10 text-poly-blue group-hover:bg-poly-blue group-hover:text-white"
             )}>
               <Volume2 className="h-6 w-6" />
             </div>
             <span className={cn(
               "text-xl font-black leading-tight transition-colors duration-300",
-              activeIndex === i ? "text-poly-navy" : "text-poly-navy/80"
+              activeIndex === i 
+                ? isAdult ? "text-white" : "text-poly-navy"
+                : isAdult ? "text-slate-400" : "text-poly-navy/80"
             )}>{d.text}</span>
           </button>
+
         ))}
       </div>
 
