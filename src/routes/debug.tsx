@@ -7,7 +7,7 @@ export const Route = createFileRoute("/debug")({
 function DebugPage() {
   return (
     <div className="p-20 whitespace-pre-wrap">
-      Adicione no debug uma seção com um checklist de campos esperados do analytics, destacando quais payloads passaram ou falharam na validação em tempo real.Implemente testes E2E para confirmar que a timeline do timer diário atualiza a cada segundo e que as transições e mensagens do aria-live aparecem na ordem correta.Melhore os controles do debug para que a busca por texto e a ordenação funcionem corretamente mesmo com milhares de eventos, com paginação ou virtualização.Implemente um modo de auditoria no debug que bloqueie interações do usuário e permita navegar pela timeline usando controles de passo a passo.Adicione um botão no debug para exportar a timeline sincronizada em CSV, incluindo timestamps, tipo de evento e transições de estado do [Revisão Livre].
+      Adicione testes E2E que validem o conteúdo do CSV exportado, confirmando as colunas, a ordem por timestamp e a coerência entre transições de estado do [Revisão Livre] e os eventos registrados.Garanta que os filtros, busca e ordenação do debug sejam persistidos entre recarregamentos e que a paginação/virtualização mantenha a posição correta da timeline.Implemente no modo de auditoria do debug marcadores visuais por passo para destacar qual transição de estado do [Revisão Livre] foi executada e qual mensagem do aria-live corresponde a cada passo.Adicione no debug a opção de exportar a timeline sincronizada em CSV incluindo também as mensagens do aria-live e o timezone detectado em colunas separadas.
     </div>
   );
 }
