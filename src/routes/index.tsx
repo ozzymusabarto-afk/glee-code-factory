@@ -89,7 +89,7 @@ function Index() {
                   <span className="rounded-full px-4 py-1.5 bg-white/20 text-white text-[10px] font-bold uppercase tracking-widest backdrop-blur-md border border-white/20">
                     Destaque
                   </span>
-                  <span className="flex items-center gap-1.5 rounded-full px-4 py-1.5 bg-blue-500 text-white text-[10px] font-bold uppercase tracking-widest">
+                  <span className="flex items-center gap-1.5 rounded-full px-4 py-1.5 bg-[#0ea5e9] text-white text-[10px] font-bold uppercase tracking-widest">
                     <Plane className="h-3 w-3" /> 10 MIN
                   </span>
                 </div>
