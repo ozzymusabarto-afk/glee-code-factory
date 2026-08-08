@@ -15,6 +15,10 @@ import {
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { PolyMascot } from "@/components/poly/PolyMascot";
+import { useAppStore } from "@/hooks/use-app-store";
+import { useDailyTimer } from "@/hooks/use-daily-timer";
+import { motion, AnimatePresence } from "framer-motion";
+
 
 export const Route = createFileRoute("/missions/airport")({
   component: AirportMission,
