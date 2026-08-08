@@ -8,7 +8,7 @@ export const Route = createFileRoute("/debug")({
 function DebugPage() {
   return (
     <div className="p-20 whitespace-pre-wrap">
-      Permita que eu selecione um intervalo na timeline e veja as estatísticas daquele recorte (taxa de acerto e similaridade média) para eu identificar rapidamente padrões nos testes.Inclua uma opção para eu recalibrar o medidor de áudio automaticamente ao iniciar uma nova sessão, garantindo que o limiar continue adequado para o meu ambiente.Adicione um recurso para eu importar um arquivo JSON com janela do Shadowing, limiar do medidor e idioma, para eu repetir testes com configurações anteriores.Implemente um botão para eu exportar automaticamente o histórico e los logs filtrados em CSV e JSON a partir da página de depuração, com um nome de arquivo gerado por data e idioma.
+      Valide o schema do arquivo JSON importado e mostre mensagens de erro claras para eu evitar configurações inconsistentes.Gere um relatório em PDF com as estatísticas da timeline e os principais resultados para eu compartilhar meus testes. Adicione um modo para eu marcar automaticamente as tentativas com maior queda de similaridade e abrir o par transcrição/chunk correspondente em foco.Implemente filtros na página de depuração para eu filtrar tentativas por idioma, limiar do medidor e faixa da timeline antes de calcular as estatísticas.Adicione uma comparação lado a lado entre duas sessões importadas (taxa de acerto e similaridade) para eu ver melhorias entre configurações.
     </div>
   );
 }
