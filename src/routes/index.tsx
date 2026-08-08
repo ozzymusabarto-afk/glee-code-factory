@@ -212,6 +212,18 @@ function Onboarding() {
         <PolyMascot size="full" className="origin-bottom" expression={isAdult ? "focused" : "excited"} />
       </div>
 
+      <footer className="w-full py-8 px-8 flex justify-center items-center">
+        <button 
+          onClick={() => navigate({ to: "/privacy" })}
+          className={cn(
+            "text-sm font-bold opacity-50 hover:opacity-100 transition-opacity",
+            isAdult ? "text-slate-400" : "text-slate-500"
+          )}
+        >
+          POLÍTICA DE PRIVACIDADE
+        </button>
+      </footer>
+
       <AnimatePresence>
         {isGoalReached && (
           <motion.div 
@@ -268,6 +280,16 @@ function Onboarding() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <button 
+        onClick={() => navigate({ to: "/profile" })}
+        className={cn(
+          "fixed top-8 left-8 z-50 p-3 rounded-2xl border transition-all active:scale-95",
+          isAdult ? "bg-slate-800 border-slate-700 text-cyan-500" : "bg-white border-slate-200 text-[#1976D2]"
+        )}
+      >
+        <User size={24} />
+      </button>
 
       {/* Mode Switcher Button (Config) */}
       <button 
