@@ -194,8 +194,15 @@ function LearnStep({ onComplete }: { onComplete: () => void }) {
 
       </div>
 
-      <div className="bg-white rounded-[32px] border border-slate-100 p-8 relative overflow-hidden shadow-xl">
-        <div className="aspect-[16/9] rounded-[24px] bg-[#0D47A1] flex items-center justify-center relative overflow-hidden shadow-inner">
+      <div className={cn(
+        "rounded-[32px] border p-8 relative overflow-hidden transition-all duration-500 shadow-xl",
+        isAdult ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+      )}>
+        <div className={cn(
+          "aspect-[16/9] rounded-[24px] flex items-center justify-center relative overflow-hidden shadow-inner transition-colors",
+          isAdult ? "bg-slate-900" : "bg-[#0D47A1]"
+        )}>
+
            {/* Contextual Illustration Mockup */}
            <div className="absolute inset-0 bg-gradient-to-br from-poly-blue/40 to-transparent z-10" />
            <div className="absolute inset-0 flex items-center justify-center opacity-40">
