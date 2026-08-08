@@ -120,6 +120,14 @@
   @apply rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest;
 }
 
+@utility clip-path-hexagon {
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+@utility clip-path-radar-mockup {
+  clip-path: polygon(50% 10%, 90% 30%, 80% 80%, 50% 90%, 20% 75%, 15% 35%);
+}
+
 @utility animate-bounce-slow {
   animation: bounce-slow 3s infinite;
 }
