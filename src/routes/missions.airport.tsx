@@ -582,25 +582,28 @@ function CompletedStep({ onFinish }: { onFinish: () => void }) {
 
         <div className="w-full space-y-4">
           {[
-            { label: "Estrutura", stars: 4 },
+            { label: isAdult ? "Sintaxe" : "Estrutura", stars: 4 },
             { label: "Pronúncia", stars: 5 },
-            { label: "Fluência", stars: 4 }
+            { label: isAdult ? "Entonação" : "Fluência", stars: 4 }
           ].map((item, i) => (
             <div key={i} className="flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-black text-poly-navy/60 uppercase tracking-widest">{item.label}</span>
+                <span className={cn("text-[11px] font-black uppercase tracking-widest transition-colors", isAdult ? "text-slate-400" : "text-poly-navy/60")}>
+                  {item.label}
+                </span>
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map(s => (
-                    <Star key={s} className={cn("h-4 w-4", s <= item.stars ? "text-poly-yellow fill-poly-yellow" : "text-muted/20")} />
+                    <Star key={s} className={cn("h-4 w-4 transition-colors", s <= item.stars ? (isAdult ? "text-cyan-400 fill-cyan-400" : "text-poly-yellow fill-poly-yellow") : "text-muted/20")} />
                   ))}
                 </div>
               </div>
-              <div className="h-1.5 w-full bg-muted/20 rounded-full overflow-hidden">
-                 <div className="h-full bg-poly-blue/40 rounded-full" style={{ width: `${(item.stars/5)*100}%` }} />
+              <div className={cn("h-1.5 w-full rounded-full overflow-hidden transition-colors", isAdult ? "bg-slate-700" : "bg-muted/20")}>
+                 <div className={cn("h-full rounded-full transition-colors", isAdult ? "bg-cyan-500" : "bg-poly-blue/40")} style={{ width: `${(item.stars/5)*100}%` }} />
               </div>
             </div>
           ))}
         </div>
+
 
         {/* Poly Feedback Bubble */}
         <div className="flex items-center gap-4 bg-poly-blue/5 p-4 rounded-3xl border border-poly-blue/10 w-full mt-2">
