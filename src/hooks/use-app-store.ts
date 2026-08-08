@@ -13,6 +13,7 @@ interface AppState {
   setDisplayName: (name: string) => void;
   syncProfile: () => Promise<void>;
   updateStreak: () => Promise<void>;
+  resetAll: () => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -108,6 +109,19 @@ export const useAppStore = create<AppState>()(
             }
           }
         }
+      },
+      resetAll: () => {
+        localStorage.removeItem('polybot-storage');
+        localStorage.removeItem('polybot-dev-auth');
+        // Clear all timer keys for any date
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key?.startsWith('polybot-timer-')) {
+            localStorage.removeItem(key);
+            i--; // Adjust index after removal
+          }
+        }
+        set({ appMode: 'kids', skillLevel: 1, displayName: '' });
       }
     }),
     {
