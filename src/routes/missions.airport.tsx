@@ -482,10 +482,13 @@ function AbsorbStep({ onComplete }: { onComplete: () => void }) {
               {selected === i && (
                 <div className={cn(
                   "h-8 w-8 rounded-full flex items-center justify-center text-white",
-                  i === 0 ? "bg-poly-green" : "bg-destructive"
+                  i === 0 
+                    ? (isAdult ? "bg-cyan-500" : "bg-poly-green") 
+                    : "bg-destructive"
                 )}>
                   {i === 0 ? <CheckCircle2 className="h-5 w-5" /> : <div className="h-4 w-1 bg-white rounded-full rotate-45 relative before:content-[''] before:absolute before:inset-0 before:bg-white before:rounded-full before:-rotate-90" />}
                 </div>
+
               )}
             </div>
           </button>
