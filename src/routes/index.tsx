@@ -55,7 +55,7 @@ function Index() {
           <motion.h2 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl font-bold text-slate-950 tracking-[-0.05em] font-space"
+            className="text-5xl font-bold text-[#0f172a] tracking-[-0.05em] font-space"
           >
             Olá, Adriana.
           </motion.h2>
@@ -126,7 +126,7 @@ function Index() {
             {/* Mascot Tip Card */}
             <motion.div 
               whileHover={{ y: -5 }}
-              className="poly-card border-none bg-blue-50 flex flex-col items-center text-center gap-4 p-10"
+              className="poly-card border-none bg-[#f0f9ff] flex flex-col items-center text-center gap-4 p-10"
             >
               <div className="relative">
                 <PolyMascot size="lg" expression="proud" />
@@ -158,7 +158,7 @@ function Index() {
                 </div>
                 <div className="flex gap-2 h-2">
                   {[1, 2, 3, 4, 5].map(i => (
-                    <div key={i} className="flex-1 rounded-full bg-orange-500" />
+                    <div key={i} className="flex-1 rounded-full bg-[#f97316]" />
                   ))}
                   {[6, 7].map(i => (
                     <div key={i} className="flex-1 rounded-full bg-slate-100" />
@@ -174,8 +174,8 @@ function Index() {
             whileHover={{ y: -5 }}
             className="md:col-span-3 poly-card p-10 flex items-center gap-8"
           >
-            <div className="h-16 w-16 rounded-3xl bg-emerald-50 flex items-center justify-center text-emerald-500">
-              <Star className="h-8 w-8 fill-emerald-500" />
+            <div className="h-16 w-16 rounded-3xl bg-[#ecfdf5] flex items-center justify-center text-[#10b981]">
+              <Star className="h-8 w-8 fill-[#10b981]" />
             </div>
             <div className="flex flex-col">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total de Pontos</span>
