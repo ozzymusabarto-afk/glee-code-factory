@@ -7,7 +7,7 @@ export const Route = createFileRoute("/debug")({
 function DebugPage() {
   return (
     <div className="p-20 whitespace-pre-wrap">
-      Configure as migrations e as políticas de RLS no Supabase para garantir que cada usuário só leia e atualize seus próprios dados de sessões, perfis e frases.Crie um indicador de status da conexão com o Supabase e mostre mensagens de erro claras com instruções de recuperação quando o banco estiver indisponível. Adicione filtros na página de depuração para eu consultar tentativas por idioma e limiar do medidor e também ordenar por score de similaridade e data antes de calcular estatísticas. Implemente o salvamento automático de sessões e tentativas no Supabase com tratamento de falhas e re-tentativas para eu não perder dados ao atualizar a página.
+      Melhore o tratamento de erros do Supabase com mensagens mais específicas e botões de ação (tentar novamente, recarregar, diagnosticar) para eu recuperar mais rápido quando falhar.Implemente uma fila de sincronização offline/failed para eu reenviar sessões e tentativas ao Supabase automaticamente quando a conexão voltar.Construa gráficos e resumos automáticos na página de depuração para eu visualizar evolução por idioma e limiar do medidor ao longo do tempo.Adicione a opção de exportar tentativas filtradas para CSV (incluindo idioma, limiar, score de similaridade e data) para eu analisar em outro lugar.Implemente paginação ou infinite scroll na página de depuração para eu consultar muitas tentativas sem travar.
     </div>
   );
 }
