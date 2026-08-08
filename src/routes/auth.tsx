@@ -63,18 +63,16 @@ function AuthPage() {
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin + '/auth/callback',
-        }
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin + '/auth/callback',
       });
-      if (error) throw error;
+      if (result.error) throw result.error;
     } catch (error: any) {
       toast.error(error.message || "Erro no login com Google");
       setIsGoogleLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F5F7FA] p-6 font-jakarta">
