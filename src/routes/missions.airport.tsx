@@ -652,8 +652,12 @@ function CompletedStep({ onFinish }: { onFinish: () => void }) {
 
           {/* Radar Data Polygon Mockup */}
           <div className="absolute inset-0 flex items-center justify-center">
-             <div className="w-3/4 h-3/4 bg-poly-blue/40 border-2 border-poly-blue clip-path-radar-mockup" />
+             <div className={cn(
+               "w-3/4 h-3/4 border-2 clip-path-radar-mockup transition-all",
+               isAdult ? "bg-cyan-500/40 border-cyan-400" : "bg-poly-blue/40 border-poly-blue"
+             )} />
           </div>
+
         </div>
       </div>
 
