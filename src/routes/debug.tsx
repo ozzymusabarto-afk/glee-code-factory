@@ -7,11 +7,10 @@ export const Route = createFileRoute("/debug")({
 function DebugPage() {
   return (
     <div className="p-20 whitespace-pre-wrap">
-      Inclua um histórico/audit log por frase no debug para eu acompanhar cada transição de estágio, motivo do agendamento e validações que foram aplicadas.
-      Crie uma UI para eu marcar acertou/errou em cada frase e atualizar automaticamente a próxima data de revisão calculada pelo SRS no banco.
-      Implemente e documente o job em segundo plano que busca automaticamente as frases “devidas” no SRS e as disponibiliza para revisão no app, com status e logs no debug.
-      Adicione uma tela de configurações para editar os intervalos do SRS (1 dia, 3 dias, 7 dias) e recalcular imediatamente a próxima revisão das frases já existentes.
-      Implemente a exportação em CSV e JSON do SRS com próxima revisão, motivo do agendamento e resultado anterior, incluindo filtros por data e estágio.
+      Configure o job em segundo plano para disparar lembretes (email ou notificação) quando existirem frases “devidas” para revisão no SRS.
+      Crie um dashboard com gráficos do SRS mostrando contagem de frases por estágio, taxa de acerto por intervalo e tendência de previsões de revisão.
+      Adicione autenticação e permissões para restringir o acesso à tela de debug, auditoria e exportação do SRS.
+      Implemente testes unitários e E2E para validar transições de estágio, cálculo do próximo intervalo do SRS e atualização após acertar/errar.
     </div>
   );
 }
