@@ -436,14 +436,21 @@ function AbsorbStep({ onComplete }: { onComplete: () => void }) {
       </div>
 
 
-      <div className="poly-card bg-poly-blue/5 border-2 border-poly-blue/10 p-8 flex items-center gap-6 shadow-none">
-        <div className="h-14 w-14 rounded-2xl bg-poly-blue text-white flex items-center justify-center shadow-lg shadow-poly-blue/20 shrink-0">
+      <div className={cn(
+        "poly-card border-2 p-8 flex items-center gap-6 shadow-none transition-colors",
+        isAdult ? "bg-slate-800 border-cyan-500/20" : "bg-poly-blue/5 border-poly-blue/10"
+      )}>
+        <div className={cn(
+          "h-14 w-14 rounded-2xl flex items-center justify-center shadow-lg shrink-0 transition-all",
+          isAdult ? "bg-cyan-600 text-white shadow-cyan-500/20" : "bg-poly-blue text-white shadow-poly-blue/20"
+        )}>
           <Volume2 className="h-7 w-7" />
         </div>
-        <h3 className="text-2xl font-black text-poly-navy leading-tight">
+        <h3 className={cn("text-2xl font-black leading-tight transition-colors", isAdult ? "text-white" : "text-poly-navy")}>
           "Where is the gate?"
         </h3>
       </div>
+
 
       <div className="flex flex-col gap-4">
         {[
