@@ -105,22 +105,20 @@ function LearnStep({ onComplete }: { onComplete: () => void }) {
              <Plane className="h-48 w-48 text-white rotate-[15deg] scale-150" />
            </div>
            
-           {/* Characters Scene */}
-           <div className="relative z-20 flex items-end justify-center gap-12 h-full pb-8">
-              {/* Character 1 Placeholder */}
-              <div className="flex flex-col items-center gap-2">
-                <div className="w-20 h-20 bg-white/20 rounded-full border-2 border-white/40 backdrop-blur-md flex items-center justify-center">
-                   <div className="w-12 h-12 rounded-full bg-white/10" />
+           {/* Characters Scene - Replaced with official Mascot */}
+           <div className="relative z-20 flex items-end justify-center gap-12 h-full pb-4">
+              {/* Character 1 (User) */}
+              <div className="flex flex-col items-center gap-2 mb-4">
+                <div className="w-20 h-20 bg-white/20 rounded-full border-2 border-white/40 backdrop-blur-md flex items-center justify-center overflow-hidden">
+                   <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150" className="w-full h-full object-cover" />
                 </div>
-                <div className="w-16 h-4 bg-white/10 rounded-full" />
               </div>
 
-              {/* Character 2 Placeholder (Poly Mascot Style) */}
+              {/* Poly Mascot - Tutoring */}
               <div className="flex flex-col items-center gap-2">
-                <div className="w-24 h-24 bg-poly-blue rounded-full shadow-[0_0_30px_rgba(37,99,235,0.4)] border-4 border-white/30 flex items-center justify-center overflow-hidden">
-                   <PolyMascot size="sm" expression="happy" />
+                <div className="w-48 h-48 drop-shadow-[0_0_30px_rgba(37,99,235,0.4)] flex items-center justify-center overflow-hidden">
+                   <PolyMascot size="full" pose="explaining" />
                 </div>
-                <div className="w-16 h-4 bg-poly-blue/20 rounded-full" />
               </div>
            </div>
            
@@ -178,8 +176,8 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
       </div>
 
       <div className="poly-card bg-white border-none shadow-[0_30px_60px_rgba(0,0,0,0.05)] p-10 flex flex-col items-center gap-8 text-center relative overflow-hidden">
-        <div className="absolute -top-10 -right-10 opacity-5">
-           <PolyMascot size="lg" />
+        <div className="absolute -top-4 -right-10 opacity-20">
+           <PolyMascot size="xl" pose="thinking" />
         </div>
         <div className="h-16 w-16 rounded-[1.5rem] bg-poly-blue/10 flex items-center justify-center text-poly-blue shadow-inner">
           <Volume2 className="h-8 w-8" />
@@ -322,8 +320,8 @@ function AbsorbStep({ onComplete }: { onComplete: () => void }) {
       {selected !== null && (
         <div className="animate-in zoom-in-95 duration-500">
            <section className="poly-card bg-white border-none shadow-xl flex items-center gap-6 py-6 px-8 relative overflow-visible mt-6">
-             <div className="absolute -top-14 -left-6">
-                <PolyMascot size="md" expression={selected === 0 ? "excited" : "thinking"} />
+             <div className="absolute -top-24 -left-10 w-44 h-44 drop-shadow-xl">
+                <PolyMascot size="full" pose={selected === 0 ? "celebrating" : "thinking"} />
              </div>
              <div className="pl-20">
                <p className="text-lg font-black text-poly-navy leading-tight">
@@ -355,8 +353,8 @@ function CompletedStep({ onFinish }: { onFinish: () => void }) {
       <div className="relative mx-auto h-56 w-56 flex items-center justify-center">
         <div className="absolute inset-0 bg-poly-yellow/20 rounded-full animate-ping duration-[2000ms]" />
         <div className="absolute inset-4 bg-poly-yellow/30 rounded-full animate-pulse" />
-        <div className="relative z-10 scale-125">
-           <PolyMascot size="lg" expression="excited" />
+        <div className="relative z-10 w-64 h-64 drop-shadow-2xl">
+           <PolyMascot size="full" pose="celebrating" />
         </div>
       </div>
 
