@@ -298,27 +298,40 @@ function LearnStep({ onComplete }: { onComplete: () => void }) {
 }
 
 function PracticeStep({ onComplete }: { onComplete: () => void }) {
+  const appMode = useAppStore((state) => state.appMode);
+  const isAdult = appMode === 'adult';
   const [isRecording, setIsRecording] = useState(false);
   const [hasRecorded, setHasRecorded] = useState(false);
 
   return (
     <div className="flex flex-col gap-10 animate-in fade-in slide-in-from-right-6 duration-700 pb-20">
       <div className="space-y-1 text-center">
-        <h2 className="text-3xl font-black text-poly-navy tracking-tight">Agora é sua vez! 🎙️</h2>
-        <p className="text-lg font-bold text-muted-foreground/80 leading-tight">Repita a frase com clareza.</p>
+        <h2 className={cn("text-3xl font-black tracking-tight transition-colors", isAdult ? "text-white" : "text-poly-navy")}>
+          {isAdult ? "Prática de fala 🎙️" : "Agora é sua vez! 🎙️"}
+        </h2>
+        <p className={cn("text-lg font-bold leading-tight transition-colors", isAdult ? "text-slate-400" : "text-muted-foreground/80")}>
+          {isAdult ? "Pronuncie a sentença com clareza técnica." : "Repita a frase com clareza."}
+        </p>
       </div>
 
-      <div className="poly-card bg-white border-none shadow-[0_30px_60px_rgba(0,0,0,0.05)] p-10 flex flex-col items-center gap-8 text-center relative overflow-hidden">
+      <div className={cn(
+        "poly-card border-none shadow-[0_30px_60px_rgba(0,0,0,0.05)] p-10 flex flex-col items-center gap-8 text-center relative overflow-hidden transition-colors",
+        isAdult ? "bg-slate-800" : "bg-white"
+      )}>
         <div className="absolute -top-4 -right-10 opacity-20">
            <PolyMascot size="xl" pose="thinking" />
         </div>
-        <div className="h-16 w-16 rounded-[1.5rem] bg-poly-blue/10 flex items-center justify-center text-poly-blue shadow-inner">
+        <div className={cn(
+          "h-16 w-16 rounded-[1.5rem] flex items-center justify-center shadow-inner transition-colors",
+          isAdult ? "bg-cyan-500/10 text-cyan-500" : "bg-poly-blue/10 text-poly-blue"
+        )}>
           <Volume2 className="h-8 w-8" />
         </div>
-        <h3 className="text-4xl font-black text-poly-navy leading-[1.1] tracking-tight max-w-sm">
+        <h3 className={cn("text-4xl font-black leading-[1.1] tracking-tight max-w-sm transition-colors", isAdult ? "text-white" : "text-poly-navy")}>
           "Excuse me, where is gate A12?"
         </h3>
       </div>
+
 
       <div className="flex flex-col items-center gap-10 py-4">
         {/* Visual Waveform Mockup with blue/purple gradient */}
