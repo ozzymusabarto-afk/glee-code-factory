@@ -7,7 +7,7 @@ export const Route = createFileRoute("/debug")({
 function DebugPage() {
   return (
     <div className="p-20 whitespace-pre-wrap">
-      Incluir um ID de correlação em cada solicitação ao Supabase para eu rastrear facilmente quais sessões e tentativas geraram cada falha de sync. Adicionar atualização em tempo real na aba de diagnóstico para eu ver novas falhas e consultas ao Supabase sem precisar recarregar a página.Implementar um botão para eu copiar os detalhes de cada falha de sync (código de erro, mensagem e contexto) para compartilhar com suporte.
+      Implemente alertas na aba de diagnóstico quando ocorrerem falhas repetidas (mesmo código de erro e mesmo padrão) para eu ser notificado sem precisar verificar manualmente.Adicione um botão para eu baixar um pacote único (JSON) com logs e dados relevantes da aba de diagnóstico para eu enviar ao suporte. Permita que eu visualize detalhes estruturados de cada falha de sync (payload enviado, resposta recebida e stacktrace quando disponível) para eu depurar mais rápido.Inclua o ID de correlação nos exports CSV e no PDF de diagnóstico para eu rastrear cada falha no histórico compartilhado.
     </div>
   );
 }
