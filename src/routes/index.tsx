@@ -44,7 +44,6 @@ function AppEntry() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      // Dev Bypass: Check for local dev auth flag
       const isDevAuthed = localStorage.getItem('polybot-dev-auth') === 'true';
       
       if (!isDevAuthed) {
@@ -52,18 +51,13 @@ function AppEntry() {
         setStep('auth');
       } else {
         setIsAuthenticated(true);
-        // We skip full profile sync if there's no real session, 
-        // using the state already in useAppStore (populated during login)
-        
-        if (displayName && appMode) {
-          setStep('ready');
-        } else {
-          setStep('checkin');
-        }
+        // We always start with 'checkin' for the triagem chat if we don't have a confirmed session
+        // or if we want to ensure the natural flow every time in dev.
+        setStep('checkin');
       }
     };
     checkAuth();
-  }, [syncProfile]);
+  }, []);
 
   const { isListening, transcript, startListening, stopListening } = useSpeechRecognition({
     lang: 'en-US',
@@ -127,81 +121,118 @@ function AppEntry() {
 
   if (step === 'checkin') {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5F7FA] p-8 font-jakarta">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center space-y-8 max-w-lg w-full bg-white p-12 rounded-[40px] shadow-xl"
-        >
-          <div className="w-24 h-24 mx-auto mb-4">
-            <PolyMascot size="full" pose="explaining" />
+      <div className={cn(
+        "min-h-screen flex flex-col font-jakarta transition-colors duration-500",
+        appMode === 'adult' ? "bg-[#0F172A] text-slate-100" : "bg-[#F5F7FA] text-[#0D47A1]"
+      )}>
+        <header className={cn(
+          "p-6 flex items-center gap-4 border-b backdrop-blur-md sticky top-0 z-20",
+          appMode === 'adult' ? "bg-slate-900/80 border-slate-800" : "bg-white/80 border-slate-100"
+        )}>
+          <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <PolyMascot size="sm" pose="neutral" />
           </div>
-          
-          {!displayName ? (
-            <div className="space-y-6">
-              <h2 className="text-3xl font-black text-[#0D47A1]">Como devo te chamar?</h2>
-              <Input 
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                placeholder="Seu nome"
-                className="py-8 px-6 text-xl rounded-2xl border-2 border-slate-100 focus:border-blue-500 transition-all text-center font-bold"
-              />
-              <Button 
-                onClick={() => setDisplayName(userName)}
-                disabled={!userName.trim()}
-                className="w-full py-8 text-xl font-black rounded-2xl bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
+          <div>
+            <h2 className="text-xl font-black uppercase font-space tracking-tighter">PolyBot Triagem</h2>
+            <p className="text-[10px] font-bold opacity-60">CHAT DE CONFIGURAÇÃO</p>
+          </div>
+        </header>
+
+        <main className="flex-1 overflow-y-auto p-6 space-y-6 max-w-2xl mx-auto w-full">
+          <AnimatePresence mode="popLayout">
+            {/* Mensagem Inicial do Poly */}
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-end gap-3"
+            >
+              <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mb-1 shadow-sm">
+                <PolyMascot size="sm" pose="neutral" />
+              </div>
+              <div className={cn(
+                "p-4 rounded-[22px] rounded-tl-none shadow-sm max-w-[85%]",
+                appMode === 'adult' ? "bg-slate-800 text-slate-100 border border-slate-700" : "bg-white text-blue-900"
+              )}>
+                <p className="text-lg font-bold">Olá {displayName || 'Visitante'}! Que bom te ver por aqui. Quem vai treinar comigo hoje?</p>
+              </div>
+            </motion.div>
+
+            {/* Escolha de Perfil */}
+            {!appMode && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="grid grid-cols-2 gap-4 pt-4"
               >
-                CONFIRMAR
-              </Button>
-            </div>
-          ) : !appMode ? (
-            <div className="space-y-8">
-              <h2 className="text-3xl font-black text-[#0D47A1]">Olá {displayName}! Qual seu estilo?</h2>
-              <div className="grid grid-cols-2 gap-6">
                 <button 
                   onClick={() => setAppMode('adult')}
-                  className="poly-card flex flex-col items-center gap-4 p-8 hover:border-cyan-500 bg-slate-900 text-white"
+                  className="poly-card flex flex-col items-center gap-4 p-8 hover:border-cyan-500 bg-slate-900 text-white transition-all transform hover:scale-105"
                 >
                   <User size={32} className="text-cyan-500" />
-                  <div className="text-center">
-                    <span className="text-xl font-black block">Adulto</span>
-                    <span className="text-[10px] opacity-60">Premium / Dark</span>
-                  </div>
+                  <span className="text-xl font-black block">Modo Adulto</span>
                 </button>
                 <button 
                   onClick={() => setAppMode('kids')}
-                  className="poly-card flex flex-col items-center gap-4 p-8 hover:border-green-500 bg-yellow-400 text-blue-900"
+                  className="poly-card flex flex-col items-center gap-4 p-8 hover:border-green-500 bg-yellow-400 text-blue-900 transition-all transform hover:scale-105"
                 >
                   <Baby size={32} />
-                  <div className="text-center">
-                    <span className="text-xl font-black block">Kids</span>
-                    <span className="text-[10px] opacity-60">Vibrante / Roblox</span>
-                  </div>
+                  <span className="text-xl font-black block">Modo Kids</span>
                 </button>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-8">
-              <h2 className="text-3xl font-black text-[#0D47A1]">Qual seu nível inicial?</h2>
-              <div className="grid gap-4">
-                <Button 
-                  onClick={() => { setSkillLevel(1); setStep('tutorial'); }}
-                  className="py-10 rounded-[28px] bg-slate-50 hover:bg-white text-[#0D47A1] border-2 border-slate-100 flex flex-col items-start px-8"
-                >
-                  <span className="text-xl font-black">Nível 1: Sobrevivência</span>
-                  <span className="text-xs font-medium opacity-60">Frases básicas e saudações</span>
-                </Button>
-                <Button 
-                  onClick={() => { setSkillLevel(2); setStep('tutorial'); }}
-                  className="py-10 rounded-[28px] bg-slate-50 hover:bg-white text-[#0D47A1] border-2 border-slate-100 flex flex-col items-start px-8"
-                >
-                  <span className="text-xl font-black">Nível 2: Prática Ativa</span>
-                  <span className="text-xs font-medium opacity-60">Aeroporto, Hotel e Situações</span>
-                </Button>
-              </div>
-            </div>
-          )}
-        </motion.div>
+              </motion.div>
+            )}
+
+            {/* Mensagem de Tema */}
+            {appMode && (
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex items-end gap-3 mt-8"
+              >
+                <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mb-1 shadow-sm">
+                  <PolyMascot size="sm" pose="neutral" />
+                </div>
+                <div className={cn(
+                  "p-4 rounded-[22px] rounded-tl-none shadow-sm max-w-[85%]",
+                  appMode === 'adult' ? "bg-slate-800 text-slate-100 border border-slate-700" : "bg-white text-blue-900"
+                )}>
+                  <p className="text-lg font-bold">Perfeito! E sobre o que você quer conversar hoje? Escolha uma das situações reais abaixo:</p>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Escolha de Tema */}
+            {appMode && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="grid gap-4 pt-4"
+              >
+                {[
+                  { id: 'survival', title: '🛫 Aeroporto', desc: 'Imigração e o básico' },
+                  { id: 'restaurant', title: '🍔 Lanchonete', desc: 'Pedindo comida' },
+                  { id: 'hotel', title: '🏨 Hotel', desc: 'Check-in e estadia' }
+                ].map((scene) => (
+                  <button 
+                    key={scene.id}
+                    onClick={() => navigate({ to: `/chat/${scene.id}` })}
+                    className={cn(
+                      "poly-card flex items-center justify-between p-6 hover:translate-x-2 transition-all group",
+                      appMode === 'adult' ? "bg-slate-800 hover:bg-slate-700 text-white" : "bg-white hover:shadow-xl text-blue-900"
+                    )}
+                  >
+                    <div>
+                      <span className="text-xl font-black block">{scene.title}</span>
+                      <span className="text-xs opacity-60 font-bold">{scene.desc}</span>
+                    </div>
+                    <ArrowRight className="opacity-20 group-hover:opacity-100 transition-opacity" />
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </main>
       </div>
     );
   }
