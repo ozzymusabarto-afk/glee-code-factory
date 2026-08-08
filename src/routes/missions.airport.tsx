@@ -51,10 +51,6 @@ function AirportMission() {
     }
   }, [step]);
 
-  const { isGoalReached, resetGoal } = useDailyTimer();
-  const appMode = useAppStore((state) => state.appMode);
-  const isAdult = appMode === 'adult';
-  const navigate = useNavigate();
 
   return (
     <div className={cn(
