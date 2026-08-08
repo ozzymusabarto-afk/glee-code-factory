@@ -27,8 +27,8 @@ export const Route = createFileRoute("/profile")({
 
 function ProfilePage() {
   return (
-    <div className="flex min-h-screen flex-col bg-poly-cream pb-24 md:pb-0 md:pl-24">
-      <header className="px-8 py-10 flex items-center justify-between">
+    <div className="flex min-h-screen flex-col bg-[#F5F7FA] pb-24 md:pb-0 md:pl-24">
+      <header className="px-8 py-12 flex items-center justify-between bg-white border-b border-slate-100">
         <div className="flex items-center gap-4">
            <PolyMascot size="sm" />
            <div>
@@ -43,7 +43,7 @@ function ProfilePage() {
 
       <main className="flex flex-col gap-10 px-8 pb-16 max-w-4xl">
         {/* Main User Card */}
-        <section className="poly-card bg-white border-none shadow-2xl p-10 flex flex-col md:flex-row items-center gap-10 relative overflow-hidden">
+        <section className="bg-white rounded-[32px] border border-slate-100 shadow-2xl p-12 flex flex-col md:flex-row items-center gap-10 relative overflow-hidden">
            <div className="absolute top-0 right-0 p-10 opacity-[0.03] pointer-events-none">
               <PolyMascot size="xl" />
            </div>
@@ -65,8 +65,8 @@ function ProfilePage() {
               <div className="space-y-1">
                 <h2 className="text-4xl font-black text-poly-navy tracking-tight">Adriana Silva</h2>
                 <div className="flex items-center justify-center md:justify-start gap-2">
-                   <span className="poly-badge bg-poly-blue/10 text-poly-blue border border-poly-blue/20">Nível 12</span>
-                   <span className="poly-badge bg-poly-yellow text-poly-navy shadow-md">Poly Premium</span>
+                    <span className="rounded-full px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-blue-50 text-[#1976D2] border border-blue-100">Nível 12</span>
+                   <span className="rounded-full px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-[#FFD600] text-[#0D47A1] shadow-md">Poly Premium</span>
                 </div>
               </div>
               
