@@ -276,13 +276,23 @@ function LearnStep({ onComplete }: { onComplete: () => void }) {
         ))}
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 p-8 bg-white border-t border-slate-100 z-40 md:left-20">
+      <div className={cn(
+        "fixed bottom-0 left-0 right-0 p-8 border-t z-40 md:left-20 transition-colors",
+        isAdult ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"
+      )}>
         <div className="max-w-2xl mx-auto">
-          <Button onClick={onComplete} className="bg-[#1976D2] hover:bg-[#0D47A1] text-white font-black py-8 text-2xl w-full rounded-2xl shadow-xl shadow-blue-500/20">
+          <Button 
+            onClick={onComplete} 
+            className={cn(
+              "text-white font-black py-8 text-2xl w-full rounded-2xl shadow-xl transition-all",
+              isAdult ? "bg-cyan-600 hover:bg-cyan-500 shadow-cyan-500/20" : "bg-[#1976D2] hover:bg-[#0D47A1] shadow-blue-500/20"
+            )}
+          >
             CONTINUAR 🚀
           </Button>
         </div>
       </div>
+
     </div>
   );
 }
