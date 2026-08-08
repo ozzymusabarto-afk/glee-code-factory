@@ -26,10 +26,12 @@ export const Route = createFileRoute('/chat/$id')({
 
 type Message = {
   id: string;
-  sender: 'bot' | 'user';
+  sender: 'bot' | 'user' | 'poly';
   text: string;
+  senderName?: string;
   status?: 'pending' | 'success' | 'error';
   audioUrl?: string;
+  isTip?: boolean;
 };
 
 function ChatInterface() {
@@ -74,9 +76,18 @@ function ChatInterface() {
           const firstMsg: Message = {
             id: '1',
             sender: 'bot',
+            senderName: id === 'survival' ? 'Oficial da Imigração' : 'Interlocutor',
             text: firstLesson.message_text,
           };
-          setMessages([firstMsg]);
+          
+          const tipMsg: Message = {
+            id: 'tip-1',
+            sender: 'poly',
+            text: `Olá ${displayName}, ${id === 'survival' ? 'o oficial perguntou seu motivo' : 'responda à pergunta'}. Diga: "${firstLesson.expected_response}"`,
+            isTip: true
+          };
+
+          setMessages([firstMsg, tipMsg]);
           playText(firstLesson.message_text);
         }
       }
@@ -140,13 +151,24 @@ function ChatInterface() {
           if (currentLessonIndex < lessons.length - 1) {
             const nextIndex = currentLessonIndex + 1;
             setCurrentLessonIndex(nextIndex);
+            const nextLesson = lessons[nextIndex];
+            
             const nextMsg: Message = {
               id: (Date.now() + 1).toString(),
               sender: 'bot',
-              text: lessons[nextIndex].message_text
+              senderName: id === 'survival' ? 'Oficial da Imigração' : 'Interlocutor',
+              text: nextLesson.message_text
             };
-            setMessages(prev => [...prev, nextMsg]);
-            playText(lessons[nextIndex].message_text);
+            
+            const nextTip: Message = {
+              id: (Date.now() + 2).toString(),
+              sender: 'poly',
+              text: nextLesson.phonetic_hint || `Diga: "${nextLesson.expected_response}"`,
+              isTip: true
+            };
+            
+            setMessages(prev => [...prev, nextMsg, nextTip]);
+            playText(nextLesson.message_text);
           } else {
             await updateStreak();
             toast.success("Missão concluída!");
@@ -210,34 +232,66 @@ function ChatInterface() {
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               className={cn(
-                "flex w-full",
-                msg.sender === 'user' ? "justify-end" : "justify-start"
+                "flex w-full items-end gap-3",
+                msg.sender === 'user' ? "flex-row-reverse" : "flex-row"
               )}
             >
+              {msg.sender !== 'user' && (
+                <div className="w-10 h-10 rounded-full bg-slate-200 overflow-hidden flex-shrink-0 mb-1 shadow-sm border border-slate-100">
+                  {msg.sender === 'poly' ? (
+                    <div className="bg-blue-500 w-full h-full flex items-center justify-center">
+                      <PolyMascot size="sm" pose="neutral" />
+                    </div>
+                  ) : (
+                    <img 
+                      src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${msg.senderName || 'bot'}`} 
+                      alt="Avatar" 
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </div>
+              )}
               <div className={cn(
-                "max-w-[85%] p-5 rounded-[24px] shadow-sm relative",
-                msg.sender === 'user' 
-                  ? (isAdult ? "bg-cyan-600 text-white rounded-tr-none" : "bg-blue-600 text-white rounded-tr-none")
-                  : (isAdult ? "bg-slate-800 text-slate-100 rounded-tl-none border border-slate-700" : "bg-white text-blue-900 rounded-tl-none")
+                "max-w-[80%] flex flex-col gap-1",
+                msg.sender === 'user' ? "items-end" : "items-start"
               )}>
-                <p className="text-lg font-medium leading-relaxed">{msg.text}</p>
-                
-                {msg.sender === 'user' && msg.status && (
-                  <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-1 shadow-md">
-                    {msg.status === 'success' && <CheckCircle2 size={16} className="text-green-500" />}
-                    {msg.status === 'error' && <AlertCircle size={16} className="text-red-500" />}
-                    {msg.status === 'pending' && <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent animate-spin rounded-full" />}
-                  </div>
+                {msg.senderName && (
+                  <span className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">
+                    {msg.senderName}
+                  </span>
                 )}
+                <div className={cn(
+                  "p-4 rounded-[22px] shadow-sm relative",
+                  msg.sender === 'user' 
+                    ? (isAdult ? "bg-cyan-600 text-white rounded-tr-none" : "bg-blue-600 text-white rounded-tr-none")
+                    : msg.sender === 'poly'
+                      ? (isAdult ? "bg-slate-700/50 text-slate-200 border border-slate-600 rounded-tl-none italic" : "bg-blue-50 text-blue-700 border border-blue-100 rounded-tl-none italic")
+                      : (isAdult ? "bg-slate-800 text-slate-100 rounded-tl-none border border-slate-700" : "bg-white text-blue-900 rounded-tl-none")
+                )}>
+                  {msg.sender === 'poly' && (
+                    <span className="text-[10px] font-black uppercase text-blue-400 block mb-1">Dica do Poly</span>
+                  )}
+                  <p className={cn("text-base leading-relaxed", msg.sender === 'poly' ? "font-medium" : "font-bold")}>
+                    {msg.text}
+                  </p>
+                  
+                  {msg.sender === 'user' && msg.status && (
+                    <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-1 shadow-md">
+                      {msg.status === 'success' && <CheckCircle2 size={16} className="text-green-500" />}
+                      {msg.status === 'error' && <AlertCircle size={16} className="text-red-500" />}
+                      {msg.status === 'pending' && <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent animate-spin rounded-full" />}
+                    </div>
+                  )}
 
-                {msg.sender === 'bot' && (
-                  <button 
-                    onClick={() => playText(msg.text)}
-                    className="absolute -bottom-2 -left-2 bg-blue-500 text-white rounded-full p-1.5 shadow-md hover:scale-110 transition-transform"
-                  >
-                    <Volume2 size={14} />
-                  </button>
-                )}
+                  {msg.sender === 'bot' && (
+                    <button 
+                      onClick={() => playText(msg.text)}
+                      className="absolute -bottom-2 -left-2 bg-blue-500 text-white rounded-full p-1.5 shadow-md hover:scale-110 transition-transform"
+                    >
+                      <Volume2 size={14} />
+                    </button>
+                  )}
+                </div>
               </div>
             </motion.div>
           ))}
