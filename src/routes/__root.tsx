@@ -8,25 +8,26 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
+    <div className="flex min-h-screen items-center justify-center bg-poly-cream px-4">
+      <div className="max-w-md text-center poly-card bg-white p-12">
+        <h1 className="text-8xl font-black text-poly-navy">404</h1>
+        <h2 className="mt-4 text-2xl font-black text-poly-navy">Ops! Página não encontrada</h2>
+        <p className="mt-4 text-muted-foreground font-medium">
+          O Poly não encontrou esse caminho. Vamos voltar para a base?
         </p>
-        <div className="mt-6">
+        <div className="mt-8">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="poly-button-primary inline-flex"
           >
-            Go home
+            VOLTAR AO INÍCIO
           </Link>
         </div>
       </div>
@@ -42,49 +43,51 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   }, [error]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
+    <div className="flex min-h-screen items-center justify-center bg-poly-cream px-4">
+      <div className="max-w-md text-center poly-card bg-white p-12">
+        <h1 className="text-2xl font-black tracking-tight text-poly-navy">
+          Algo deu errado no sistema
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
+        <p className="mt-4 text-muted-foreground font-medium">
+          O Poly está reiniciando os módulos. Tente novamente em instantes.
         </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button
+        <div className="mt-8 flex flex-wrap justify-center gap-4">
+          <Button
             onClick={() => {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="poly-button-primary"
           >
-            Try again
-          </button>
-          <a
-            href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+            TENTAR NOVAMENTE
+          </Button>
+          <Link
+            to="/"
+            className="flex items-center justify-center rounded-2xl border border-input bg-background px-8 py-4 text-sm font-black text-poly-navy transition-colors hover:bg-accent"
           >
-            Go home
-          </a>
+            INÍCIO
+          </Link>
         </div>
       </div>
     </div>
   );
 }
 
+import { Button } from "@/components/ui/button";
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "PolyBot — Seu Tutor de Idiomas para a Vida Real" },
+      { name: "description", content: "Aprenda idiomas com missões reais de 10 minutos por dia." },
+      { name: "author", content: "PolyBot" },
+      { property: "og:title", content: "PolyBot — Tutor de Idiomas" },
+      { property: "og:description", content: "Transforme sua vida com 10 minutos por dia." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@PolyBot" },
     ],
     links: [
       {
@@ -92,6 +95,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" },
     ],
   }),
   shellComponent: RootShell,
@@ -102,11 +108,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="font-['Plus_Jakarta_Sans',_sans-serif]">
         {children}
         <Scripts />
       </body>
@@ -119,8 +125,8 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <Toaster />
     </QueryClientProvider>
   );
 }
