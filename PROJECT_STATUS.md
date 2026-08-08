@@ -1,26 +1,24 @@
-# PolyBot - Project Status
+# PolyBot — Estado Atual do Projeto
 
-## 🚀 Concluído (MVP 1.0)
-- **Design System Premium**: Interface Bento Grid com temas dinâmicos (Adulto/Kids) e tipografia Space Grotesk.
-- **PolyMascot 3D**: Mascote humanoid interativo com poses dinâmicas ( Pixar-style).
-- **Fluxo de Missões Completo**: Etapas de Learn (Diálogo), Practice (Shadowing), Absorb (SRS) e Results (Dashboard).
-- **Inteligência de Voz**: Integração com Web Speech API e lógica de validação com 80% de similaridade.
-- **Cérebro de Dados (Backend)**: Persistência em nuvem (Supabase) com tabelas `profiles` e `chunks`.
-- **Algoritmo SRS**: Sistema de repetição espaçada (1, 3, 7 dias) integrado ao progresso do usuário.
-- **Temporizador de Sessão**: Hook `useDailyTimer` com 10 minutos de soft-lock e overlay de celebração.
-- **Segurança & Compliance**: 
-  - Página de Política de Privacidade (LGPD).
-  - Gestão centralizada via Painel Administrativo.
-  - Correção de vulnerabilidades RLS (Insert policies, security definers).
+Este documento resume o status atual do ecossistema PolyBot.
 
-## 🛠️ Em Produção / Ajustes Finais
-- **Minificação e Ofuscação**: Configurado via build pipeline para proteção de IP.
-- **Offline Sync**: Garantindo que o `dailyTimer` e o progresso do `streak` sincronizem após reconexão.
+## ✅ Itens Concluídos
+- **Design System:** Implementado em OKLCH/Tailwind, Bento Grid, premium Slate & Blue theme.
+- **Mascot:** `PolyMascot.tsx` integrado com Framer Motion (poses: `thinking`, `explaining`, `celebrating`).
+- **Global State:** Zustand (`useAppStore`) gerenciando `appMode` (Adulto vs. Kids).
+- **Session Timer:** `useDailyTimer` (10 min) com Soft Lock e Overlay de Celebração.
+- **Persistência Supabase:** Sincronização automática para `profiles` (streaks, timer, modo) e `chunks` (SRS).
+- **Web Speech API:** Integração de `useSpeechRecognition` com threshold de 80% (0.8) e feedback dinâmico.
+- **Algoritmo SRS:** Lógica de intervalo de 1-3-7 dias persistida no banco.
+- **Segurança (Security Memory):** RLS ativado, validação rigorosa de `profiles` e `user_roles`, funções `SECURITY DEFINER` protegidas.
+- **Onboarding:** Fluxo inicial para escolha de modo com persistência automática.
+- **Privacidade & Perfil:** Página de Política de Privacidade (LGPD) e Gestão de Dados (Settings) configuradas.
 
-## 📅 Próximos Passos (V2)
-- **Notificações Push**: Lembretes de revisão baseados no tempo SRS.
-- **Gamificação Avançada**: Conquistas e badges colecionáveis.
-- **Multi-idiomas**: Expansão para além do Inglês (Espanhol, Francês).
+## 🚧 Em Desenvolvimento / Monitoramento
+- **Testes de Áudio:** Monitoramento contínuo da fidelidade da Web Speech API.
+- **Sincronização Offline:** Garantir que o estado local (`persist` middleware) reconcilie corretamente com o Supabase após reconexão.
 
----
-*Projeto pronto para o lançamento inicial.*
+## 📋 Próximos Passos (Backlog)
+- **Expansão de Conteúdo:** Adicionar novas missões ao banco de dados `chunks` (populado manualmente no Supabase).
+- **Otimização de Produção:** Revisar build para minificação (padrão Vite).
+- **Monitoramento de Erros:** Manter o monitoramento via `reportLovableError` configurado no `__root.tsx`.
