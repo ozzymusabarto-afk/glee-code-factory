@@ -274,26 +274,24 @@ function ChatInterface() {
                   <p className={cn("text-base leading-relaxed", msg.sender === 'poly' ? "font-medium" : "font-bold")}>
                     {msg.text}
                   </p>
-                  </p>
-                </div>
-              </div>
-                
-                {msg.sender === 'user' && msg.status && (
-                  <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-1 shadow-md">
-                    {msg.status === 'success' && <CheckCircle2 size={16} className="text-green-500" />}
-                    {msg.status === 'error' && <AlertCircle size={16} className="text-red-500" />}
-                    {msg.status === 'pending' && <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent animate-spin rounded-full" />}
-                  </div>
-                )}
+                  
+                  {msg.sender === 'user' && msg.status && (
+                    <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-1 shadow-md">
+                      {msg.status === 'success' && <CheckCircle2 size={16} className="text-green-500" />}
+                      {msg.status === 'error' && <AlertCircle size={16} className="text-red-500" />}
+                      {msg.status === 'pending' && <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent animate-spin rounded-full" />}
+                    </div>
+                  )}
 
-                {msg.sender === 'bot' && (
-                  <button 
-                    onClick={() => playText(msg.text)}
-                    className="absolute -bottom-2 -left-2 bg-blue-500 text-white rounded-full p-1.5 shadow-md hover:scale-110 transition-transform"
-                  >
-                    <Volume2 size={14} />
-                  </button>
-                )}
+                  {msg.sender === 'bot' && (
+                    <button 
+                      onClick={() => playText(msg.text)}
+                      className="absolute -bottom-2 -left-2 bg-blue-500 text-white rounded-full p-1.5 shadow-md hover:scale-110 transition-transform"
+                    >
+                      <Volume2 size={14} />
+                    </button>
+                  )}
+                </div>
               </div>
             </motion.div>
           ))}
