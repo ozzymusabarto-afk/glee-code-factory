@@ -35,11 +35,13 @@
 
   /* Custom PolyBot Tokens */
   --color-poly-blue: #1976D2;
+  --color-poly-blue-dark: #0D47A1;
+  --color-poly-blue-light: #42A5F5;
+  --color-poly-blue-glow: #00E5FF;
+  --color-poly-white: #F5F7FA;
+  --color-poly-black: #263238;
   --color-poly-yellow: #FFD600;
   --color-poly-green: #4CAF50;
-  --color-poly-orange: #FF9800;
-  --color-poly-purple: #9C27B0;
-  --color-poly-cream: #F5F7FA;
   --color-poly-navy: #0D47A1;
 }
 

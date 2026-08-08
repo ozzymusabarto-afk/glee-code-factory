@@ -51,30 +51,46 @@ function Index() {
       </header>
 
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-12 px-8 py-12">
-        {/* Welcome Section */}
-        <section className="flex flex-col md:flex-row items-center justify-between gap-8 bg-white p-10 rounded-[32px] shadow-xl shadow-blue-900/5 relative overflow-hidden border border-slate-50">
-           <div className="flex flex-col gap-4 relative z-10 max-w-lg">
-             <motion.h2 
-               initial={{ opacity: 0, x: -20 }}
-               animate={{ opacity: 1, x: 0 }}
-               className="text-5xl font-black text-[#0D47A1] tracking-tight leading-none"
-             >
-               Olá, Adriana! 👋
-             </motion.h2>
+        {/* Welcome Section - Focused on official Mascot */}
+        <section className="flex flex-col md:flex-row items-center justify-between gap-8 bg-white p-10 rounded-[32px] shadow-2xl shadow-blue-900/5 relative overflow-hidden border border-slate-50">
+           <div className="flex flex-col gap-6 relative z-10 max-w-lg">
+             <div className="space-y-2">
+               <motion.span 
+                 initial={{ opacity: 0 }}
+                 animate={{ opacity: 1 }}
+                 className="text-poly-blue font-black uppercase tracking-[0.2em] text-sm"
+               >
+                 Tutor Inteligente
+               </motion.span>
+               <motion.h2 
+                 initial={{ opacity: 0, x: -20 }}
+                 animate={{ opacity: 1, x: 0 }}
+                 className="text-6xl font-black text-[#0D47A1] tracking-tighter leading-none"
+               >
+                 Olá, Adriana! 👋
+               </motion.h2>
+             </div>
              <p className="text-xl font-medium text-slate-500 leading-relaxed">
-               Pronta para sua missão de 10 minutos hoje? O Poly está te esperando!
+               Vamos continuar nossa jornada? O PolyBot preparou uma missão incrível para você hoje!
              </p>
              <div className="flex gap-4 mt-2">
                 <Button className="bg-[#1976D2] hover:bg-[#0D47A1] text-white font-black px-10 py-8 rounded-2xl text-xl shadow-xl shadow-blue-500/20 active:scale-95 transition-all">
-                  CONTINUAR
+                  CONTINUAR MISSÃO
                 </Button>
              </div>
            </div>
-           <div className="relative z-10">
-              <PolyMascot size="xl" expression="happy" className="animate-bounce-slow" />
+           
+           {/* Official Mascot - 70% area focus */}
+           <div className="relative z-10 w-full md:w-[450px] flex justify-center items-center">
+              <PolyMascot size="full" pose="waving" className="drop-shadow-2xl" />
+              {/* Voice bubble from Poly */}
+              <div className="absolute -top-4 -right-4 bg-poly-blue text-white px-6 py-4 rounded-3xl rounded-br-none font-bold shadow-xl border-4 border-white animate-bounce-slow">
+                Ready to start? 🚀
+              </div>
            </div>
+
            {/* Decorative background shape */}
-           <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-50" />
+           <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-blue-50 rounded-full blur-3xl opacity-50" />
         </section>
 
         {/* Mission of the Day */}
