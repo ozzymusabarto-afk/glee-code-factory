@@ -76,7 +76,7 @@ function AppEntry() {
   return <Onboarding />;
 }
 
-import { useState } from "react";
+
 
 function Onboarding() {
   const navigate = useNavigate();
