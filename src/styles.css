@@ -34,24 +34,24 @@
   --color-ring: var(--ring);
 
   /* Custom PolyBot Tokens */
-  --color-poly-blue: oklch(0.55 0.18 250);
-  --color-poly-yellow: oklch(0.88 0.17 90);
-  --color-poly-green: oklch(0.72 0.15 150);
-  --color-poly-orange: oklch(0.7 0.18 45);
-  --color-poly-purple: oklch(0.6 0.15 300);
-  --color-poly-cream: oklch(0.98 0.01 80);
-  --color-poly-navy: oklch(0.25 0.05 260);
+  --color-poly-blue: #1976D2;
+  --color-poly-yellow: #FFD600;
+  --color-poly-green: #4CAF50;
+  --color-poly-orange: #FF9800;
+  --color-poly-purple: #9C27B0;
+  --color-poly-cream: #F5F7FA;
+  --color-poly-navy: #0D47A1;
 }
 
 :root {
   --radius: 1.25rem;
-  --background: oklch(0.98 0.01 80);
-  --foreground: oklch(0.25 0.05 260);
+  --background: #F5F7FA;
+  --foreground: #0D47A1;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.25 0.05 260);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.25 0.05 260);
-  --primary: oklch(0.55 0.18 250);
+  --primary: #1976D2;
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.88 0.17 90);
   --secondary-foreground: oklch(0.25 0.05 260);
@@ -94,7 +94,7 @@
   }
 
   body {
-    background-color: #f8fafc;
+    background-color: #F5F7FA;
     color: var(--color-foreground);
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
