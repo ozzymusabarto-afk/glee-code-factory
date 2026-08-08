@@ -572,9 +572,12 @@ function CompletedStep({ onFinish }: { onFinish: () => void }) {
             <circle cx="80" cy="80" r="72" stroke="url(#progressGradient)" strokeWidth="12" fill="transparent" strokeDasharray={452} strokeDashoffset={452 * (1 - 0.85)} className="transition-all duration-[1500ms] ease-out drop-shadow-md" strokeLinecap="round" />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-5xl font-black text-poly-navy tracking-tighter">85%</span>
-            <span className="text-[10px] font-black uppercase text-poly-green tracking-widest mt-1">Excelente!</span>
+            <span className={cn("text-5xl font-black tracking-tighter transition-colors", isAdult ? "text-white" : "text-poly-navy")}>85%</span>
+            <span className={cn("text-[10px] font-black uppercase tracking-widest mt-1", isAdult ? "text-cyan-400" : "text-poly-green")}>
+              {isAdult ? "PRECISÃO ALTA" : "Excelente!"}
+            </span>
           </div>
+
         </div>
 
         <div className="w-full space-y-4">
