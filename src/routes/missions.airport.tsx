@@ -365,30 +365,36 @@ function CompletedStep({ onFinish }: { onFinish: () => void }) {
         <p className="text-xl font-bold text-muted-foreground/80">Missão cumprida com sucesso.</p>
       </div>
 
-      <div className="poly-card bg-white border-none shadow-2xl p-10 flex flex-col items-center gap-10">
+      <div className="poly-card bg-white border-none shadow-2xl p-8 flex flex-col items-center gap-8 relative overflow-hidden">
         <div className="relative w-40 h-40 flex items-center justify-center">
           <svg className="w-full h-full transform -rotate-90">
+            <defs>
+              <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#10B981" />
+                <stop offset="100%" stopColor="#2563EB" />
+              </linearGradient>
+            </defs>
             <circle cx="80" cy="80" r="72" stroke="currentColor" strokeWidth="12" fill="transparent" className="text-muted/10" />
-            <circle cx="80" cy="80" r="72" stroke="currentColor" strokeWidth="12" fill="transparent" strokeDasharray={452} strokeDashoffset={452 * (1 - 0.85)} className="text-poly-green transition-all duration-[1500ms] ease-out shadow-lg" strokeLinecap="round" />
+            <circle cx="80" cy="80" r="72" stroke="url(#progressGradient)" strokeWidth="12" fill="transparent" strokeDasharray={452} strokeDashoffset={452 * (1 - 0.85)} className="transition-all duration-[1500ms] ease-out drop-shadow-md" strokeLinecap="round" />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-5xl font-black text-poly-navy tracking-tighter">85%</span>
-            <span className="text-[10px] font-black uppercase text-poly-green tracking-widest mt-1">Ecxelente!</span>
+            <span className="text-[10px] font-black uppercase text-poly-green tracking-widest mt-1">Excelente!</span>
           </div>
         </div>
 
-        <div className="w-full space-y-5">
+        <div className="w-full space-y-4">
           {[
-            { label: "🗣️ Ask for directions", stars: 5 },
-            { label: "👂 Understand directions", stars: 4 },
-            { label: "💬 Real-world context", stars: 5 }
+            { label: "Estrutura", stars: 4 },
+            { label: "Pronúncia", stars: 5 },
+            { label: "Fluência", stars: 4 }
           ].map((item, i) => (
-            <div key={i} className="flex flex-col gap-2">
+            <div key={i} className="flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black text-poly-navy/60 uppercase tracking-widest">{item.label}</span>
+                <span className="text-[11px] font-black text-poly-navy/60 uppercase tracking-widest">{item.label}</span>
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map(s => (
-                    <Star key={s} className={cn("h-4 w-4", s <= item.stars ? "text-poly-yellow fill-poly-yellow shadow-sm" : "text-muted/20")} />
+                    <Star key={s} className={cn("h-4 w-4", s <= item.stars ? "text-poly-yellow fill-poly-yellow" : "text-muted/20")} />
                   ))}
                 </div>
               </div>
@@ -398,6 +404,45 @@ function CompletedStep({ onFinish }: { onFinish: () => void }) {
             </div>
           ))}
         </div>
+
+        {/* Poly Feedback Bubble */}
+        <div className="flex items-center gap-4 bg-poly-blue/5 p-4 rounded-3xl border border-poly-blue/10 w-full mt-2">
+          <div className="shrink-0">
+            <PolyMascot size="sm" expression="proud" />
+          </div>
+          <p className="text-sm font-bold text-poly-navy leading-tight text-left">
+            "Quase perfeito! Tente pronunciar o 'where' com o 'r' mais leve."
+          </p>
+        </div>
+      </div>
+
+      {/* Progress Map (Radar Chart Mockup) */}
+      <div className="poly-card bg-poly-navy border-none p-6 text-white overflow-hidden relative">
+        <h4 className="text-xs font-black uppercase tracking-widest text-white/60 mb-6 text-left">MEU MAPA DE PROGRESSO</h4>
+        <div className="aspect-square w-full max-w-[240px] mx-auto relative">
+          {/* Hexagon Background */}
+          <div className="absolute inset-0 flex items-center justify-center opacity-20">
+             <div className="w-full h-full border border-white/40 clip-path-hexagon scale-100" />
+             <div className="absolute w-full h-full border border-white/20 clip-path-hexagon scale-75" />
+             <div className="absolute w-full h-full border border-white/20 clip-path-hexagon scale-50" />
+             <div className="absolute w-full h-full border border-white/20 clip-path-hexagon scale-25" />
+          </div>
+          
+          {/* Radar Labels */}
+          <div className="absolute inset-0 text-[8px] font-black tracking-tighter uppercase opacity-80">
+            <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2">Falar</span>
+            <span className="absolute top-1/4 right-0 translate-x-4">Compreender</span>
+            <span className="absolute bottom-1/4 right-0 translate-x-4">Conversar</span>
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-2">Trabalho</span>
+            <span className="absolute bottom-1/4 left-0 -translate-x-4">Vida Real</span>
+            <span className="absolute top-1/4 left-0 -translate-x-4">Viajar</span>
+          </div>
+
+          {/* Radar Data Polygon Mockup */}
+          <div className="absolute inset-0 flex items-center justify-center">
+             <div className="w-3/4 h-3/4 bg-poly-blue/40 border-2 border-poly-blue clip-path-radar-mockup" />
+          </div>
+        </div>
       </div>
 
       <Button onClick={onFinish} className="poly-button-primary py-8 text-xl shadow-2xl">
@@ -406,3 +451,6 @@ function CompletedStep({ onFinish }: { onFinish: () => void }) {
     </div>
   );
 }
+
+// Add these to src/styles.css if not exists, but for now using inline styles approach or assuming global utilities
+
