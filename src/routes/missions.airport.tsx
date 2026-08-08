@@ -20,6 +20,7 @@ import { useDailyTimer } from "@/hooks/use-daily-timer";
 import { useSpeechRecognition } from "@/hooks/use-speech-recognition";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 
 export const Route = createFileRoute("/missions/airport")({
@@ -344,7 +345,7 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
       
       // Simple review logic: 1, 3, 7 days based on mastery
       const intervals = [1, 3, 7, 14, 30];
-      const daysToAdd = intervals[Math.min(newMastery, intervals.length - 1)];
+      const daysToAdd = intervals[Math.min(newMastery, intervals.length - 1)] ?? 1;
       const nextReview = new Date();
       nextReview.setDate(nextReview.getDate() + daysToAdd);
 
