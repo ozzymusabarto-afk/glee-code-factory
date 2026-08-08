@@ -40,9 +40,9 @@ function AirportMission() {
   }, [step]);
 
   return (
-    <div className="flex min-h-screen flex-col bg-poly-cream overflow-hidden">
+    <div className="flex min-h-screen flex-col bg-[#F5F7FA] overflow-hidden">
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-5 bg-white/80 backdrop-blur-xl border-b border-border/50 sticky top-0 z-30">
+      <header className="flex items-center justify-between px-6 py-5 bg-white border-b border-slate-100 sticky top-0 z-30 shadow-sm">
         <Button 
           variant="ghost" 
           size="icon" 
@@ -97,8 +97,8 @@ function LearnStep({ onComplete }: { onComplete: () => void }) {
         <p className="text-lg font-bold text-muted-foreground/80 leading-tight">Toque nas frases para entender.</p>
       </div>
 
-      <div className="poly-card bg-poly-navy/5 border-none p-4 relative overflow-hidden group">
-        <div className="aspect-[16/9] rounded-[2rem] bg-poly-navy flex items-center justify-center relative overflow-hidden shadow-2xl">
+      <div className="bg-white rounded-[32px] border border-slate-100 p-8 relative overflow-hidden shadow-xl">
+        <div className="aspect-[16/9] rounded-[24px] bg-[#0D47A1] flex items-center justify-center relative overflow-hidden shadow-inner">
            {/* Contextual Illustration Mockup */}
            <div className="absolute inset-0 bg-gradient-to-br from-poly-blue/40 to-transparent z-10" />
            <div className="absolute inset-0 flex items-center justify-center opacity-40">
@@ -137,8 +137,8 @@ function LearnStep({ onComplete }: { onComplete: () => void }) {
             key={i}
             onClick={() => setActiveIndex(i)}
             className={cn(
-              "flex items-center gap-5 p-6 bg-white rounded-[2rem] text-left border-2 transition-all duration-300 group shadow-[0_4px_20px_rgba(0,0,0,0.02)]",
-              activeIndex === i ? "border-poly-blue bg-poly-blue/5 scale-[1.02]" : "border-transparent hover:border-poly-blue/20"
+              "flex items-center gap-5 p-8 bg-white rounded-[24px] text-left border-2 transition-all duration-300 group shadow-lg",
+              activeIndex === i ? "border-[#1976D2] bg-blue-50/30 scale-[1.02]" : "border-slate-50 hover:border-blue-100"
             )}
           >
             <div className={cn(
@@ -155,9 +155,9 @@ function LearnStep({ onComplete }: { onComplete: () => void }) {
         ))}
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-poly-cream via-poly-cream to-transparent z-40 md:left-20">
+      <div className="fixed bottom-0 left-0 right-0 p-8 bg-white border-t border-slate-100 z-40 md:left-20">
         <div className="max-w-2xl mx-auto">
-          <Button onClick={onComplete} className="poly-button-primary py-8 text-xl w-full shadow-2xl">
+          <Button onClick={onComplete} className="bg-[#1976D2] hover:bg-[#0D47A1] text-white font-black py-8 text-2xl w-full rounded-2xl shadow-xl shadow-blue-500/20">
             CONTINUAR 🚀
           </Button>
         </div>
