@@ -10,9 +10,10 @@ import {
   Plane,
   Star,
   Zap,
-  Heart
+  Heart,
+  Waveform
 } from "lucide-react";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { PolyMascot } from "@/components/poly/PolyMascot";
 import { useAppStore } from "@/hooks/use-app-store";
@@ -22,11 +23,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
-
 export const Route = createFileRoute("/missions/airport")({
   component: AirportMission,
   head: () => ({
-    meta: [{ title: "Missão: Lost at the Airport — PolyBot" }],
+    title: "Missão: Lost at the Airport — PolyBot",
   }),
 });
 
