@@ -86,19 +86,40 @@ function AppEntry() {
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md bg-white rounded-[32px] shadow-2xl p-10 space-y-8 text-center"
         >
-          <div className="w-20 h-20 bg-[#1976D2] rounded-3xl mx-auto flex items-center justify-center shadow-lg mb-6">
-             <PolyMascot size="sm" pose="neutral" />
+          <div className="w-20 h-20 bg-[#1976D2] rounded-3xl mx-auto flex items-center justify-center shadow-lg mb-6 overflow-hidden">
+             <div className="scale-150 transform translate-y-2">
+                <PolyMascot size="sm" pose="neutral" />
+             </div>
           </div>
-          <h1 className="text-4xl font-black text-[#0D47A1] tracking-tight uppercase font-space">Hall de Entrada</h1>
-          <p className="text-slate-500 font-medium">Conecte-se para começar seu Método Natural.</p>
-          <Button 
-            onClick={() => navigate({ to: "/auth" })}
-            className="w-full py-8 rounded-2xl bg-[#1976D2] hover:bg-[#0D47A1] text-white font-black text-xl shadow-xl transition-all flex items-center justify-center gap-3"
-          >
-            ENTRAR / CRIAR CONTA
-            <ArrowRight className="h-6 w-6" />
-          </Button>
+          <h1 className="text-3xl font-black text-[#0D47A1] tracking-tight uppercase font-space">PolyBot Hall</h1>
+          <p className="text-slate-500 font-medium text-sm">Pronto para aprender com o Método Natural?</p>
+          <div className="space-y-4">
+            <Button 
+              onClick={() => navigate({ to: "/auth" })}
+              className="w-full py-7 rounded-2xl bg-[#1976D2] hover:bg-[#0D47A1] text-white font-black text-lg shadow-xl transition-all flex items-center justify-center gap-3"
+            >
+              ENTRAR / CRIAR CONTA
+              <ArrowRight className="h-5 w-5" />
+            </Button>
+            
+            <div className="relative py-2">
+              <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-slate-100" /></div>
+              <span className="relative bg-white px-2 text-[10px] font-black text-slate-300 uppercase tracking-widest">ou acesso rápido</span>
+            </div>
 
+            <Button 
+              variant="outline"
+              onClick={() => {
+                setDisplayName('Visitante');
+                localStorage.setItem('polybot-dev-auth', 'true');
+                toast.success("Acesso Convidado liberado!");
+                setStep('checkin');
+              }}
+              className="w-full py-6 rounded-2xl border-2 border-slate-100 text-slate-500 font-bold hover:bg-slate-50"
+            >
+              ENTRAR COMO CONVIDADO
+            </Button>
+          </div>
         </motion.div>
       </div>
     );

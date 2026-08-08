@@ -274,6 +274,8 @@ function ChatInterface() {
                   <p className={cn("text-base leading-relaxed", msg.sender === 'poly' ? "font-medium" : "font-bold")}>
                     {msg.text}
                   </p>
+                </div>
+              </div>
                 
                 {msg.sender === 'user' && msg.status && (
                   <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-1 shadow-md">
