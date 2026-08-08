@@ -48,7 +48,7 @@ function Index() {
 
       <main className="mx-auto flex w-full max-w-2xl flex-col gap-10 px-6 py-6">
         {/* Welcome Section */}
-        <section className="flex flex-col gap-1">
+        <section className="flex flex-col gap-1 relative">
           <h2 className="text-4xl font-black text-poly-navy tracking-tight leading-none">
             Olá, Adriana! 👋
           </h2>
@@ -58,62 +58,79 @@ function Index() {
         </section>
 
         {/* Mission of the Day Card */}
-        <section className="poly-card-navy">
-          {/* Mission Context Illustration */}
-          <div className="absolute top-0 right-0 h-full w-[60%] opacity-20 pointer-events-none">
-            <div className="absolute inset-0 bg-gradient-to-l from-poly-navy to-transparent z-10" />
-            <Plane className="h-full w-full rotate-[15deg] scale-125 translate-x-1/4" />
-          </div>
-          
-          <div className="relative z-20 flex flex-col gap-8">
-            <div className="flex items-center justify-between">
-              <span className="poly-badge bg-poly-yellow/20 text-poly-yellow">Missão do Dia</span>
-              <span className="poly-badge bg-white/10 text-white/80 backdrop-blur-md">10 min</span>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <h3 className="text-5xl font-black leading-[0.9] tracking-tighter">
-                ✈️ LOST AT THE AIRPORT
-              </h3>
-              <p className="text-xl font-bold text-white/90 leading-tight">
-                "Você precisa encontrar seu portão antes que seu voo decole."
+        <div className="relative">
+          {/* Poly Speech Bubble */}
+          <div className="absolute -top-20 right-0 z-30 flex items-center gap-4 animate-bounce-slow">
+            <div className="relative rounded-3xl bg-white p-4 shadow-xl border border-border/50">
+              <p className="text-sm font-bold text-poly-navy leading-tight">
+                "O aeroporto te espera! Vamos lá?"
               </p>
+              <div className="absolute -bottom-2 right-6 h-4 w-4 rotate-45 border-r border-b border-border/50 bg-white" />
             </div>
-
-            <div className="flex flex-col gap-4 rounded-[2rem] bg-white/5 p-6 border border-white/10 backdrop-blur-sm">
-              <div className="flex items-center gap-4">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-poly-blue/30 text-poly-blue shadow-inner">
-                  <Zap className="h-4 w-4 fill-poly-blue" />
-                </div>
-                <span className="text-base font-black">Ask for information</span>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-poly-green/30 text-poly-green shadow-inner">
-                  <Zap className="h-4 w-4 fill-poly-green" />
-                </div>
-                <span className="text-base font-black">Understand directions</span>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-poly-orange/30 text-poly-orange shadow-inner">
-                  <Zap className="h-4 w-4 fill-poly-orange" />
-                </div>
-                <span className="text-base font-black">Explain where you need to go</span>
-              </div>
-            </div>
-
-            <Button 
-              onClick={() => navigate({ to: "/missions/airport" })}
-              className="poly-button-secondary w-full text-xl py-8"
-            >
-              VAMOS COMEÇAR! 🚀
-            </Button>
-            
-            <div className="flex items-center justify-center gap-2 pt-2">
-               <PolyMascot size="sm" className="opacity-60" />
-               <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Poly está te esperando</span>
-            </div>
+            <PolyMascot size="sm" expression="excited" />
           </div>
-        </section>
+
+          <section className="poly-card-navy min-h-[500px] flex flex-col justify-between">
+            {/* Mission Context Illustration - Unsplash */}
+            <div className="absolute inset-0 z-0">
+              <img 
+                src="https://images.unsplash.com/photo-1530521954074-e64f6810b32d?auto=format&fit=crop&q=80&w=1200" 
+                alt="Airport" 
+                className="h-full w-full object-cover opacity-60 mix-blend-overlay"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-poly-navy via-poly-navy/40 to-transparent" />
+            </div>
+            
+            <div className="relative z-20 flex flex-col gap-6">
+              <div className="flex items-center justify-between">
+                <span className="poly-badge bg-white/20 text-white backdrop-blur-md">Missão do Dia</span>
+                <span className="poly-badge bg-poly-yellow text-poly-navy">10 MINUTOS</span>
+              </div>
+
+              <div className="flex flex-col gap-2 mt-4">
+                <h3 className="text-5xl font-black leading-none tracking-tighter text-white drop-shadow-lg">
+                  LOST AT THE AIRPORT
+                </h3>
+                <p className="text-lg font-bold text-white/90 leading-tight">
+                  Você precisa encontrar seu portão antes que seu voo decole.
+                </p>
+              </div>
+            </div>
+
+            <div className="relative z-20 mt-auto flex flex-col gap-6">
+              {/* Checklist White Card Overlay */}
+              <div className="rounded-[2rem] bg-white p-6 shadow-2xl border border-white/20">
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-5 w-5 rounded-full border-2 border-poly-green flex items-center justify-center">
+                      <div className="h-2.5 w-2.5 rounded-full bg-poly-green" />
+                    </div>
+                    <span className="text-base font-black text-poly-navy">Perguntar informações</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="h-5 w-5 rounded-full border-2 border-poly-blue flex items-center justify-center">
+                      <div className="h-2.5 w-2.5 rounded-full bg-poly-blue" />
+                    </div>
+                    <span className="text-base font-black text-poly-navy">Entender respostas</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="h-5 w-5 rounded-full border-2 border-poly-orange flex items-center justify-center">
+                      <div className="h-2.5 w-2.5 rounded-full bg-poly-orange" />
+                    </div>
+                    <span className="text-base font-black text-poly-navy">Explicar onde precisa chegar</span>
+                  </div>
+                </div>
+              </div>
+
+              <Button 
+                onClick={() => navigate({ to: "/missions/airport" })}
+                className="poly-button-primary w-full text-xl py-8 shadow-[0_15px_30px_rgba(0,122,255,0.3)]"
+              >
+                VAMOS COMEÇAR! 🚀
+              </Button>
+            </div>
+          </section>
+        </div>
 
         {/* Quick Stats & Map Visual */}
         <section className="grid grid-cols-2 gap-5">
@@ -156,18 +173,6 @@ function Index() {
           </div>
         </section>
 
-        {/* Tutor Interaction (Poly) */}
-        <section className="poly-card bg-white border-none shadow-[0_20px_50px_rgba(0,0,0,0.05)] relative overflow-visible mt-4">
-          <div className="absolute -top-12 -left-4">
-             <PolyMascot size="md" expression="excited" />
-          </div>
-          <div className="pl-24 py-2">
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-poly-blue block mb-2">Poly Tutor</span>
-            <p className="text-xl font-bold leading-tight text-poly-navy">
-              "Essa missão do aeroporto é fundamental para sua próxima viagem, Adriana. Você vai arrasar!"
-            </p>
-          </div>
-        </section>
       </main>
 
       <BottomNav active="home" />
