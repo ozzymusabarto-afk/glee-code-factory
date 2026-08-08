@@ -302,8 +302,47 @@ function LearnStep({ onComplete }: { onComplete: () => void }) {
 function PracticeStep({ onComplete }: { onComplete: () => void }) {
   const appMode = useAppStore((state) => state.appMode);
   const isAdult = appMode === 'adult';
-  const [isRecording, setIsRecording] = useState(false);
   const [hasRecorded, setHasRecorded] = useState(false);
+  const [similarity, setSimilarity] = useState<number | null>(null);
+  const targetText = "Excuse me, where is gate A12?";
+
+  const { isListening, transcript, startListening, stopListening } = useSpeechRecognition({
+    lang: 'en-US',
+  });
+
+  // Calculate similarity using a simple Levenshtein-based logic or word overlap
+  const calculateSimilarity = (s1: string, s2: string) => {
+    const clean = (s: string) => s.toLowerCase().replace(/[^\w\s]/g, '').trim();
+    const w1 = clean(s1).split(' ');
+    const w2 = clean(s2).split(' ');
+    
+    if (w1.length === 0) return 0;
+    
+    let matches = 0;
+    w1.forEach(word => {
+      if (w2.includes(word)) matches++;
+    });
+    
+    return matches / Math.max(w1.length, w2.length);
+  };
+
+  useEffect(() => {
+    if (transcript && !isListening) {
+      const score = calculateSimilarity(transcript, targetText);
+      setSimilarity(score);
+      setHasRecorded(true);
+
+      if (score >= 0.8) {
+        toast.success(isAdult ? "Precisão excelente. Chunk validado." : "Incrível! Você falou certinho! ✨", {
+          description: isAdult ? `Similaridade: ${(score * 100).toFixed(0)}%` : "O Poly amou sua pronúncia!"
+        });
+      } else {
+        toast.error(isAdult ? "Threshold insuficiente. Tente novamente." : "Quase lá! Vamos tentar de novo? 🤖", {
+          description: isAdult ? `Similaridade: ${(score * 100).toFixed(0)}% (Mínimo 80%)` : "O Poly não entendeu muito bem, tente falar mais alto!"
+        });
+      }
+    }
+  }, [transcript, isListening, isAdult, targetText]);
 
   return (
     <div className="flex flex-col gap-10 animate-in fade-in slide-in-from-right-6 duration-700 pb-20">
@@ -330,20 +369,28 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
           <Volume2 className="h-8 w-8" />
         </div>
         <h3 className={cn("text-4xl font-black leading-[1.1] tracking-tight max-w-sm transition-colors", isAdult ? "text-white" : "text-poly-navy")}>
-          "Excuse me, where is gate A12?"
+          "{targetText}"
         </h3>
+        {transcript && (
+          <div className={cn(
+            "mt-4 p-4 rounded-xl border text-sm font-medium animate-in fade-in zoom-in-95",
+            isAdult ? "bg-slate-900 border-slate-700 text-slate-300" : "bg-poly-cream border-poly-blue/10 text-poly-navy"
+          )}>
+            <span className="opacity-50 uppercase text-[10px] block mb-1">Você disse:</span>
+            "{transcript}"
+          </div>
+        )}
       </div>
 
 
       <div className="flex flex-col items-center gap-10 py-4">
-        {/* Visual Waveform Mockup with blue/purple gradient */}
         <div className="flex items-center gap-2 h-24 w-full max-w-md px-6">
           {[0.2, 0.4, 0.8, 0.6, 1, 0.7, 0.5, 0.9, 1, 0.6, 0.4, 0.3, 0.5, 0.8, 0.6, 0.4].map((h, i) => (
             <div 
               key={i} 
               className={cn(
                 "flex-1 rounded-full transition-all duration-500",
-                isRecording 
+                isListening 
                   ? isAdult ? "bg-cyan-500 animate-pulse" : "bg-gradient-to-t from-poly-blue to-purple-500 animate-pulse" 
                   : isAdult ? "bg-slate-700" : "bg-poly-blue/10"
               )}
@@ -351,7 +398,7 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
               style={{ 
                 height: `${h * 100}%`, 
                 animationDelay: `${i * 0.05}s`,
-                opacity: isRecording ? 1 : 0.3
+                opacity: isListening ? 1 : 0.3
               }}
             />
           ))}
@@ -360,19 +407,21 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
         <div className="relative">
            <div className={cn(
              "absolute inset-0 rounded-full blur-3xl opacity-0 transition-opacity duration-500",
-             isRecording && (isAdult ? "bg-cyan-500 opacity-20" : "bg-poly-blue opacity-40")
+             isListening && (isAdult ? "bg-cyan-500 opacity-20" : "bg-poly-blue opacity-40")
            )} />
            <button 
-             onMouseDown={() => setIsRecording(true)}
-             onMouseUp={() => { setIsRecording(false); setHasRecorded(true); }}
+             onMouseDown={startListening}
+             onMouseUp={stopListening}
+             onTouchStart={startListening}
+             onTouchEnd={stopListening}
              className={cn(
                "h-32 w-32 rounded-full flex items-center justify-center text-white shadow-2xl transition-all duration-300 transform active:scale-90 relative z-10",
-               isRecording 
+               isListening 
                 ? "bg-destructive scale-110 shadow-destructive/40" 
                 : isAdult ? "bg-cyan-600 hover:bg-cyan-500 shadow-cyan-500/30" : "bg-poly-blue hover:bg-poly-blue/95 hover:scale-105 shadow-poly-blue/30"
              )}
            >
-             {isRecording ? (
+             {isListening ? (
                <div className="w-8 h-8 bg-white rounded-lg animate-pulse" />
              ) : (
                <Mic className="h-14 w-14 fill-white" />
@@ -384,7 +433,7 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
           "text-base font-black uppercase tracking-[0.2em] transition-colors",
           isAdult ? "text-cyan-500/60" : "text-poly-navy/40"
         )}>
-           {isRecording ? (isAdult ? "ANALISANDO..." : "Gravando...") : (isAdult ? "HOLD TO SPEAK" : "Segure para falar")}
+           {isListening ? (isAdult ? "PROCESSANDO ÁUDIO..." : "Ouvindo...") : (isAdult ? "HOLD TO SPEAK" : "Segure para falar")}
         </p>
 
 
@@ -403,11 +452,11 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
         isAdult ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"
       )}>
         <div className="max-w-2xl mx-auto">
-          {hasRecorded && (
+          {hasRecorded && similarity !== null && similarity >= 0.8 && (
             <Button 
               onClick={onComplete} 
               className={cn(
-                "text-white font-black py-8 text-2xl w-full rounded-2xl shadow-xl transition-all",
+                "text-white font-black py-8 text-2xl w-full rounded-2xl shadow-xl transition-all animate-in slide-in-from-bottom-4",
                 isAdult ? "bg-cyan-600 hover:bg-cyan-500 shadow-cyan-500/20" : "bg-[#1976D2] hover:bg-[#0D47A1] shadow-blue-500/20"
               )}
             >
@@ -420,6 +469,7 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
     </div>
   );
 }
+
 
 function AbsorbStep({ onComplete }: { onComplete: () => void }) {
   const appMode = useAppStore((state) => state.appMode);
