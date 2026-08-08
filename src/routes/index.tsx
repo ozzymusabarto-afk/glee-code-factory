@@ -23,10 +23,40 @@ export const Route = createFileRoute("/")({
 });
 
 function AppEntry() {
-  const { appMode, setAppMode } = useAppStore();
-  const [showOnboarding, setShowOnboarding] = useState(true);
+  const { appMode, setAppMode, syncProfile } = useAppStore();
+  const [showModeSelection, setShowModeSelection] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const navigate = useNavigate();
 
-  if (showOnboarding) {
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate({ to: "/auth" });
+        setIsAuthenticated(false);
+      } else {
+        setIsAuthenticated(true);
+        // Check if mode is set in profile
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('app_mode')
+          .eq('id', session.user.id)
+          .single();
+
+        if (profile?.app_mode) {
+          syncProfile();
+          setShowModeSelection(false);
+        } else {
+          setShowModeSelection(true);
+        }
+      }
+    };
+    checkAuth();
+  }, [navigate, syncProfile]);
+
+  if (isAuthenticated === null) return null;
+
+  if (showModeSelection) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-[#F5F7FA] p-8">
         <motion.div 
@@ -38,12 +68,12 @@ function AppEntry() {
             <h1 className="text-4xl font-black text-[#0D47A1] tracking-tight">
               Quem vai dominar um novo idioma hoje?
             </h1>
-            <p className="text-slate-500 font-medium">Escolha seu modo de estudo</p>
+            <p className="text-slate-500 font-medium">Escolha seu modo de estudo para começar</p>
           </div>
 
           <div className="grid gap-6">
             <button 
-              onClick={() => { setAppMode('adult'); setShowOnboarding(false); }}
+              onClick={() => { setAppMode('adult'); setShowModeSelection(false); }}
               className="poly-card group flex flex-col items-center gap-4 p-10 hover:border-cyan-500 transition-colors"
             >
               <div className="w-20 h-20 rounded-3xl bg-slate-900 text-cyan-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
@@ -51,12 +81,12 @@ function AppEntry() {
               </div>
               <div className="text-center">
                 <h3 className="text-2xl font-black text-slate-900">Modo Adulto</h3>
-                <p className="text-sm text-slate-500">Foco e performance</p>
+                <p className="text-sm text-slate-500">Foco e performance profissional</p>
               </div>
             </button>
 
             <button 
-              onClick={() => { setAppMode('kids'); setShowOnboarding(false); }}
+              onClick={() => { setAppMode('kids'); setShowModeSelection(false); }}
               className="poly-card group flex flex-col items-center gap-4 p-10 hover:border-green-500 transition-colors"
             >
               <div className="w-20 h-20 rounded-3xl bg-yellow-400 text-blue-900 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
@@ -64,7 +94,7 @@ function AppEntry() {
               </div>
               <div className="text-center">
                 <h3 className="text-2xl font-black text-blue-900">Modo Kids</h3>
-                <p className="text-sm text-slate-500">Diversão e aventura</p>
+                <p className="text-sm text-slate-500">Diversão e aventura mágica</p>
               </div>
             </button>
           </div>
