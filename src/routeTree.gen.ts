@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DebugRouteImport } from './routes/debug'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as MissionsIndexRouteImport } from './routes/missions.index'
@@ -18,6 +19,11 @@ import { Route as MissionsAirportRouteImport } from './routes/missions.airport'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DebugRoute = DebugRouteImport.update({
+  id: '/debug',
+  path: '/debug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -43,6 +49,7 @@ const MissionsAirportRoute = MissionsAirportRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/debug': typeof DebugRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/missions/airport': typeof MissionsAirportRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/debug': typeof DebugRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/missions/airport': typeof MissionsAirportRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/debug': typeof DebugRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/missions/airport': typeof MissionsAirportRoute
@@ -65,12 +74,25 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/profile' | '/progress' | '/missions/airport' | '/missions/'
+  fullPaths:
+    | '/'
+    | '/debug'
+    | '/profile'
+    | '/progress'
+    | '/missions/airport'
+    | '/missions/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/profile' | '/progress' | '/missions/airport' | '/missions'
+  to:
+    | '/'
+    | '/debug'
+    | '/profile'
+    | '/progress'
+    | '/missions/airport'
+    | '/missions'
   id:
     | '__root__'
     | '/'
+    | '/debug'
     | '/profile'
     | '/progress'
     | '/missions/airport'
@@ -79,6 +101,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DebugRoute: typeof DebugRoute
   ProfileRoute: typeof ProfileRoute
   ProgressRoute: typeof ProgressRoute
   MissionsAirportRoute: typeof MissionsAirportRoute
@@ -92,6 +115,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/debug': {
+      id: '/debug'
+      path: '/debug'
+      fullPath: '/debug'
+      preLoaderRoute: typeof DebugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -127,6 +157,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DebugRoute: DebugRoute,
   ProfileRoute: ProfileRoute,
   ProgressRoute: ProgressRoute,
   MissionsAirportRoute: MissionsAirportRoute,
@@ -135,3 +166,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
