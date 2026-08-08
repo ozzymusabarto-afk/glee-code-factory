@@ -109,21 +109,23 @@ function ChatInterface() {
         // If not airport or if messages are empty, initialize from data
         if (id !== 'airport' || messages.length === 0) {
           const firstLesson = data[0];
-          const firstMsg: Message = {
-            id: '1',
-            sender: 'bot',
-            senderName: id === 'survival' ? 'Oficial da Imigração' : 'Interlocutor',
-            text: firstLesson.message_text,
-          };
-          
-          const tipMsg: Message = {
-            id: 'tip-1',
-            sender: 'poly',
-            text: `Olá ${displayName}, ${id === 'survival' ? 'o oficial perguntou seu motivo' : 'responda à pergunta'}. Diga: "${firstLesson.expected_response}"`,
-            isTip: true
-          };
+          if (firstLesson) {
+            const firstMsg: Message = {
+              id: '1',
+              sender: 'bot',
+              senderName: id === 'survival' ? 'Oficial da Imigração' : 'Interlocutor',
+              text: firstLesson.message_text,
+            };
+            
+            const tipMsg: Message = {
+              id: 'tip-1',
+              sender: 'poly',
+              text: `Olá ${displayName}, ${id === 'survival' ? 'o oficial perguntou seu motivo' : 'responda à pergunta'}. Diga: "${firstLesson.expected_response}"`,
+              isTip: true
+            };
 
-          setMessages([firstMsg, tipMsg]);
+            setMessages([firstMsg, tipMsg]);
+          }
         }
       }
       setIsLoading(false);
@@ -133,17 +135,19 @@ function ChatInterface() {
 
   // Handle auto-audio for the first message
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
     if (!isLoading && messages.length > 0 && !audioPlayedRef.current) {
       const firstBotMsg = messages.find(m => m.sender === 'bot');
       if (firstBotMsg) {
-        // Short delay to ensure browser allows speech after interaction
-        const timer = setTimeout(() => {
+        timer = setTimeout(() => {
           playText(firstBotMsg.text);
           audioPlayedRef.current = true;
         }, 500);
-        return () => clearTimeout(timer);
       }
     }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, [isLoading, messages]);
 
   useEffect(() => {
