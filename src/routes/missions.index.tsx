@@ -15,6 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import { BottomNav } from "@/components/BottomNav";
 import { PolyMascot } from "@/components/poly/PolyMascot";
+import { useAppStore } from "@/hooks/use-app-store";
 
 export const Route = createFileRoute("/missions/")({
   component: MissionsPage,
