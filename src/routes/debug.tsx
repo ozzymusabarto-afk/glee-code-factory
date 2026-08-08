@@ -7,7 +7,7 @@ export const Route = createFileRoute("/debug")({
 function DebugPage() {
   return (
     <div className="p-20 whitespace-pre-wrap">
-      Crie uma aba de diagnóstico que liste as últimas falhas de sync e as últimas consultas ao Supabase com códigos de erro e ações recomendadas.Implemente a opção de exportar o resumo e os gráficos do período filtrado em um PDF para eu compartilhar ou arquivar.
+      Incluir um ID de correlação em cada solicitação ao Supabase para eu rastrear facilmente quais sessões e tentativas geraram cada falha de sync. Adicionar atualização em tempo real na aba de diagnóstico para eu ver novas falhas e consultas ao Supabase sem precisar recarregar a página.Implementar um botão para eu copiar os detalhes de cada falha de sync (código de erro, mensagem e contexto) para compartilhar com suporte.
     </div>
   );
 }
