@@ -53,7 +53,7 @@ function Onboarding() {
         </motion.div>
       </header>
 
-      <main className="flex-1 flex flex-col px-8 relative z-10 max-w-2xl mx-auto w-full">
+      <main className="flex-1 flex flex-col px-8 relative z-10 max-w-2xl mx-auto w-full py-20">
         {/* Title Section */}
         <section className="mt-12 space-y-4 text-center md:text-left">
           <motion.h2 
@@ -93,25 +93,23 @@ function Onboarding() {
           ))}
         </section>
 
-        {/* Spacer for mobile layout to prevent overlap with mascot/button */}
-        <div className="h-64 md:h-20" />
-      </main>
-
-      {/* Bottom Action Area */}
-      <footer className="fixed bottom-0 left-0 right-0 p-8 pb-12 bg-gradient-to-t from-[#F5F7FA] via-[#F5F7FA] to-transparent z-20">
-        <div className="max-w-2xl mx-auto w-full flex flex-col gap-4">
+        {/* Spacer with gap between list and button */}
+        <div className="h-24" />
+        
+        {/* Centralized Action Button */}
+        <div className="flex justify-center w-full mb-20">
           <Button 
             onClick={() => navigate({ to: "/missions" })}
-            className="bg-[#1976D2] hover:bg-[#0D47A1] text-white font-black py-10 rounded-[28px] text-2xl shadow-2xl shadow-blue-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-4 w-full"
+            className="bg-[#1976D2] hover:bg-[#0D47A1] text-white font-black py-10 rounded-[28px] text-2xl shadow-2xl shadow-blue-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-4 w-full max-w-[300px]"
           >
             COMEÇAR AGORA
             <ArrowRight className="h-8 w-8" />
           </Button>
         </div>
-      </footer>
+      </main>
 
-      {/* Mascot Positioned Bottom Right - 35% width, Waving */}
-      <div className="fixed bottom-0 right-[-5%] md:right-0 w-[45%] md:w-[35%] max-w-[450px] pointer-events-none z-10">
+      {/* Mascot Positioned Bottom Right - Adjusted for right-side offset */}
+      <div className="fixed bottom-0 right-[-2%] md:right-[2%] w-[45%] md:w-[35%] max-w-[450px] pointer-events-none z-0">
         <PolyMascot size="full" className="origin-bottom" />
       </div>
 
