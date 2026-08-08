@@ -21,8 +21,8 @@ export function BottomNav({ active }: BottomNavProps) {
             className={cn(
               "h-16 w-16 rounded-[1.5rem] transition-all duration-300 relative group",
               active === "home" 
-                ? "bg-poly-blue text-white shadow-lg shadow-poly-blue/30" 
-                : "text-poly-navy/40 hover:text-poly-blue hover:bg-poly-blue/5"
+                ? "bg-[#0ea5e9] text-white shadow-lg shadow-sky-500/30" 
+                : "text-slate-400 hover:text-[#0ea5e9] hover:bg-sky-50"
             )}
           >
             <Home className="h-8 w-8" />
@@ -39,8 +39,8 @@ export function BottomNav({ active }: BottomNavProps) {
             className={cn(
               "h-16 w-16 rounded-[1.5rem] transition-all duration-300 relative group",
               active === "missions" 
-                ? "bg-poly-blue text-white shadow-lg shadow-poly-blue/30" 
-                : "text-poly-navy/40 hover:text-poly-blue hover:bg-poly-blue/5"
+                ? "bg-[#0ea5e9] text-white shadow-lg shadow-sky-500/30" 
+                : "text-slate-400 hover:text-[#0ea5e9] hover:bg-sky-50"
             )}
           >
             <Globe className="h-8 w-8" />
@@ -57,8 +57,8 @@ export function BottomNav({ active }: BottomNavProps) {
             className={cn(
               "h-16 w-16 rounded-[1.5rem] transition-all duration-300 relative group",
               active === "progress" 
-                ? "bg-poly-blue text-white shadow-lg shadow-poly-blue/30" 
-                : "text-poly-navy/40 hover:text-poly-blue hover:bg-poly-blue/5"
+                ? "bg-[#0ea5e9] text-white shadow-lg shadow-sky-500/30" 
+                : "text-slate-400 hover:text-[#0ea5e9] hover:bg-sky-50"
             )}
           >
             <BarChart3 className="h-8 w-8" />
@@ -75,8 +75,8 @@ export function BottomNav({ active }: BottomNavProps) {
             className={cn(
               "h-16 w-16 rounded-[1.5rem] transition-all duration-300 relative group",
               active === "profile" 
-                ? "bg-poly-blue text-white shadow-lg shadow-poly-blue/30" 
-                : "text-poly-navy/40 hover:text-poly-blue hover:bg-poly-blue/5"
+                ? "bg-[#0ea5e9] text-white shadow-lg shadow-sky-500/30" 
+                : "text-slate-400 hover:text-[#0ea5e9] hover:bg-sky-50"
             )}
           >
             <User className="h-8 w-8" />
