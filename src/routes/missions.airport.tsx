@@ -301,10 +301,12 @@ function LearnStep({ onComplete }: { onComplete: () => void }) {
 
 function PracticeStep({ onComplete }: { onComplete: () => void }) {
   const appMode = useAppStore((state) => state.appMode);
+  const updateStreak = useAppStore((state) => state.updateStreak);
   const isAdult = appMode === 'adult';
   const [hasRecorded, setHasRecorded] = useState(false);
   const [similarity, setSimilarity] = useState<number | null>(null);
   const targetText = "Excuse me, where is gate A12?";
+  const chunkId = "airport_gate_a12";
 
   const { isListening, transcript, startListening, stopListening } = useSpeechRecognition({
     lang: 'en-US',
@@ -326,6 +328,43 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
     return matches / Math.max(w1.length, w2.length);
   };
 
+  const syncChunkMastery = async (score: number) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      // Basic SRS logic: increment mastery if score > 0.8
+      const { data: existing } = await supabase
+        .from('chunks')
+        .select('mastery_level')
+        .eq('user_id', session.user.id)
+        .eq('chunk_id', chunkId)
+        .single();
+
+      const currentMastery = existing?.mastery_level || 0;
+      const newMastery = score >= 0.8 ? currentMastery + 1 : Math.max(0, currentMastery - 1);
+      
+      // Simple review logic: 1, 3, 7 days based on mastery
+      const intervals = [1, 3, 7, 14, 30];
+      const daysToAdd = intervals[Math.min(newMastery, intervals.length - 1)];
+      const nextReview = new Date();
+      nextReview.setDate(nextReview.getDate() + daysToAdd);
+
+      await supabase
+        .from('chunks')
+        .upsert({
+          user_id: session.user.id,
+          chunk_id: chunkId,
+          mastery_level: newMastery,
+          last_reviewed_at: new Date().toISOString(),
+          next_review_date: nextReview.toISOString()
+        });
+      
+      // Update general streak
+      if (score >= 0.8) {
+        await updateStreak();
+      }
+    }
+  };
+
   useEffect(() => {
     if (transcript && !isListening) {
       const score = calculateSimilarity(transcript, targetText);
@@ -336,6 +375,7 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
         toast.success(isAdult ? "Precisão excelente. Chunk validado." : "Incrível! Você falou certinho! ✨", {
           description: isAdult ? `Similaridade: ${(score * 100).toFixed(0)}%` : "O Poly amou sua pronúncia!"
         });
+        syncChunkMastery(score);
       } else {
         toast.error(isAdult ? "Threshold insuficiente. Tente novamente." : "Quase lá! Vamos tentar de novo? 🤖", {
           description: isAdult ? `Similaridade: ${(score * 100).toFixed(0)}% (Mínimo 80%)` : "O Poly não entendeu muito bem, tente falar mais alto!"
@@ -343,6 +383,7 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
       }
     }
   }, [transcript, isListening, isAdult, targetText]);
+
 
   return (
     <div className="flex flex-col gap-10 animate-in fade-in slide-in-from-right-6 duration-700 pb-20">
