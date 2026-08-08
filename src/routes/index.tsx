@@ -36,7 +36,7 @@ export const Route = createFileRoute("/")({
 });
 
 function AppEntry() {
-  const { appMode, setAppMode, skillLevel, setSkillLevel, displayName, setDisplayName, syncProfile } = useAppStore();
+  const { appMode, setAppMode, skillLevel, setSkillLevel, displayName, setDisplayName, syncProfile, resetAll } = useAppStore();
   const [step, setStep] = useState<'auth' | 'checkin' | 'tutorial' | 'ready'>('auth');
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [userName, setUserName] = useState('');
@@ -309,6 +309,17 @@ function MainApp() {
         "p-8 sticky top-0 z-30 flex items-center justify-between border-b backdrop-blur-md",
         isAdult ? "bg-[#0F172A]/80 border-slate-800" : "bg-white/80 border-slate-100"
       )}>
+        <Button 
+          variant="ghost" 
+          size="sm"
+          onClick={() => {
+            resetAll();
+            window.location.href = '/';
+          }}
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] font-black opacity-40 hover:opacity-100"
+        >
+          SAIR
+        </Button>
         <div className="flex items-center gap-4">
           <div className="w-10 h-10">
             <PolyMascot size="full" />

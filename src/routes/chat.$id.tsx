@@ -37,7 +37,7 @@ type Message = {
 function ChatInterface() {
   const { id } = useParams({ from: '/chat/$id' });
   const { appMode, displayName, skillLevel, updateStreak } = useAppStore();
-  const { remainingSeconds, isActive: isTimerActive, startTimer } = useDailyTimer();
+  const { remainingSeconds, isActive: isTimerActive, startTimer, resetGoal } = useDailyTimer();
   const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
@@ -57,8 +57,12 @@ function ChatInterface() {
   };
 
   useEffect(() => {
-    startTimer();
-  }, [startTimer]);
+    const initTimer = async () => {
+      await resetGoal();
+      startTimer();
+    };
+    initTimer();
+  }, [resetGoal, startTimer]);
 
   useEffect(() => {
     const fetchLessons = async () => {
