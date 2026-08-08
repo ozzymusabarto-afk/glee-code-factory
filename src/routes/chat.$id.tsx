@@ -80,19 +80,21 @@ function ChatInterface() {
           const firstMsg: Message = {
             id: '1',
             sender: 'bot',
-            senderName: id === 'survival' ? 'Oficial da Imigração' : 'Interlocutor',
-            text: firstLesson.message_text,
+            senderName: id === 'survival' || id === 'airport' ? 'Oficial da Imigração' : 'Interlocutor',
+            text: id === 'airport' ? 'Good morning. What brings you to the country today?' : firstLesson.message_text,
           };
           
           const tipMsg: Message = {
             id: 'tip-1',
             sender: 'poly',
-            text: `Olá ${displayName}, ${id === 'survival' ? 'o oficial perguntou seu motivo' : 'responda à pergunta'}. Diga: "${firstLesson.expected_response}"`,
+            text: id === 'airport' 
+              ? "💡 Dica: O oficial perguntou o motivo da sua viagem. Experimente responder usando: I'm here for tourism."
+              : `Olá ${displayName}, ${id === 'survival' ? 'o oficial perguntou seu motivo' : 'responda à pergunta'}. Diga: "${firstLesson.expected_response}"`,
             isTip: true
           };
 
           setMessages([firstMsg, tipMsg]);
-          playText(firstLesson.message_text);
+          playText(id === 'airport' ? 'Good morning. What brings you to the country today?' : firstLesson.message_text);
         }
       }
 
