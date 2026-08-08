@@ -342,9 +342,10 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
               className={cn(
                 "flex-1 rounded-full transition-all duration-500",
                 isRecording 
-                  ? "bg-gradient-to-t from-poly-blue to-purple-500 animate-pulse" 
-                  : "bg-poly-blue/10"
+                  ? isAdult ? "bg-cyan-500 animate-pulse" : "bg-gradient-to-t from-poly-blue to-purple-500 animate-pulse" 
+                  : isAdult ? "bg-slate-700" : "bg-poly-blue/10"
               )}
+
               style={{ 
                 height: `${h * 100}%`, 
                 animationDelay: `${i * 0.05}s`,
