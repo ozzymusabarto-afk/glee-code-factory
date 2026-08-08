@@ -112,19 +112,19 @@
 }
 
 @utility poly-card {
-  @apply bg-white rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#f1f5f9] p-8 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl cursor-pointer;
+  @apply bg-white rounded-[28px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#f1f5f9] p-8 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl cursor-pointer;
 }
 
 @utility poly-card-minimal {
-  @apply bg-white rounded-[32px] border border-slate-200/60 p-8 transition-all duration-300 hover:border-slate-300;
+  @apply bg-white rounded-[28px] border border-slate-200/60 p-8 transition-all duration-300 hover:border-slate-300;
 }
 
 @utility poly-button-apple {
-  @apply bg-[#0f172a] text-white font-bold py-4 px-8 rounded-full hover:bg-slate-800 transition-all active:scale-[0.98] shadow-lg shadow-slate-900/10 flex items-center justify-center gap-2;
+  @apply bg-[#1976D2] text-white font-bold py-4 px-8 rounded-[28px] hover:bg-[#0D47A1] transition-all active:scale-[0.98] shadow-lg shadow-blue-900/10 flex items-center justify-center gap-2;
 }
 
 @utility poly-button-secondary {
-  @apply bg-poly-yellow text-poly-navy font-black py-4 px-8 rounded-2xl hover:opacity-95 transition-all active:scale-95 shadow-lg shadow-poly-yellow/20 uppercase tracking-wider text-sm;
+  @apply bg-poly-yellow text-poly-navy font-black py-4 px-8 rounded-[28px] hover:opacity-95 transition-all active:scale-95 shadow-lg shadow-poly-yellow/20 uppercase tracking-wider text-sm;
 }
 
 @utility poly-badge {
