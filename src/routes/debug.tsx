@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PolyMascot } from "@/components/poly/PolyMascot";
 
 export const Route = createFileRoute("/debug")({
   component: DebugPage,
@@ -8,17 +7,7 @@ export const Route = createFileRoute("/debug")({
 function DebugPage() {
   return (
     <div className="p-20 whitespace-pre-wrap">
-      2. Configuração do "Cérebro" de Dados (Supabase)
-
-      Sem banco de dados, o progresso do usuário some ao atualizar a página.
-
-      Ação: Conectar o projeto ao Supabase (Auth + Database).
-
-      O que salvar agora:
-
-      Tabela profiles: Salvar se o usuário é 'Kids' ou 'Adulto' e o saldo de minutos do dia.
-
-      Tabela user_srs: Salvar quais frases o usuário já dominou para a fase de 'Absorver'.
+      Crie um recurso para eu salvar automaticamente as sessões e tentativas no banco e depois consultar por idioma e limiar na página de depuração. Adicione um indicador de status da conexão com o Supabase e mensagens de erro claras para eu saber quando o banco estiver indisponível.Configure as migrations e as políticas de RLS no Supabase para eu garantir que somente o usuário veja seus próprios dados.Implemente o salvamento automático do progresso do usuário no Supabase para eu não perder dados ao atualizar a página.
     </div>
   );
 }
