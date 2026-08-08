@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { useAppStore } from "@/hooks/use-app-store";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +25,7 @@ function AuthPage() {
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const { displayName, setDisplayName } = useAppStore();
   const navigate = useNavigate();
 
   const handleAuth = async (e: React.FormEvent) => {
