@@ -69,14 +69,18 @@ function ChatInterface() {
 
       if (data && data.length > 0) {
         setLessons(data);
-        const firstMsg: Message = {
-          id: '1',
-          sender: 'bot',
-          text: data[0].message_text,
-        };
-        setMessages([firstMsg]);
-        playText(data[0].message_text);
+        const firstLesson = data[0];
+        if (firstLesson) {
+          const firstMsg: Message = {
+            id: '1',
+            sender: 'bot',
+            text: firstLesson.message_text,
+          };
+          setMessages([firstMsg]);
+          playText(firstLesson.message_text);
+        }
       }
+
 
       setIsLoading(false);
     };
