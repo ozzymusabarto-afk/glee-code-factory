@@ -445,7 +445,7 @@ function CompletedStep({ onFinish }: { onFinish: () => void }) {
         </div>
       </div>
 
-      <Button onClick={onFinish} className="poly-button-primary py-8 text-xl shadow-2xl">
+      <Button onClick={onFinish} className="bg-[#1976D2] hover:bg-[#0D47A1] text-white font-black py-8 text-2xl w-full rounded-2xl shadow-xl shadow-blue-500/20">
         VOLTAR AO INÍCIO 🏠
       </Button>
     </div>
