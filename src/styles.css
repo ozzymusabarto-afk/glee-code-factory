@@ -110,7 +110,7 @@
 }
 
 @utility poly-card {
-  @apply bg-white rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-8 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl cursor-pointer;
+  @apply bg-white rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#f1f5f9] p-8 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl cursor-pointer;
 }
 
 @utility poly-card-minimal {
