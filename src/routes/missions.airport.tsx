@@ -532,6 +532,9 @@ function AbsorbStep({ onComplete }: { onComplete: () => void }) {
 }
 
 function CompletedStep({ onFinish }: { onFinish: () => void }) {
+  const appMode = useAppStore((state) => state.appMode);
+  const isAdult = appMode === 'adult';
+
   return (
     <div className="flex flex-col gap-10 animate-in zoom-in-95 duration-700 text-center py-6">
       <div className="relative mx-auto h-56 w-56 flex items-center justify-center">
