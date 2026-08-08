@@ -6,7 +6,7 @@ import {
   Plane, 
   Coffee, 
   ShoppingBag, 
-  TaxiFront, 
+  CarTaxiFront, 
   Stethoscope, 
   Briefcase, 
   Users,
@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/missions")({
+export const Route = createFileRoute("/missions/")({
   component: MissionsPage,
   head: () => ({
     meta: [{ title: "Missões — PolyBot" }],
@@ -27,7 +27,7 @@ const categories = [
     title: "Viagem & Transporte",
     missions: [
       { id: "airport", title: "Lost at the Airport", icon: Plane, status: "available", level: "Iniciante" },
-      { id: "taxi", title: "Calling a Taxi", icon: TaxiFront, status: "locked", level: "Iniciante" },
+      { id: "taxi", title: "Calling a Taxi", icon: CarTaxiFront, status: "locked", level: "Iniciante" },
       { id: "hotel", title: "Checking In", icon: MapPin, status: "locked", level: "Iniciante" },
     ]
   },

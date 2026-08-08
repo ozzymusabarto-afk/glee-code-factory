@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MissionsIndexRouteImport } from './routes/missions.index'
 import { Route as MissionsAirportRouteImport } from './routes/missions.airport'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MissionsIndexRoute = MissionsIndexRouteImport.update({
+  id: '/missions/',
+  path: '/missions/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MissionsAirportRoute = MissionsAirportRouteImport.update({
@@ -26,27 +32,31 @@ const MissionsAirportRoute = MissionsAirportRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/missions/airport': typeof MissionsAirportRoute
+  '/missions/': typeof MissionsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/missions/airport': typeof MissionsAirportRoute
+  '/missions': typeof MissionsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/missions/airport': typeof MissionsAirportRoute
+  '/missions/': typeof MissionsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/missions/airport'
+  fullPaths: '/' | '/missions/airport' | '/missions/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/missions/airport'
-  id: '__root__' | '/' | '/missions/airport'
+  to: '/' | '/missions/airport' | '/missions'
+  id: '__root__' | '/' | '/missions/airport' | '/missions/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MissionsAirportRoute: typeof MissionsAirportRoute
+  MissionsIndexRoute: typeof MissionsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/missions/': {
+      id: '/missions/'
+      path: '/missions'
+      fullPath: '/missions/'
+      preLoaderRoute: typeof MissionsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/missions/airport': {
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MissionsAirportRoute: MissionsAirportRoute,
+  MissionsIndexRoute: MissionsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
