@@ -7,7 +7,7 @@ export const Route = createFileRoute("/debug")({
 function DebugPage() {
   return (
     <div className="p-20 whitespace-pre-wrap">
-      Implemente validações e mensagens de UI para confirmar claramente quando [Revisão Livre] estiver bloqueando novos conteúdos e quando o usuário poderá retomar.Exiba um indicador de progresso e o tempo restante para a meta do dia durante as lições, atualizando em tempo real.Adicione integração com o analytics desejado e implemente um schema consistente de eventos para meta do dia e cliques em [Finalizar Dia] e [Revisão Livre].Implemente testes unitários e de integração para o useDailyTimer, validando timezone, reset diário e contagem apenas quando a aba estiver em foco e a lição estiver em andamento.
+      Adicione testes de integração para o useDailyTimer cobrindo mudanças de foco da aba e cenários de timeout/pausa para assegurar a contagem correta do tempo em lições ativas.Defina um schema único de eventos para meta do dia e cliques em [Finalizar Dia] e [Revisão Livre], garantindo nomes consistentes, payloads padronizados e testes de validação do formato.Implemente uma barra de progresso com tempo restante estimado da meta do dia, atualizando somente quando a lição estiver em andamento e a aba estiver em foco.Exiba uma mensagem de contexto e ações sugeridas quando [Revisão Livre] estiver bloqueando novos conteúdos, incluindo o motivo e o que o usuário precisa fazer para retomar.Implemente uma máquina de estados para [Revisão Livre] e modo SRS, garantindo que a UI e as regras de bloqueio/retomada fiquem consistentes em todos os cenários.
     </div>
   );
 }
