@@ -39,12 +39,35 @@ function ChatInterface() {
   const { appMode, displayName, skillLevel, updateStreak } = useAppStore();
   const { remainingSeconds, isActive: isTimerActive, startTimer, resetGoal } = useDailyTimer();
   const navigate = useNavigate();
-  const [messages, setMessages] = useState<Message[]>([]);
+  
+  // Initialize with hardcoded messages if scenario is 'airport'
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (id === 'airport') {
+      return [
+        { 
+          id: '1', 
+          sender: 'bot', 
+          senderName: 'Oficial da Imigração', 
+          text: 'Good morning. What brings you to the country today?',
+          audioUrl: 'auto' 
+        },
+        { 
+          id: '2', 
+          sender: 'poly', 
+          text: '💡 Dica do Poly: O oficial perguntou o motivo da sua viagem. Experimente responder usando o microfone: I am here for tourism.', 
+          isTip: true 
+        }
+      ];
+    }
+    return [];
+  });
+
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [lessons, setLessons] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
   const isAdult = appMode === 'adult';
+  const audioPlayedRef = useRef(false);
 
   const { isListening, transcript, startListening, stopListening } = useSpeechRecognition({
     lang: 'en-US',
@@ -54,6 +77,13 @@ function ChatInterface() {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const playText = (text: string) => {
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    window.speechSynthesis.speak(utterance);
   };
 
   useEffect(() => {
@@ -75,40 +105,52 @@ function ChatInterface() {
 
       if (data && data.length > 0) {
         setLessons(data);
-        const firstLesson = data[0];
-        if (firstLesson) {
+        
+        // If not airport or if messages are empty, initialize from data
+        if (id !== 'airport' || messages.length === 0) {
+          const firstLesson = data[0];
           const firstMsg: Message = {
             id: '1',
             sender: 'bot',
-            senderName: id === 'survival' || id === 'airport' ? 'Oficial da Imigração' : 'Interlocutor',
-            text: id === 'airport' ? 'Good morning. What brings you to the country today?' : firstLesson.message_text,
+            senderName: id === 'survival' ? 'Oficial da Imigração' : 'Interlocutor',
+            text: firstLesson.message_text,
           };
           
           const tipMsg: Message = {
             id: 'tip-1',
             sender: 'poly',
-            text: id === 'airport' 
-              ? "💡 Dica: O oficial perguntou o motivo da sua viagem. Experimente responder usando: I'm here for tourism."
-              : `Olá ${displayName}, ${id === 'survival' ? 'o oficial perguntou seu motivo' : 'responda à pergunta'}. Diga: "${firstLesson.expected_response}"`,
+            text: `Olá ${displayName}, ${id === 'survival' ? 'o oficial perguntou seu motivo' : 'responda à pergunta'}. Diga: "${firstLesson.expected_response}"`,
             isTip: true
           };
 
           setMessages([firstMsg, tipMsg]);
-          playText(id === 'airport' ? 'Good morning. What brings you to the country today?' : firstLesson.message_text);
         }
       }
-
-
       setIsLoading(false);
     };
     fetchLessons();
   }, [id, skillLevel]);
 
+  // Handle auto-audio for the first message
+  useEffect(() => {
+    if (!isLoading && messages.length > 0 && !audioPlayedRef.current) {
+      const firstBotMsg = messages.find(m => m.sender === 'bot');
+      if (firstBotMsg) {
+        // Short delay to ensure browser allows speech after interaction
+        const timer = setTimeout(() => {
+          playText(firstBotMsg.text);
+          audioPlayedRef.current = true;
+        }, 500);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [isLoading, messages]);
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, isLoading]);
 
   const playText = (text: string) => {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -229,14 +271,23 @@ function ChatInterface() {
       {/* Chat Area */}
       <main 
         ref={scrollRef}
-        className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth"
+        className={cn(
+          "flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth flex flex-col",
+          messages.length < 4 && "justify-center"
+        )}
       >
         <AnimatePresence mode="popLayout">
           {messages.map((msg, i) => (
             <motion.div
               key={msg.id}
-              initial={{ opacity: 0, y: 10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
+              initial={{ opacity: 0, x: msg.sender === 'user' ? 20 : -20, scale: 0.8 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 260, 
+                damping: 20,
+                delay: i * 0.1 
+              }}
               className={cn(
                 "flex w-full items-end gap-3",
                 msg.sender === 'user' ? "flex-row-reverse" : "flex-row"
@@ -281,6 +332,23 @@ function ChatInterface() {
                     {msg.text}
                   </p>
                   
+                  {msg.sender === 'bot' && (
+                    <div className="flex gap-2 mt-2">
+                      <Button 
+                        size="sm" 
+                        variant="ghost" 
+                        onClick={() => playText(msg.text)}
+                        className={cn(
+                          "h-8 gap-2 rounded-full",
+                          isAdult ? "hover:bg-slate-700 text-cyan-400" : "hover:bg-blue-100 text-blue-600"
+                        )}
+                      >
+                        <Volume2 size={14} />
+                        <span className="text-[10px] font-bold">OUVIR NOVAMENTE</span>
+                      </Button>
+                    </div>
+                  )}
+                  
                   {msg.sender === 'user' && msg.status && (
                     <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-1 shadow-md">
                       {msg.status === 'success' && <CheckCircle2 size={16} className="text-green-500" />}
@@ -289,14 +357,6 @@ function ChatInterface() {
                     </div>
                   )}
 
-                  {msg.sender === 'bot' && (
-                    <button 
-                      onClick={() => playText(msg.text)}
-                      className="absolute -bottom-2 -left-2 bg-blue-500 text-white rounded-full p-1.5 shadow-md hover:scale-110 transition-transform"
-                    >
-                      <Volume2 size={14} />
-                    </button>
-                  )}
                 </div>
               </div>
             </motion.div>
