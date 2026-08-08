@@ -226,10 +226,14 @@ function LearnStep({ onComplete }: { onComplete: () => void }) {
               </div>
            </div>
            
-           <div className="absolute top-6 left-6 flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 backdrop-blur-md border border-white/10">
-              <Star className="h-3 w-3 text-poly-yellow fill-poly-yellow" />
-              <span className="text-[10px] font-black text-white uppercase tracking-widest">GATE A12</span>
-           </div>
+            <div className={cn(
+              "absolute top-6 left-6 flex items-center gap-2 rounded-full px-3 py-1.5 backdrop-blur-md border transition-colors",
+              isAdult ? "bg-cyan-500/20 border-cyan-500/30" : "bg-white/10 border-white/10"
+            )}>
+              <Star className={cn("h-3 w-3", isAdult ? "text-cyan-400 fill-cyan-400" : "text-poly-yellow fill-poly-yellow")} />
+              <span className={cn("text-[10px] font-black uppercase tracking-widest", isAdult ? "text-cyan-400" : "text-white")}>GATE A12</span>
+            </div>
+
         </div>
       </div>
 
