@@ -12,6 +12,7 @@ import {
   Smartphone,
   Baby
 } from "lucide-react";
+import { BottomNav } from "@/components/BottomNav";
 
 export const Route = createFileRoute("/profile")({
   component: ProfilePage,
@@ -100,6 +101,7 @@ function ProfilePage() {
           Sair da Conta
         </Button>
       </main>
+      <BottomNav active="profile" />
     </div>
   );
 }

@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Home, Globe, BarChart3, User, Zap, Flame, Star, Plane } from "lucide-react";
+import { Globe, BarChart3, User, Zap, Flame, Star, Plane } from "lucide-react";
+import { BottomNav } from "@/components/BottomNav";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -157,51 +158,7 @@ function Index() {
         </section>
       </main>
 
-      {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 z-20 w-full border-t border-border bg-white/80 px-4 py-3 backdrop-blur-xl md:bottom-auto md:left-0 md:top-0 md:h-screen md:w-20 md:flex-col md:border-r md:border-t-0 md:py-8">
-        <ul className="flex items-center justify-around md:flex-col md:gap-8">
-          <li>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => navigate({ to: "/" })}
-              className="h-14 w-14 rounded-2xl bg-poly-blue/10 text-poly-blue"
-            >
-              <Home className="h-7 w-7" />
-            </Button>
-          </li>
-          <li>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => navigate({ to: "/missions" })}
-              className="h-14 w-14 rounded-2xl text-muted-foreground hover:bg-muted/50"
-            >
-              <Globe className="h-7 w-7" />
-            </Button>
-          </li>
-          <li>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => navigate({ to: "/progress" })}
-              className="h-14 w-14 rounded-2xl text-muted-foreground hover:bg-muted/50"
-            >
-              <BarChart3 className="h-7 w-7" />
-            </Button>
-          </li>
-          <li>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => navigate({ to: "/profile" })}
-              className="h-14 w-14 rounded-2xl text-muted-foreground hover:bg-muted/50"
-            >
-              <User className="h-7 w-7" />
-            </Button>
-          </li>
-        </ul>
-      </nav>
+      <BottomNav active="home" />
     </div>
   );
 }

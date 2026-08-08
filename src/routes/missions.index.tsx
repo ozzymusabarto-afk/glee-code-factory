@@ -14,6 +14,7 @@ import {
   Lock
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BottomNav } from "@/components/BottomNav";
 
 export const Route = createFileRoute("/missions/")({
   component: MissionsPage,
@@ -95,8 +96,7 @@ function MissionsPage() {
         ))}
       </main>
 
-      {/* Reusing common navigation would be better in __root or a layout, 
-          but for the prototype we'll keep it simple or implement it in root later. */}
+      <BottomNav active="missions" />
     </div>
   );
 }

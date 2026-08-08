@@ -13,6 +13,7 @@ import {
   Award
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BottomNav } from "@/components/BottomNav";
 
 export const Route = createFileRoute("/progress")({
   component: ProgressPage,
@@ -117,6 +118,7 @@ function ProgressPage() {
           </div>
         </section>
       </main>
+      <BottomNav active="progress" />
     </div>
   );
 }
