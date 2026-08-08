@@ -101,13 +101,21 @@
 }
 
 @utility poly-card {
-  @apply bg-card rounded-3xl shadow-sm border border-border p-6;
+  @apply bg-card rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-border/50 p-6;
+}
+
+@utility poly-card-navy {
+  @apply bg-poly-navy rounded-[2.5rem] shadow-2xl p-8 text-white relative overflow-hidden;
 }
 
 @utility poly-button-primary {
-  @apply bg-poly-blue text-white font-bold py-4 px-8 rounded-2xl hover:opacity-90 transition-all active:scale-95;
+  @apply bg-poly-blue text-white font-black py-4 px-8 rounded-2xl hover:opacity-95 transition-all active:scale-95 shadow-lg shadow-poly-blue/20 uppercase tracking-wider text-sm;
 }
 
 @utility poly-button-secondary {
-  @apply bg-poly-yellow text-poly-navy font-bold py-4 px-8 rounded-2xl hover:opacity-90 transition-all active:scale-95;
+  @apply bg-poly-yellow text-poly-navy font-black py-4 px-8 rounded-2xl hover:opacity-95 transition-all active:scale-95 shadow-lg shadow-poly-yellow/20 uppercase tracking-wider text-sm;
+}
+
+@utility poly-badge {
+  @apply rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest;
 }
