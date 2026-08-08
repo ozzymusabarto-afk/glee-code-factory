@@ -7,13 +7,11 @@ export const Route = createFileRoute("/debug")({
 function DebugPage() {
   return (
     <div className="p-20 whitespace-pre-wrap">
-      Sistema de Repetição Espaçada (SRS)
-
-No estágio 'Absorver', o app deve mostrar frases de lições passadas.
-
-Ação: Implementar um algoritmo simples de intervalo (1 dia, 3 dias, 7 dias).
-
-Prompt Sugerido: "No estágio Absorver, recupere frases que o usuário aprendeu há 2 dias. Se ele acertar agora, agende para daqui a 5 dias. Se errar, mostre novamente amanhã."
+      Atualizar o debug para incluir um checklist específico do SRS, destacando quais frases tiveram agendamento calculado corretamente e quais falharam nas validações.
+      Implementar testes E2E e/ou unitários para validar que as transições de estágio e o agendamento do SRS funcionam corretamente após acertos e erros.
+      Criar uma tela/visão no app para listar as frases no estágio 'Absorver', mostrando a data prevista da próxima revisão e o motivo do agendamento.
+      Adicionar persistência no banco para registrar datas de próximas revisões, status de acerto/erro e histórico por frase para o SRS.
+      Implementar o algoritmo simples de intervalos do SRS (1 dia, 3 dias, 7 dias) para o estágio 'Absorver' e ajustar as próximas revisões conforme acerto/erro.
     </div>
   );
 }
