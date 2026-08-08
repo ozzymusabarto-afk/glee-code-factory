@@ -80,7 +80,7 @@ function AppEntry() {
 
 function Onboarding() {
   const navigate = useNavigate();
-  const { appMode } = useAppStore();
+  const { appMode, setAppMode } = useAppStore();
   const { isGoalReached, resetGoal, startTimer } = useDailyTimer();
 
   useEffect(() => {
