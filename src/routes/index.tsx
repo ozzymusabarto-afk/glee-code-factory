@@ -194,7 +194,7 @@ function Index() {
             <div className="h-12 w-12 rounded-full border border-white/20 flex items-center justify-center">
               <ChevronRight className="h-6 w-6 text-white" />
             </div>
-          </motion.section>
+          </motion.div>
 
         </div>
       </main>
