@@ -247,12 +247,12 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-poly-cream via-poly-cream to-transparent z-40 md:left-20">
+      <div className="fixed bottom-0 left-0 right-0 p-8 bg-white border-t border-slate-100 z-40 md:left-20">
         <div className="max-w-2xl mx-auto">
           {hasRecorded && (
             <Button 
               onClick={onComplete} 
-              className="poly-button-primary py-8 text-xl w-full shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-500"
+              className="bg-[#1976D2] hover:bg-[#0D47A1] text-white font-black py-8 text-2xl w-full rounded-2xl shadow-xl shadow-blue-500/20 animate-in fade-in slide-in-from-bottom-4 duration-500"
             >
               AVANÇAR 🚀
             </Button>
@@ -338,7 +338,7 @@ function AbsorbStep({ onComplete }: { onComplete: () => void }) {
              onClick={onComplete} 
              className={cn(
                "py-8 text-xl w-full mt-8 shadow-2xl font-black uppercase tracking-widest rounded-[2rem]",
-               selected === 0 ? "poly-button-primary bg-poly-green" : "bg-muted text-muted-foreground/60"
+               selected === 0 ? "bg-[#4CAF50] hover:bg-[#388E3C] text-white" : "bg-slate-200 text-slate-400"
              )}
            >
              {selected === 0 ? "CONCLUIR MISSÃO 🏆" : "CONTINUAR"}
@@ -365,7 +365,7 @@ function CompletedStep({ onFinish }: { onFinish: () => void }) {
         <p className="text-xl font-bold text-muted-foreground/80">Missão cumprida com sucesso.</p>
       </div>
 
-      <div className="poly-card bg-white border-none shadow-2xl p-8 flex flex-col items-center gap-8 relative overflow-hidden">
+      <div className="bg-white rounded-[32px] border border-slate-100 shadow-2xl p-10 flex flex-col items-center gap-10 relative overflow-hidden">
         <div className="relative w-40 h-40 flex items-center justify-center">
           <svg className="w-full h-full transform -rotate-90">
             <defs>
