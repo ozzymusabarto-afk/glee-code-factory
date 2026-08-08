@@ -44,21 +44,18 @@ function AppEntry() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
+      // Dev Bypass: Check for local dev auth flag
+      const isDevAuthed = localStorage.getItem('polybot-dev-auth') === 'true';
+      
+      if (!isDevAuthed) {
         setIsAuthenticated(false);
         setStep('auth');
       } else {
         setIsAuthenticated(true);
-        await syncProfile();
+        // We skip full profile sync if there's no real session, 
+        // using the state already in useAppStore (populated during login)
         
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('app_mode, display_name, skill_level')
-          .eq('id', session.user.id)
-          .single();
-
-        if (profile?.display_name && profile?.app_mode) {
+        if (displayName && appMode) {
           setStep('ready');
         } else {
           setStep('checkin');

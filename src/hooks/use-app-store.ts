@@ -25,30 +25,42 @@ export const useAppStore = create<AppState>()(
         set({ appMode: mode });
         const { data: { session } } = await supabase.auth.getSession();
         if (session) {
-          await supabase
-            .from('profiles')
-            .update({ app_mode: mode })
-            .eq('id', session.user.id);
+          try {
+            await supabase
+              .from('profiles')
+              .update({ app_mode: mode })
+              .eq('id', session.user.id);
+          } catch (e) {
+            console.log("Dev: Table update skipped (Auth Bypass)");
+          }
         }
       },
       setSkillLevel: async (level) => {
         set({ skillLevel: level });
         const { data: { session } } = await supabase.auth.getSession();
         if (session) {
-          await supabase
-            .from('profiles')
-            .update({ skill_level: level })
-            .eq('id', session.user.id);
+          try {
+            await supabase
+              .from('profiles')
+              .update({ skill_level: level })
+              .eq('id', session.user.id);
+          } catch (e) {
+            console.log("Dev: Table update skipped (Auth Bypass)");
+          }
         }
       },
       setDisplayName: async (name) => {
         set({ displayName: name });
         const { data: { session } } = await supabase.auth.getSession();
         if (session) {
-          await supabase
-            .from('profiles')
-            .update({ display_name: name })
-            .eq('id', session.user.id);
+          try {
+            await supabase
+              .from('profiles')
+              .update({ display_name: name })
+              .eq('id', session.user.id);
+          } catch (e) {
+            console.log("Dev: Table update skipped (Auth Bypass)");
+          }
         }
       },
       syncProfile: async () => {

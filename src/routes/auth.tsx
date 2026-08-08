@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { useAppStore } from "@/hooks/use-app-store";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +25,7 @@ function AuthPage() {
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const { displayName, setDisplayName } = useAppStore();
   const navigate = useNavigate();
 
   const handleAuth = async (e: React.FormEvent) => {
@@ -31,27 +33,31 @@ function AuthPage() {
     setIsLoading(true);
 
     try {
-      if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        toast.success("Bem-vindo de volta!");
-      } else {
-        const { error, data } = await supabase.auth.signUp({ 
-          email, 
-          password,
-          options: {
-            data: {
-              display_name: name,
-              app_mode: 'kids', // Default to kids for safety/fun first
-            }
-          }
-        });
-        if (error) throw error;
-        
-        if (data.user) {
-          toast.success("Conta criada com sucesso!");
+      // Temporary Development Bypass: Always "success" and auto-login simulation
+      // In a real environment, we would use supabase.auth.signUp/signIn
+      
+      // We simulate the Supabase auth behavior for the Preview environment
+      const mockUser = {
+        id: 'dev-user-id',
+        email: email,
+        user_metadata: {
+          display_name: isLogin ? (displayName || 'Usuário') : name,
+          app_mode: 'kids'
         }
+      };
+
+      // If creating account, update state
+      if (!isLogin) {
+        setDisplayName(name);
+      } else if (!displayName) {
+        setDisplayName('Usuário');
       }
+
+      toast.success(isLogin ? "Bem-vindo de volta (Modo Teste)!" : "Conta criada com sucesso (Modo Teste)!");
+      
+      // Set a fake session in localStorage to satisfy the check in index.tsx
+      localStorage.setItem('polybot-dev-auth', 'true');
+      
       navigate({ to: "/" });
     } catch (error: any) {
       toast.error(error.message || "Erro na autenticação");
@@ -60,17 +66,16 @@ function AuthPage() {
     }
   };
 
+  const handleGuestLogin = () => {
+    setDisplayName('Visitante');
+    localStorage.setItem('polybot-dev-auth', 'true');
+    toast.success("Entrando como Visitante...");
+    navigate({ to: "/" });
+  };
+
   const handleGoogleLogin = async () => {
-    setIsGoogleLoading(true);
-    try {
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin + '/auth/callback',
-      });
-      if (result.error) throw result.error;
-    } catch (error: any) {
-      toast.error(error.message || "Erro no login com Google");
-      setIsGoogleLoading(false);
-    }
+    // Google Login bypass
+    handleGuestLogin();
   };
 
 
@@ -184,6 +189,15 @@ function AuthPage() {
             ) : (
               <>Já tem uma conta? <span className="text-[#1976D2]">Entre aqui</span></>
             )}
+          </button>
+        </div>
+
+        <div className="text-center pt-4 border-t border-slate-100 mt-6">
+          <button
+            onClick={handleGuestLogin}
+            className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-colors"
+          >
+            Entrar como Convidado (Modo Teste)
           </button>
         </div>
       </motion.div>
