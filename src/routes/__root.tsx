@@ -122,6 +122,11 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const appMode = useAppStore((state) => state.appMode);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-mode", appMode);
+  }, [appMode]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -130,3 +135,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
