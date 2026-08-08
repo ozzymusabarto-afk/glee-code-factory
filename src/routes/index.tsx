@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Home, Globe, BarChart3, User, Zap, Flame, Star, Plane } from "lucide-react";
@@ -16,6 +16,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const navigate = useNavigate();
   return (
     <div className="flex min-h-screen flex-col bg-poly-cream pb-24 md:pb-0 md:pl-20">
       {/* Top Header */}
@@ -97,7 +98,10 @@ function Index() {
               </div>
             </div>
 
-            <Button className="poly-button-secondary w-full text-lg">
+            <Button 
+              onClick={() => navigate({ to: "/missions/airport" })}
+              className="poly-button-secondary w-full text-lg"
+            >
               VAMOS COMEÇAR! 🚀
             </Button>
           </div>
