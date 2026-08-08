@@ -51,10 +51,78 @@ function AirportMission() {
     }
   }, [step]);
 
+  const { isGoalReached, resetGoal } = useDailyTimer();
+  const appMode = useAppStore((state) => state.appMode);
+  const isAdult = appMode === 'adult';
+  const navigate = useNavigate();
+
   return (
-    <div className="flex min-h-screen flex-col bg-[#F5F7FA] overflow-hidden">
+    <div className={cn(
+      "flex min-h-screen flex-col transition-colors duration-500 overflow-hidden",
+      isAdult ? "bg-[#0F172A]" : "bg-[#F5F7FA]"
+    )}>
+      <AnimatePresence>
+        {isGoalReached && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className={cn(
+                "w-full max-w-md poly-card p-10 flex flex-col items-center text-center gap-8",
+                isAdult ? "bg-slate-900 border-cyan-500/50" : "bg-white border-blue-500/50"
+              )}
+            >
+              <div className="w-32 h-32">
+                <PolyMascot size="full" pose="celebrating" />
+              </div>
+              <div className="space-y-4">
+                <h2 className={cn(
+                  "text-4xl font-black tracking-tight",
+                  isAdult ? "text-white" : "text-[#0D47A1]"
+                )}>Meta Diária Atingida! 🏆</h2>
+                <p className={cn(
+                  "text-lg font-medium",
+                  isAdult ? "text-slate-400" : "text-slate-500"
+                )}>
+                  Parabéns! Você completou seus 10 minutos de treino hoje.
+                </p>
+              </div>
+              <div className="flex flex-col gap-4 w-full">
+                <Button 
+                  onClick={() => navigate({ to: "/missions" })}
+                  className={cn(
+                    "w-full py-8 text-xl font-black rounded-2xl",
+                    isAdult ? "bg-cyan-600 hover:bg-cyan-500 text-white" : "bg-poly-blue hover:bg-poly-navy text-white"
+                  )}
+                >
+                  FINALIZAR DIA
+                </Button>
+                <Button 
+                  variant="ghost"
+                  onClick={resetGoal}
+                  className={cn(
+                    "w-full py-6 font-bold",
+                    isAdult ? "text-cyan-500 hover:bg-cyan-500/10" : "text-poly-blue hover:bg-blue-50"
+                  )}
+                >
+                  REVISÃO LIVRE
+                </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-5 bg-white border-b border-slate-100 sticky top-0 z-30 shadow-sm">
+      <header className={cn(
+        "flex items-center justify-between px-6 py-5 border-b sticky top-0 z-30 shadow-sm transition-colors",
+        isAdult ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"
+      )}>
+
         <Button 
           variant="ghost" 
           size="icon" 
