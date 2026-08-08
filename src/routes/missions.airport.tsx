@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/missions/airport")({
   component: AirportMission,
   head: () => ({
-    title: "Missão: Lost at the Airport — PolyBot",
+    meta: [{ title: "Missão: Lost at the Airport — PolyBot" }],
   }),
 });
 
