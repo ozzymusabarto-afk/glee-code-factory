@@ -110,15 +110,15 @@
 }
 
 @utility poly-card {
-  @apply bg-card rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-border/50 p-6;
+  @apply bg-white rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#f1f5f9] p-8 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl cursor-pointer;
 }
 
-@utility poly-card-navy {
-  @apply bg-poly-navy rounded-[2.5rem] shadow-2xl p-8 text-white relative overflow-hidden;
+@utility poly-card-minimal {
+  @apply bg-white rounded-[32px] border border-slate-200/60 p-8 transition-all duration-300 hover:border-slate-300;
 }
 
-@utility poly-button-primary {
-  @apply bg-poly-blue text-white font-black py-4 px-8 rounded-2xl hover:opacity-95 transition-all active:scale-95 shadow-lg shadow-poly-blue/20 uppercase tracking-wider text-sm;
+@utility poly-button-apple {
+  @apply bg-[#0f172a] text-white font-bold py-4 px-8 rounded-full hover:bg-slate-800 transition-all active:scale-[0.98] shadow-lg shadow-slate-900/10 flex items-center justify-center gap-2;
 }
 
 @utility poly-button-secondary {
