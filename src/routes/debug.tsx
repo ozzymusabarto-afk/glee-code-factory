@@ -7,7 +7,13 @@ export const Route = createFileRoute("/debug")({
 function DebugPage() {
   return (
     <div className="p-20 whitespace-pre-wrap">
-      Adicionar a exportação de um relatório em HTML ou PDF que consolide o resultado das validações, o timezone detectado, e um resumo das falhas/alertas encontradas na auditoria da timeline.Implementar testes E2E que confirmem que cada passo do modo de auditoria gera exatamente uma atualização relevante no aria-live e que não existem leituras/atualizações duplicadas durante a navegação por passos.Adicionar um modo de perfilagem no debug para medir tempo de renderização, custo de busca e desempenho da paginação/virtualização ao navegar por milhares de eventos.Implementar uma validação de integridade no debug que calcule um checksum/hash do CSV exportado e verifique automaticamente a coerência entre timestamps, transições do [Revisão Livre] e mensagens do aria-live antes de aceitar o arquivo.
+      Sistema de Repetição Espaçada (SRS)
+
+No estágio 'Absorver', o app deve mostrar frases de lições passadas.
+
+Ação: Implementar um algoritmo simples de intervalo (1 dia, 3 dias, 7 dias).
+
+Prompt Sugerido: "No estágio Absorver, recupere frases que o usuário aprendeu há 2 dias. Se ele acertar agora, agende para daqui a 5 dias. Se errar, mostre novamente amanhã."
     </div>
   );
 }
