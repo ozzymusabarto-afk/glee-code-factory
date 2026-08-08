@@ -8,7 +8,7 @@ export const Route = createFileRoute("/debug")({
 function DebugPage() {
   return (
     <div className="p-20 whitespace-pre-wrap">
-      Melhore a página /src/routes/debug.tsx para eu testar rapidamente o reconhecimento de voz, ver o texto transcrito e depurar a similaridade.Adicione tratamento de erros (sem suporte, timeout, silêncio e negação de acesso) com mensagens amigáveis e um botão para eu tentar novamente. Integre a lógica do Shadowing para comparar a fala transcrita com o Chunk atual e calcular a similaridade. Exiba a transcrição em tempo real na tela durante o reconhecimento de voz, atualizando conforme a fala é capturada.Implemente um componente de Microfone na interface que use a Web Speech API (webkitSpeechRecognition) para iniciar e parar a captura de fala.
+      Adicione um fallback quando o webkitSpeechRecognition não estiver disponível, permitindo eu digitar a transcrição manualmente para ainda testar a lógica de similaridade. Implemente um estado de captura mais robusto para eu impedir cliques duplos no microfone e garantir que o botão de tentar novamente reinicie a sessão corretamente.Adicione um histórico das últimas tentativas com transcrição, Chunk atual e resultado (acerto/erro) para eu analisar meus testes depois. Implemente um painel de logs no debug para eu ver a transcrição final, a similaridade calculada e por que eu ganhei ou precisei repetir.Adicione um controle de configuração para eu ajustar o limite de 80% da similaridade e testar rapidamente diferentes valores durante o Shadowing.
     </div>
   );
 }
