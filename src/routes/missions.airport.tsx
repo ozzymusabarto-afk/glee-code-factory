@@ -11,7 +11,7 @@ import {
   Star,
   Zap,
   Heart,
-  Waveform
+  AudioWaveform
 } from "lucide-react";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { cn } from "@/lib/utils";
@@ -26,7 +26,7 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/missions/airport")({
   component: AirportMission,
   head: () => ({
-    title: "Missão: Lost at the Airport — PolyBot",
+    meta: [{ title: "Missão: Lost at the Airport — PolyBot" }],
   }),
 });
 
@@ -427,21 +427,28 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
 
       <div className="flex flex-col items-center gap-10 py-4">
         <div className="flex items-center gap-2 h-24 w-full max-w-md px-6">
-          {[0.2, 0.4, 0.8, 0.6, 1, 0.7, 0.5, 0.9, 1, 0.6, 0.4, 0.3, 0.5, 0.8, 0.6, 0.4].map((h, i) => (
-            <div 
+          {Array.from({ length: 16 }).map((_, i) => (
+            <motion.div 
               key={i} 
+              animate={isListening ? { 
+                height: [
+                  `${20 + Math.random() * 60}%`, 
+                  `${20 + Math.random() * 60}%`, 
+                  `${20 + Math.random() * 60}%`
+                ] 
+              } : { height: "10%" }}
+              transition={isListening ? { 
+                repeat: Infinity, 
+                duration: 0.5 + Math.random() * 0.5,
+                ease: "easeInOut"
+              } : { duration: 0.3 }}
               className={cn(
-                "flex-1 rounded-full transition-all duration-500",
+                "flex-1 rounded-full transition-colors duration-500",
                 isListening 
-                  ? isAdult ? "bg-cyan-500 animate-pulse" : "bg-gradient-to-t from-poly-blue to-purple-500 animate-pulse" 
+                  ? isAdult ? "bg-cyan-500" : "bg-gradient-to-t from-poly-blue to-purple-500" 
                   : isAdult ? "bg-slate-700" : "bg-poly-blue/10"
               )}
-
-              style={{ 
-                height: `${h * 100}%`, 
-                animationDelay: `${i * 0.05}s`,
-                opacity: isListening ? 1 : 0.3
-              }}
+              style={{ opacity: isListening ? 1 : 0.3 }}
             />
           ))}
         </div>
