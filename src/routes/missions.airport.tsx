@@ -33,6 +33,14 @@ function AirportMission() {
   const [step, setStep] = useState<Step>("learn");
   const [progress, setProgress] = useState(33);
   const navigate = useNavigate();
+  const { appMode } = useAppStore();
+  const { isGoalReached, resetGoal, startTimer } = useDailyTimer();
+  const isAdult = appMode === 'adult';
+
+  useEffect(() => {
+    startTimer();
+  }, [startTimer]);
+
 
   useEffect(() => {
     switch(step) {
