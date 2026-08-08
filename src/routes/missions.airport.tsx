@@ -546,9 +546,14 @@ function CompletedStep({ onFinish }: { onFinish: () => void }) {
       </div>
 
       <div className="space-y-2">
-        <h2 className="text-5xl font-black text-poly-navy tracking-tighter leading-none">VOCÊ CONSEGUIU! 🎉</h2>
-        <p className="text-xl font-bold text-muted-foreground/80">Missão cumprida com sucesso.</p>
+        <h2 className={cn("text-5xl font-black tracking-tighter leading-none transition-colors", isAdult ? "text-white" : "text-poly-navy")}>
+          {isAdult ? "OBJETIVO ALCANÇADO! 🎉" : "VOCÊ CONSEGUIU! 🎉"}
+        </h2>
+        <p className={cn("text-xl font-bold leading-tight transition-colors", isAdult ? "text-slate-400" : "text-muted-foreground/80")}>
+          {isAdult ? "Módulo de aeroporto concluído com 98% de precisão." : "Missão cumprida com sucesso."}
+        </p>
       </div>
+
 
       <div className="bg-white rounded-[32px] border border-slate-100 shadow-2xl p-10 flex flex-col items-center gap-10 relative overflow-hidden">
         <div className="relative w-40 h-40 flex items-center justify-center">
