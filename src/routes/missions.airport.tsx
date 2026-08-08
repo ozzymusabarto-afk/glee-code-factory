@@ -12,12 +12,14 @@ import {
   Zap,
   Heart
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { PolyMascot } from "@/components/poly/PolyMascot";
 import { useAppStore } from "@/hooks/use-app-store";
 import { useDailyTimer } from "@/hooks/use-daily-timer";
+import { useSpeechRecognition } from "@/hooks/use-speech-recognition";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
 
 export const Route = createFileRoute("/missions/airport")({
