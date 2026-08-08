@@ -420,14 +420,21 @@ function PracticeStep({ onComplete }: { onComplete: () => void }) {
 }
 
 function AbsorbStep({ onComplete }: { onComplete: () => void }) {
+  const appMode = useAppStore((state) => state.appMode);
+  const isAdult = appMode === 'adult';
   const [selected, setSelected] = useState<number | null>(null);
 
   return (
     <div className="flex flex-col gap-10 animate-in fade-in slide-in-from-right-6 duration-700">
       <div className="space-y-1">
-        <h2 className="text-3xl font-black text-poly-navy tracking-tight">Vamos revisar! 🧠</h2>
-        <p className="text-lg font-bold text-muted-foreground/80 leading-tight">Escolha a resposta certa.</p>
+        <h2 className={cn("text-3xl font-black tracking-tight transition-colors", isAdult ? "text-white" : "text-poly-navy")}>
+          {isAdult ? "Auditoria SRS 🧠" : "Vamos revisar! 🧠"}
+        </h2>
+        <p className={cn("text-lg font-bold leading-tight transition-colors", isAdult ? "text-slate-400" : "text-muted-foreground/80")}>
+          {isAdult ? "Confirme a estrutura semântica correta." : "Escolha a resposta certa."}
+        </p>
       </div>
+
 
       <div className="poly-card bg-poly-blue/5 border-2 border-poly-blue/10 p-8 flex items-center gap-6 shadow-none">
         <div className="h-14 w-14 rounded-2xl bg-poly-blue text-white flex items-center justify-center shadow-lg shadow-poly-blue/20 shrink-0">
