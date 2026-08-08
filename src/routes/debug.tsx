@@ -8,7 +8,17 @@ export const Route = createFileRoute("/debug")({
 function DebugPage() {
   return (
     <div className="p-20 whitespace-pre-wrap">
-      Permita que eu busque e ordene as tentativas (por idioma, limiar do medidor, score de similaridade e data) para eu encontrar padrões mais rápido.
+      2. Configuração do "Cérebro" de Dados (Supabase)
+
+      Sem banco de dados, o progresso do usuário some ao atualizar a página.
+
+      Ação: Conectar o projeto ao Supabase (Auth + Database).
+
+      O que salvar agora:
+
+      Tabela profiles: Salvar se o usuário é 'Kids' ou 'Adulto' e o saldo de minutos do dia.
+
+      Tabela user_srs: Salvar quais frases o usuário já dominou para a fase de 'Absorver'.
     </div>
   );
 }
