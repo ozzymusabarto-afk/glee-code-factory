@@ -41,8 +41,8 @@ const achievements = [
 
 function ProgressPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-poly-cream pb-24 md:pb-0 md:pl-24">
-      <header className="px-8 py-10">
+    <div className="flex min-h-screen flex-col bg-[#F5F7FA] pb-24 md:pb-0 md:pl-24">
+      <header className="px-8 py-12 border-b border-slate-100 bg-white">
         <div className="flex items-center gap-4 mb-2">
            <PolyMascot size="sm" expression="proud" />
            <span className="poly-badge bg-poly-green/10 text-poly-green">Nível 12</span>
@@ -53,7 +53,7 @@ function ProgressPage() {
 
       <main className="flex flex-col gap-10 px-8 pb-16 max-w-6xl">
         {/* Global Progress Visual Map */}
-        <section className="poly-card bg-poly-navy text-white p-10 relative overflow-hidden shadow-2xl">
+        <section className="bg-[#0D47A1] text-white p-12 rounded-[32px] relative overflow-hidden shadow-2xl border-none">
           <div className="absolute top-0 right-0 p-12 opacity-10 rotate-12 pointer-events-none">
             <Trophy className="h-48 w-48" />
           </div>
@@ -70,11 +70,11 @@ function ProgressPage() {
                 <div className="flex gap-4">
                    <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 flex-1 border border-white/10">
                       <span className="text-[10px] font-black uppercase text-white/40 block mb-1">XP Total</span>
-                      <span className="text-2xl font-black text-poly-yellow">2.450</span>
+                      <span className="text-3xl font-black text-[#FFD600]">2.450</span>
                    </div>
-                   <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 flex-1 border border-white/10">
+                   <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 flex-1 border border-white/10">
                       <span className="text-[10px] font-black uppercase text-white/40 block mb-1">Precisão</span>
-                      <span className="text-2xl font-black text-poly-green">92%</span>
+                      <span className="text-3xl font-black text-[#4CAF50]">92%</span>
                    </div>
                 </div>
              </div>
