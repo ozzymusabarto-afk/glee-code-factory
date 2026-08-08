@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 const DAILY_GOAL_SECONDS = 10 * 60; // 10 minutes
 
@@ -6,17 +7,57 @@ export function useDailyTimer() {
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [isGoalReached, setIsGoalReached] = useState(false);
+  const lastSyncRef = useRef<number>(0);
 
+  // Load initial state
   useEffect(() => {
-    // Load persisted time for today
-    const today = new Date().toDateString();
-    const saved = localStorage.getItem(`polybot-timer-${today}`);
-    if (saved) {
-      const parsed = parseInt(saved, 10);
-      setSeconds(parsed);
-      if (parsed >= DAILY_GOAL_SECONDS) {
-        setIsGoalReached(true);
+    const init = async () => {
+      const todayStr = new Date().toDateString();
+      const localSaved = localStorage.getItem(`polybot-timer-${todayStr}`);
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('daily_timer_seconds, last_lesson_date')
+          .eq('id', session.user.id)
+          .single();
+        
+        if (profile) {
+          const lastDate = profile.last_lesson_date ? new Date(profile.last_lesson_date).toDateString() : null;
+          const remoteSeconds = lastDate === todayStr ? (profile.daily_timer_seconds || 0) : 0;
+          
+          const finalSeconds = Math.max(remoteSeconds, localSaved ? parseInt(localSaved, 10) : 0);
+          setSeconds(finalSeconds);
+          lastSyncRef.current = finalSeconds;
+          if (finalSeconds >= DAILY_GOAL_SECONDS) setIsGoalReached(true);
+          return;
+        }
       }
+
+      if (localSaved) {
+        const parsed = parseInt(localSaved, 10);
+        setSeconds(parsed);
+        if (parsed >= DAILY_GOAL_SECONDS) setIsGoalReached(true);
+      }
+    };
+    init();
+  }, []);
+
+  // Sync to backend periodically
+  const syncToBackend = useCallback(async (currentSeconds: number) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      const today = new Date().toISOString();
+      await supabase
+        .from('profiles')
+        .update({ 
+          daily_timer_seconds: currentSeconds,
+          last_lesson_date: today
+        })
+        .eq('id', session.user.id);
+      lastSyncRef.current = currentSeconds;
     }
   }, []);
 
@@ -30,9 +71,15 @@ export function useDailyTimer() {
           const today = new Date().toDateString();
           localStorage.setItem(`polybot-timer-${today}`, next.toString());
           
+          // Sync every 30 seconds to avoid too many requests
+          if (next - lastSyncRef.current >= 30) {
+            syncToBackend(next);
+          }
+
           if (next >= DAILY_GOAL_SECONDS) {
             setIsGoalReached(true);
             setIsActive(false);
+            syncToBackend(next); // Final sync
           }
           return next;
         });
@@ -42,15 +89,28 @@ export function useDailyTimer() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isActive, isGoalReached]);
+  }, [isActive, isGoalReached, syncToBackend]);
 
   const startTimer = useCallback(() => setIsActive(true), []);
-  const pauseTimer = useCallback(() => setIsActive(false), []);
-  const resetGoal = useCallback(() => {
+  const pauseTimer = useCallback(() => {
+    setIsActive(false);
+    syncToBackend(seconds);
+  }, [seconds, syncToBackend]);
+
+  const resetGoal = useCallback(async () => {
     setIsGoalReached(false);
     setSeconds(0);
-    const today = new Date().toDateString();
-    localStorage.removeItem(`polybot-timer-${today}`);
+    lastSyncRef.current = 0;
+    const todayStr = new Date().toDateString();
+    localStorage.removeItem(`polybot-timer-${todayStr}`);
+    
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      await supabase
+        .from('profiles')
+        .update({ daily_timer_seconds: 0 })
+        .eq('id', session.user.id);
+    }
   }, []);
 
   return {
