@@ -47,6 +47,7 @@
 
 :root {
   --radius: 1.25rem;
+  /* Default Theme (Adult) */
   --background: #F5F7FA;
   --foreground: #0D47A1;
   --card: oklch(1 0 0);
@@ -66,29 +67,45 @@
   --border: oklch(0.9 0.02 260);
   --input: oklch(0.9 0.02 260);
   --ring: oklch(0.55 0.18 250);
+
+  /* Specific Poly Tokens */
+  --poly-blue: #1976D2;
+  --poly-navy: #0D47A1;
+  --poly-yellow: #FFD600;
+  --poly-green: #4CAF50;
+  --poly-cream: #F5F7FA;
 }
 
-.dark {
-  --background: oklch(0.2 0.04 260);
-  --foreground: oklch(0.98 0.01 80);
-  --card: oklch(0.25 0.05 260);
-  --card-foreground: oklch(0.98 0.01 80);
-  --popover: oklch(0.25 0.05 260);
-  --popover-foreground: oklch(0.98 0.01 80);
-  --primary: oklch(0.6 0.15 250);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.8 0.15 90);
-  --secondary-foreground: oklch(0.2 0.04 260);
-  --muted: oklch(0.3 0.05 260);
-  --muted-foreground: oklch(0.7 0.05 260);
-  --accent: oklch(0.65 0.15 150);
-  --accent-foreground: oklch(1 0 0);
-  --destructive: oklch(0.5 0.2 25);
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.35 0.05 260);
-  --input: oklch(0.35 0.05 260);
-  --ring: oklch(0.6 0.15 250);
+[data-mode="adult"] {
+  --background: #0F172A; /* Slate-900 equivalent */
+  --foreground: #F1F5F9; /* Slate-100 equivalent */
+  --card: #1E293B; /* Slate-800 */
+  --card-foreground: #F1F5F9;
+  --primary: #06B6D4; /* Cyan-500 */
+  --primary-foreground: #FFFFFF;
+  --muted: #334155;
+  --muted-foreground: #94A3B8;
+  --border: #334155;
+  --poly-blue: #06B6D4;
+  --poly-navy: #F1F5F9;
+  --poly-cream: #0F172A;
 }
+
+[data-mode="kids"] {
+  --background: #FFFDE7; /* Yellow-50 equivalent */
+  --foreground: #0D47A1; /* Blue-900 equivalent */
+  --card: #FFFFFF;
+  --card-foreground: #0D47A1;
+  --primary: #4CAF50; /* Green-500 */
+  --primary-foreground: #FFFFFF;
+  --secondary: #FFD600;
+  --poly-blue: #2196F3;
+  --poly-navy: #0D47A1;
+  --poly-yellow: #FFD600;
+  --poly-green: #4CAF50;
+  --poly-cream: #FFFDE7;
+}
+
 
 @layer base {
   * {

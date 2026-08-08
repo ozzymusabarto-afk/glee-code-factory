@@ -9,6 +9,8 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
+import { useAppStore } from "../hooks/use-app-store";
+
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -122,6 +124,11 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const appMode = useAppStore((state) => state.appMode);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-mode", appMode);
+  }, [appMode]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -130,3 +137,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
