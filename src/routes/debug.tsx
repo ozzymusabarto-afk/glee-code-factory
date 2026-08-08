@@ -8,7 +8,7 @@ export const Route = createFileRoute("/debug")({
 function DebugPage() {
   return (
     <div className="p-20 whitespace-pre-wrap">
-      Adicionar um assistente de calibração guiado com amostra de áudio e recomendação de limiar para eu reduzir detecções falsas por silêncio.Exibir os trechos/segmentos do Shadowing que mais influenciaram a similaridade (top-N) para eu entender por que o resultado mudou.Criar uma timeline clicável que mostre cada tentativa com a transcrição e o chunk comparado lado a lado para eu depurar facilmente.Salvar automaticamente janela do Shadowing, limiar do medidor de áudio e idioma usando localStorage para eu manter meus testes consistentes.
+      Permita que eu selecione um intervalo na timeline e veja as estatísticas daquele recorte (taxa de acerto e similaridade média) para eu identificar rapidamente padrões nos testes.Inclua uma opção para eu recalibrar o medidor de áudio automaticamente ao iniciar uma nova sessão, garantindo que o limiar continue adequado para o meu ambiente.Adicione um recurso para eu importar um arquivo JSON com janela do Shadowing, limiar do medidor e idioma, para eu repetir testes com configurações anteriores.Implemente um botão para eu exportar automaticamente o histórico e los logs filtrados em CSV e JSON a partir da página de depuração, com um nome de arquivo gerado por data e idioma.
     </div>
   );
 }
