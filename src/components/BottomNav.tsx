@@ -2,6 +2,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Home, Globe, BarChart3, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAppStore } from "@/hooks/use-app-store";
 
 interface BottomNavProps {
   active: "home" | "missions" | "progress" | "profile";
@@ -9,9 +10,16 @@ interface BottomNavProps {
 
 export function BottomNav({ active }: BottomNavProps) {
   const navigate = useNavigate();
+  const { appMode } = useAppStore();
+  const isAdult = appMode === 'adult';
 
   return (
-    <nav className="fixed bottom-0 left-0 z-40 w-full border-t border-border/50 bg-white/80 px-6 py-4 backdrop-blur-2xl md:bottom-auto md:left-0 md:top-0 md:h-screen md:w-24 md:flex-col md:border-r md:border-t-0 md:py-10">
+    <nav className={cn(
+      "fixed bottom-0 left-0 z-40 w-full border-t px-6 py-4 backdrop-blur-2xl md:bottom-auto md:left-0 md:top-0 md:h-screen md:w-24 md:flex-col md:border-r md:border-t-0 md:py-10 transition-colors duration-500",
+      isAdult 
+        ? "bg-slate-900/80 border-slate-800" 
+        : "bg-white/80 border-border/50"
+    )}>
       <ul className="flex items-center justify-between md:flex-col md:gap-10">
         <li>
           <Button 
@@ -21,8 +29,8 @@ export function BottomNav({ active }: BottomNavProps) {
             className={cn(
               "h-16 w-16 rounded-[1.5rem] transition-all duration-300 relative group",
               active === "home" 
-                ? "bg-[#0ea5e9] text-white shadow-lg shadow-sky-500/30" 
-                : "text-slate-400 hover:text-[#0ea5e9] hover:bg-sky-50"
+                ? isAdult ? "bg-cyan-600 text-white shadow-lg shadow-cyan-500/30" : "bg-[#1976D2] text-white shadow-lg shadow-blue-500/30"
+                : isAdult ? "text-slate-500 hover:text-cyan-500 hover:bg-slate-800" : "text-slate-400 hover:text-[#1976D2] hover:bg-blue-50"
             )}
           >
             <Home className="h-8 w-8" />
@@ -39,8 +47,8 @@ export function BottomNav({ active }: BottomNavProps) {
             className={cn(
               "h-16 w-16 rounded-[1.5rem] transition-all duration-300 relative group",
               active === "missions" 
-                ? "bg-[#0ea5e9] text-white shadow-lg shadow-sky-500/30" 
-                : "text-slate-400 hover:text-[#0ea5e9] hover:bg-sky-50"
+                ? isAdult ? "bg-cyan-600 text-white shadow-lg shadow-cyan-500/30" : "bg-[#1976D2] text-white shadow-lg shadow-blue-500/30"
+                : isAdult ? "text-slate-500 hover:text-cyan-500 hover:bg-slate-800" : "text-slate-400 hover:text-[#1976D2] hover:bg-blue-50"
             )}
           >
             <Globe className="h-8 w-8" />
@@ -57,8 +65,8 @@ export function BottomNav({ active }: BottomNavProps) {
             className={cn(
               "h-16 w-16 rounded-[1.5rem] transition-all duration-300 relative group",
               active === "progress" 
-                ? "bg-[#0ea5e9] text-white shadow-lg shadow-sky-500/30" 
-                : "text-slate-400 hover:text-[#0ea5e9] hover:bg-sky-50"
+                ? isAdult ? "bg-cyan-600 text-white shadow-lg shadow-cyan-500/30" : "bg-[#1976D2] text-white shadow-lg shadow-blue-500/30"
+                : isAdult ? "text-slate-500 hover:text-cyan-500 hover:bg-slate-800" : "text-slate-400 hover:text-[#1976D2] hover:bg-blue-50"
             )}
           >
             <BarChart3 className="h-8 w-8" />
@@ -75,8 +83,8 @@ export function BottomNav({ active }: BottomNavProps) {
             className={cn(
               "h-16 w-16 rounded-[1.5rem] transition-all duration-300 relative group",
               active === "profile" 
-                ? "bg-[#0ea5e9] text-white shadow-lg shadow-sky-500/30" 
-                : "text-slate-400 hover:text-[#0ea5e9] hover:bg-sky-50"
+                ? isAdult ? "bg-cyan-600 text-white shadow-lg shadow-cyan-500/30" : "bg-[#1976D2] text-white shadow-lg shadow-blue-500/30"
+                : isAdult ? "text-slate-500 hover:text-cyan-500 hover:bg-slate-800" : "text-slate-400 hover:text-[#1976D2] hover:bg-blue-50"
             )}
           >
             <User className="h-8 w-8" />
