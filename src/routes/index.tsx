@@ -166,7 +166,12 @@ function Index() {
             </Button>
           </li>
           <li>
-            <Button variant="ghost" size="icon" className="h-14 w-14 rounded-2xl text-muted-foreground hover:bg-muted/50">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => navigate({ to: "/missions" })}
+              className="h-14 w-14 rounded-2xl text-muted-foreground hover:bg-muted/50"
+            >
               <Globe className="h-7 w-7" />
             </Button>
           </li>
