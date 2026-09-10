@@ -6,11 +6,22 @@ interface SpeechRecognitionOptions {
   interimResults?: boolean;
 }
 
+export interface SpeechRecognitionResult {
+  transcript: string;
+  confidence?: number;
+  error?: string;
+  isFinal: boolean;
+}
+
 export function useSpeechRecognition(options: SpeechRecognitionOptions = {}) {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [recognitionResult, setRecognitionResult] = useState<SpeechRecognitionResult | null>(null);
   const recognitionRef = useRef<any>(null);
+  const supported =
+    typeof window !== 'undefined' &&
+    Boolean((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
 
   useEffect(() => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -27,11 +38,25 @@ export function useSpeechRecognition(options: SpeechRecognitionOptions = {}) {
 
     recognition.onstart = () => setIsListening(true);
     recognition.onend = () => setIsListening(false);
-    recognition.onerror = (event: any) => setError(event.error);
+    recognition.onerror = (event: any) => {
+      setError(event.error);
+      setRecognitionResult({
+        transcript: '',
+        error: event.error,
+        isFinal: true,
+      });
+    };
     recognition.onresult = (event: any) => {
       const current = event.resultIndex;
-      const transcriptValue = event.results[current][0].transcript;
+      const result = event.results[current];
+      const alternative = result[0];
+      const transcriptValue = alternative.transcript;
       setTranscript(transcriptValue);
+      setRecognitionResult({
+        transcript: transcriptValue,
+        confidence: alternative.confidence,
+        isFinal: result.isFinal,
+      });
     };
 
     recognitionRef.current = recognition;
@@ -41,10 +66,14 @@ export function useSpeechRecognition(options: SpeechRecognitionOptions = {}) {
     if (recognitionRef.current) {
       setError(null);
       setTranscript('');
+      setRecognitionResult(null);
       try {
         recognitionRef.current.start();
       } catch (e) {
         console.error('Speech recognition start error:', e);
+        const startError = 'recognition_start_failed';
+        setError(startError);
+        setRecognitionResult({ transcript: '', error: startError, isFinal: true });
       }
     }
   }, []);
@@ -59,8 +88,9 @@ export function useSpeechRecognition(options: SpeechRecognitionOptions = {}) {
     isListening,
     transcript,
     error,
+    recognitionResult,
     startListening,
     stopListening,
-    supported: !!((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition)
+    supported,
   };
 }

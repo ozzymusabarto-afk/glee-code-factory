@@ -86,6 +86,246 @@ export type Database = {
         }
         Relationships: []
       }
+      learning_scenarios: {
+        Row: {
+          context_pt: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          language: string
+          level: string
+          slug: string
+          sort_order: number
+          status: string
+          title: string
+        }
+        Insert: {
+          context_pt?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          language: string
+          level: string
+          slug: string
+          sort_order?: number
+          status?: string
+          title: string
+        }
+        Update: {
+          context_pt?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          language?: string
+          level?: string
+          slug?: string
+          sort_order?: number
+          status?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      scenario_characters: {
+        Row: {
+          avatar_key: string | null
+          id: string
+          name: string
+          role: string | null
+          scenario_id: string
+          voice_key: string | null
+        }
+        Insert: {
+          avatar_key?: string | null
+          id?: string
+          name: string
+          role?: string | null
+          scenario_id: string
+          voice_key?: string | null
+        }
+        Update: {
+          avatar_key?: string | null
+          id?: string
+          name?: string
+          role?: string | null
+          scenario_id?: string
+          voice_key?: string | null
+        }
+        Relationships: []
+      }
+      learning_steps: {
+        Row: {
+          audio_text: string | null
+          completion_rule: string
+          created_at: string | null
+          hint_level_1: string | null
+          hint_level_2: string | null
+          id: string
+          prompt_en: string | null
+          scenario_id: string
+          sequence: number
+          speaker_character_id: string | null
+          step_type: string
+          support_pt: string | null
+          target_phrase: string | null
+        }
+        Insert: {
+          audio_text?: string | null
+          completion_rule: string
+          created_at?: string | null
+          hint_level_1?: string | null
+          hint_level_2?: string | null
+          id?: string
+          prompt_en?: string | null
+          scenario_id: string
+          sequence: number
+          speaker_character_id?: string | null
+          step_type: string
+          support_pt?: string | null
+          target_phrase?: string | null
+        }
+        Update: {
+          audio_text?: string | null
+          completion_rule?: string
+          created_at?: string | null
+          hint_level_1?: string | null
+          hint_level_2?: string | null
+          id?: string
+          prompt_en?: string | null
+          scenario_id?: string
+          sequence?: number
+          speaker_character_id?: string | null
+          step_type?: string
+          support_pt?: string | null
+          target_phrase?: string | null
+        }
+        Relationships: []
+      }
+      step_expected_responses: {
+        Row: {
+          id: string
+          is_primary: boolean
+          match_type: string
+          normalized_text: string
+          response_text: string
+          step_id: string
+        }
+        Insert: {
+          id?: string
+          is_primary?: boolean
+          match_type: string
+          normalized_text: string
+          response_text: string
+          step_id: string
+        }
+        Update: {
+          id?: string
+          is_primary?: boolean
+          match_type?: string
+          normalized_text?: string
+          response_text?: string
+          step_id?: string
+        }
+        Relationships: []
+      }
+      learning_sessions: {
+        Row: {
+          completed_at: string | null
+          current_step_id: string | null
+          id: string
+          scenario_id: string
+          started_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          current_step_id?: string | null
+          id?: string
+          scenario_id: string
+          started_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          current_step_id?: string | null
+          id?: string
+          scenario_id?: string
+          started_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      step_attempts: {
+        Row: {
+          created_at: string | null
+          hint_level_used: number | null
+          id: string
+          match_score: number | null
+          normalized_transcript: string | null
+          result: string
+          session_id: string
+          step_id: string
+          transcript: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          hint_level_used?: number | null
+          id?: string
+          match_score?: number | null
+          normalized_transcript?: string | null
+          result: string
+          session_id: string
+          step_id: string
+          transcript?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          hint_level_used?: number | null
+          id?: string
+          match_score?: number | null
+          normalized_transcript?: string | null
+          result?: string
+          session_id?: string
+          step_id?: string
+          transcript?: string | null
+        }
+        Relationships: []
+      }
+      user_scenario_progress: {
+        Row: {
+          best_score: number | null
+          completed_at: string | null
+          completed_steps: number
+          last_attempt_at: string | null
+          last_step_id: string | null
+          scenario_id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          best_score?: number | null
+          completed_at?: string | null
+          completed_steps?: number
+          last_attempt_at?: string | null
+          last_step_id?: string | null
+          scenario_id: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          best_score?: number | null
+          completed_at?: string | null
+          completed_steps?: number
+          last_attempt_at?: string | null
+          last_step_id?: string | null
+          scenario_id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           app_mode: string | null

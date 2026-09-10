@@ -1,27 +1,54 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { ScenarioRunner } from "@/components/scenario/ScenarioRunner";
+import { ArrowLeft, RotateCcw, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/debug")({
   component: DebugPage,
+  head: () => ({
+    meta: [{ title: "Laboratório Scenario Engine — PolyBot" }],
+  }),
 });
 
 function DebugPage() {
+  const [reloadKey, setReloadKey] = useState(0);
+
   return (
-    <div className="p-20 whitespace-pre-wrap">
-      Implemente o sistema de 'Perfis de Usuário' (Modo Adulto vs. Modo Kids) com persistência no Supabase e alteração dinâmica de tema (UI/UX).
+    <div className="min-h-screen bg-slate-50 p-6 md:p-10 font-sans">
+      <div className="mx-auto max-w-2xl space-y-6">
+        <header className="flex items-center justify-between">
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Voltar ao Início
+          </Link>
+          <div className="flex items-center gap-3">
+            <span className="flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-700">
+              <Sparkles className="h-3.5 w-3.5" />
+              Scenario Lab A0
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setReloadKey((k) => k + 1)}
+              className="gap-1.5 rounded-xl border-slate-300 text-xs font-semibold hover:bg-slate-100"
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              Reiniciar
+            </Button>
+          </div>
+        </header>
 
-      Tela de Onboarding: Crie uma tela de boas-vindas que pergunte: 'Quem vai dominar um novo idioma hoje?'. Exiba dois cards grandes e clicáveis: [Modo Adulto] e [Modo Kids].
-
-      Lógica de Estado: Utilize um Context API ou Zustand para gerenciar o estado global appMode.
-
-      Identidade Visual (Temas):
-
-      Se Modo Adulto: Aplique globalmente uma paleta Dark Mode (Fundo: Slate-900, Texto: Slate-100, Destaques: Cyan-500). O Tutor-Bot deve usar uma linguagem formal e motivacional (ex: 'Foco total na meta, vamos começar?').
-
-      Se Modo Kids: Aplique globalmente uma paleta vibrante (Fundo: Amarelo-50, Texto: Azul-900, Destaques: Verde-500). O Tutor-Bot deve usar linguagem lúdica e emojis (ex: 'Oi amiguinho! Pronto para uma nova aventura? 🚀').
-
-      Persistência no Banco de Dados: Salve a escolha do usuário na tabela profiles do Supabase, no campo tutor_mode. Garanta que, ao fazer login novamente, o app recupere essa preferência e aplique o tema correto automaticamente.
-
-      Interface: Adicione um botão pequeno nas configurações para que o usuário possa trocar de modo manualmente depois, caso deseje.
+        <main>
+          <ScenarioRunner
+            key={reloadKey}
+            slug="first-contact-meeting-someone"
+          />
+        </main>
+      </div>
     </div>
   );
 }
