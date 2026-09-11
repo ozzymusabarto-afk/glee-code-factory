@@ -18,6 +18,7 @@ import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as ChatIdRouteImport } from './routes/chat.$id'
 import { Route as MissionsIndexRouteImport } from './routes/missions.index'
 import { Route as MissionsAirportRouteImport } from './routes/missions.airport'
+import { Route as Unit1RouteImport } from './routes/unit.1'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -64,6 +65,11 @@ const MissionsAirportRoute = MissionsAirportRouteImport.update({
   path: '/missions/airport',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Unit1Route = Unit1RouteImport.update({
+  id: '/unit/1',
+  path: '/unit/1',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -74,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/progress': typeof ProgressRoute
   '/chat/$id': typeof ChatIdRoute
   '/missions/airport': typeof MissionsAirportRoute
+  '/unit/1': typeof Unit1Route
   '/missions/': typeof MissionsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -85,6 +92,7 @@ export interface FileRoutesByTo {
   '/progress': typeof ProgressRoute
   '/chat/$id': typeof ChatIdRoute
   '/missions/airport': typeof MissionsAirportRoute
+  '/unit/1': typeof Unit1Route
   '/missions': typeof MissionsIndexRoute
 }
 export interface FileRoutesById {
@@ -97,6 +105,7 @@ export interface FileRoutesById {
   '/progress': typeof ProgressRoute
   '/chat/$id': typeof ChatIdRoute
   '/missions/airport': typeof MissionsAirportRoute
+  '/unit/1': typeof Unit1Route
   '/missions/': typeof MissionsIndexRoute
 }
 export interface FileRouteTypes {
@@ -110,6 +119,7 @@ export interface FileRouteTypes {
     | '/progress'
     | '/chat/$id'
     | '/missions/airport'
+    | '/unit/1'
     | '/missions/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/progress'
     | '/chat/$id'
     | '/missions/airport'
+    | '/unit/1'
     | '/missions'
   id:
     | '__root__'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/progress'
     | '/chat/$id'
     | '/missions/airport'
+    | '/unit/1'
     | '/missions/'
   fileRoutesById: FileRoutesById
 }
@@ -144,6 +156,7 @@ export interface RootRouteChildren {
   ProgressRoute: typeof ProgressRoute
   ChatIdRoute: typeof ChatIdRoute
   MissionsAirportRoute: typeof MissionsAirportRoute
+  Unit1Route: typeof Unit1Route
   MissionsIndexRoute: typeof MissionsIndexRoute
 }
 
@@ -212,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MissionsAirportRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/unit/1': {
+      id: '/unit/1'
+      path: '/unit/1'
+      fullPath: '/unit/1'
+      preLoaderRoute: typeof Unit1RouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -224,6 +244,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProgressRoute: ProgressRoute,
   ChatIdRoute: ChatIdRoute,
   MissionsAirportRoute: MissionsAirportRoute,
+  Unit1Route: Unit1Route,
   MissionsIndexRoute: MissionsIndexRoute,
 }
 export const routeTree = rootRouteImport

@@ -1,380 +1,283 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { 
-  ArrowRight, 
-  Mic, 
-  MessageSquare, 
-  User, 
-  Baby, 
-  BookOpen, 
-  Layout, 
-  Settings, 
-  History 
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import {
+  ArrowRight,
+  Sparkles,
+  Coffee,
+  Compass,
+  CarTaxiFront,
+  Plane,
+  Hotel,
+  Globe,
+  Lock,
+  User,
 } from "lucide-react";
-import { PolyMascot } from "@/components/poly/PolyMascot";
-import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { AlexCharacter } from "@/components/character/AlexCharacter";
 import { useAppStore } from "@/hooks/use-app-store";
-import { useSpeechRecognition } from "@/hooks/use-speech-recognition";
-import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
-  component: AppEntry,
+  component: PolybotSchoolHome,
   head: () => ({
-    title: "PolyBot — Hall de Entrada",
+    title: "Polybot School — Sua jornada começa aqui",
     meta: [
-      { name: "description", content: "Check-in interativo e acesso à Sala Principal do PolyBot." },
-      { property: "og:title", content: "PolyBot — Hall de Entrada" },
-      { property: "og:description", content: "Conecte-se e aprenda inglês com o Método Natural." },
-      { name: "twitter:card", content: "summary_large_image" },
+      {
+        name: "description",
+        content: "Curso completo de inglês em situações cotidianas reais. Você não precisa saber inglês para começar.",
+      },
     ],
   }),
 });
 
-function AppEntry() {
-  const { appMode, setAppMode, skillLevel, setSkillLevel, displayName, setDisplayName, syncProfile, resetAll } = useAppStore();
-  const [step, setStep] = useState<'auth' | 'checkin' | 'tutorial' | 'ready'>('auth');
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [userName, setUserName] = useState('');
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const isDevAuthed = localStorage.getItem('polybot-dev-auth') === 'true';
-      
-      if (!isDevAuthed) {
-        setIsAuthenticated(false);
-        setStep('auth');
-      } else {
-        setIsAuthenticated(true);
-        // We always start with 'checkin' for the triagem chat if we don't have a confirmed session
-        // or if we want to ensure the natural flow every time in dev.
-        setStep('checkin');
-      }
-    };
-    checkAuth();
-  }, []);
-
-  const { isListening, transcript, startListening, stopListening } = useSpeechRecognition({
-    lang: 'en-US',
-  });
-
-  useEffect(() => {
-    if (step === 'tutorial' && transcript.toLowerCase().includes('hello')) {
-      toast.success("Voz validada! Bem-vindo à Sala Principal.");
-      setTimeout(() => setStep('ready'), 1500);
-    }
-  }, [transcript, step]);
-
-  if (isAuthenticated === null) return null;
-
-  if (step === 'auth') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F5F7FA] p-6 font-jakarta">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md bg-white rounded-[32px] shadow-2xl p-10 space-y-8 text-center"
-        >
-          <div className="w-20 h-20 bg-[#1976D2] rounded-3xl mx-auto flex items-center justify-center shadow-lg mb-6 overflow-hidden">
-             <div className="scale-150 transform translate-y-2">
-                <PolyMascot size="sm" pose="neutral" />
-             </div>
-          </div>
-          <h1 className="text-3xl font-black text-[#0D47A1] tracking-tight uppercase font-space">PolyBot Hall</h1>
-          <p className="text-slate-500 font-medium text-sm">Pronto para aprender com o Método Natural?</p>
-          <div className="space-y-4">
-            <Button 
-              onClick={() => navigate({ to: "/auth" })}
-              className="w-full py-7 rounded-2xl bg-[#1976D2] hover:bg-[#0D47A1] text-white font-black text-lg shadow-xl transition-all flex items-center justify-center gap-3"
-            >
-              ENTRAR / CRIAR CONTA
-              <ArrowRight className="h-5 w-5" />
-            </Button>
-            
-            <div className="relative py-2">
-              <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-slate-100" /></div>
-              <span className="relative bg-white px-2 text-[10px] font-black text-slate-300 uppercase tracking-widest">ou acesso rápido</span>
-            </div>
-
-            <Button 
-              variant="outline"
-              onClick={() => {
-                setDisplayName('Visitante');
-                localStorage.setItem('polybot-dev-auth', 'true');
-                toast.success("Acesso Convidado liberado!");
-                setStep('checkin');
-              }}
-              className="w-full py-6 rounded-2xl border-2 border-slate-100 text-slate-500 font-bold hover:bg-slate-50"
-            >
-              ENTRAR COMO CONVIDADO
-            </Button>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
-
-  if (step === 'checkin') {
-    return (
-      <div className={cn(
-        "min-h-screen flex flex-col font-jakarta transition-colors duration-500",
-        appMode === 'adult' ? "bg-[#0F172A] text-slate-100" : "bg-[#F5F7FA] text-[#0D47A1]"
-      )}>
-        <header className={cn(
-          "p-6 flex items-center gap-4 border-b backdrop-blur-md sticky top-0 z-20",
-          appMode === 'adult' ? "bg-slate-900/80 border-slate-800" : "bg-white/80 border-slate-100"
-        )}>
-          <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-            <PolyMascot size="sm" pose="neutral" />
-          </div>
-          <div>
-            <h2 className="text-xl font-black uppercase font-space tracking-tighter">PolyBot Triagem</h2>
-            <p className="text-[10px] font-bold opacity-60">CHAT DE CONFIGURAÇÃO</p>
-          </div>
-        </header>
-
-        <main className="flex-1 overflow-y-auto p-6 space-y-6 max-w-2xl mx-auto w-full">
-          <AnimatePresence mode="popLayout">
-            {/* Mensagem Inicial do Poly */}
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="flex items-end gap-3"
-            >
-              <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mb-1 shadow-sm">
-                <PolyMascot size="sm" pose="neutral" />
-              </div>
-              <div className={cn(
-                "p-4 rounded-[22px] rounded-tl-none shadow-sm max-w-[85%]",
-                appMode === 'adult' ? "bg-slate-800 text-slate-100 border border-slate-700" : "bg-white text-blue-900"
-              )}>
-                <p className="text-lg font-bold">Olá {displayName || 'Visitante'}! Que bom te ver por aqui. Quem vai treinar comigo hoje?</p>
-              </div>
-            </motion.div>
-
-            {/* Escolha de Perfil */}
-            {!appMode && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="grid grid-cols-2 gap-4 pt-4"
-              >
-                <button 
-                  onClick={() => setAppMode('adult')}
-                  className="poly-card flex flex-col items-center gap-4 p-8 hover:border-cyan-500 bg-slate-900 text-white transition-all transform hover:scale-105"
-                >
-                  <User size={32} className="text-cyan-500" />
-                  <span className="text-xl font-black block">Modo Adulto</span>
-                </button>
-                <button 
-                  onClick={() => setAppMode('kids')}
-                  className="poly-card flex flex-col items-center gap-4 p-8 hover:border-green-500 bg-yellow-400 text-blue-900 transition-all transform hover:scale-105"
-                >
-                  <Baby size={32} />
-                  <span className="text-xl font-black block">Modo Kids</span>
-                </button>
-              </motion.div>
-            )}
-
-            {/* Mensagem de Tema */}
-            {appMode && (
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="flex items-end gap-3 mt-8"
-              >
-                <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mb-1 shadow-sm">
-                  <PolyMascot size="sm" pose="neutral" />
-                </div>
-                <div className={cn(
-                  "p-4 rounded-[22px] rounded-tl-none shadow-sm max-w-[85%]",
-                  appMode === 'adult' ? "bg-slate-800 text-slate-100 border border-slate-700" : "bg-white text-blue-900"
-                )}>
-                  <p className="text-lg font-bold">Perfeito! E sobre o que você quer conversar hoje? Escolha uma das situações reais abaixo:</p>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Escolha de Tema */}
-            {appMode && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="grid gap-4 pt-4"
-              >
-                {[
-                  { id: 'survival', title: '🛫 Aeroporto', desc: 'Imigração e o básico' },
-                  { id: 'restaurant', title: '🍔 Lanchonete', desc: 'Pedindo comida' },
-                  { id: 'hotel', title: '🏨 Hotel', desc: 'Check-in e estadia' }
-                ].map((scene) => (
-                  <button 
-                    key={scene.id}
-                    onClick={() => navigate({ to: `/chat/${scene.id}` })}
-                    className={cn(
-                      "poly-card flex items-center justify-between p-6 hover:translate-x-2 transition-all group",
-                      appMode === 'adult' ? "bg-slate-800 hover:bg-slate-700 text-white" : "bg-white hover:shadow-xl text-blue-900"
-                    )}
-                  >
-                    <div>
-                      <span className="text-xl font-black block">{scene.title}</span>
-                      <span className="text-xs opacity-60 font-bold">{scene.desc}</span>
-                    </div>
-                    <ArrowRight className="opacity-20 group-hover:opacity-100 transition-opacity" />
-                  </button>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </main>
-      </div>
-    );
-  }
-
-  if (step === 'tutorial') {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-blue-600 p-8 font-jakarta text-white">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center space-y-10 max-w-md w-full"
-        >
-          <div className="w-32 h-32 mx-auto bg-white/10 rounded-full flex items-center justify-center backdrop-blur-md">
-            <PolyMascot size="full" pose="neutral" />
-          </div>
-          <div className="space-y-4">
-            <h1 className="text-4xl font-black tracking-tight">Tutorial Invisível</h1>
-            <p className="text-blue-100 font-medium text-lg">
-              Para entrar na Sala Principal, segure o microfone e diga <span className="text-white font-black italic">"Hello"</span>.
-            </p>
-          </div>
-
-          <div className="relative flex flex-col items-center gap-6">
-            <button 
-              onMouseDown={startListening}
-              onMouseUp={stopListening}
-              onTouchStart={startListening}
-              onTouchEnd={stopListening}
-              className={cn(
-                "w-24 h-24 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300",
-                isListening ? "bg-white text-blue-600 scale-110" : "bg-white/20 text-white hover:bg-white/30"
-              )}
-            >
-              <Mic size={40} className={cn(isListening && "animate-pulse")} />
-            </button>
-            <p className="text-xs font-black uppercase tracking-widest opacity-60">
-              {isListening ? "PROCESSANDO..." : "SEGURE PARA FALAR"}
-            </p>
-            {transcript && (
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="bg-white/10 p-4 rounded-xl backdrop-blur-sm"
-              >
-                "{transcript}"
-              </motion.div>
-            )}
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
-
-  return <MainApp />;
+interface JourneyStep {
+  id: string;
+  unitNumber?: number | undefined;
+  title: string;
+  situationPt: string;
+  icon: typeof Sparkles;
+  status: "active" | "locked" | "completed";
+  targetRoute?: string | undefined;
+  levelBadge: string;
 }
 
-function MainApp() {
-  const { appMode, displayName, resetAll } = useAppStore();
-  const navigate = useNavigate();
-  const isAdult = appMode === 'adult';
+const JOURNEY_STEPS: JourneyStep[] = [
+  {
+    id: "unit-1",
+    unitNumber: 1,
+    title: "HOME & HOTEL",
+    situationPt: "Unit 1: Hello! — Conhecendo Alex no saguão",
+    icon: Sparkles,
+    status: "active",
+    targetRoute: "/unit/1",
+    levelBadge: "Iniciante · A0",
+  },
+  {
+    id: "unit-2",
+    unitNumber: 2,
+    title: "CAFÉ",
+    situationPt: "Unit 2: Ordering Coffee — Pedindo um café e algo para comer",
+    icon: Coffee,
+    status: "locked",
+    levelBadge: "Iniciante · A0",
+  },
+  {
+    id: "unit-3",
+    unitNumber: 3,
+    title: "CIDADE",
+    situationPt: "Unit 3: Lost in Town — Perguntando direções nas ruas",
+    icon: Compass,
+    status: "locked",
+    levelBadge: "Iniciante · A1",
+  },
+  {
+    id: "unit-4",
+    unitNumber: 4,
+    title: "TRANSPORTE",
+    situationPt: "Unit 4: Taxi & Metro — Pegando transporte com segurança",
+    icon: CarTaxiFront,
+    status: "locked",
+    levelBadge: "Iniciante · A1",
+  },
+  {
+    id: "unit-5",
+    unitNumber: 5,
+    title: "VIAGEM",
+    situationPt: "Unit 5: Airport Gate — Passando pela imigração e portão",
+    icon: Plane,
+    status: "locked",
+    targetRoute: "/missions/airport",
+    levelBadge: "Intermediário · A2",
+  },
+  {
+    id: "unit-6",
+    unitNumber: 6,
+    title: "HOTEL",
+    situationPt: "Unit 6: Check-in & Estadia — Resolvendo detalhes do quarto",
+    icon: Hotel,
+    status: "locked",
+    levelBadge: "Intermediário · A2",
+  },
+  {
+    id: "unit-7",
+    unitNumber: 7,
+    title: "MUNDO",
+    situationPt: "Unit 7: Conexões Globais — Conversas livres do dia a dia",
+    icon: Globe,
+    status: "locked",
+    levelBadge: "Fluência Cotidiana",
+  },
+];
 
-  const rooms = [
-    { id: 'survival', title: 'Sobrevivência', desc: 'Saudações e o básico', level: 1, color: 'poly-blue' },
-    { id: 'airport', title: 'Aeroporto', desc: 'Imigração e passaporte', level: 2, color: 'poly-navy' },
-    { id: 'restaurant', title: 'Restaurante', desc: 'Pedindo comida', level: 2, color: 'poly-green' },
-  ];
+function PolybotSchoolHome() {
+  const navigate = useNavigate();
+  const displayName = useAppStore((state) => state.displayName);
 
   return (
-    <div className={cn(
-      "min-h-screen transition-colors duration-500 font-jakarta",
-      isAdult ? "bg-[#0F172A] text-slate-100" : "bg-[#F5F7FA] text-[#0D47A1]"
-    )}>
-      <header className={cn(
-        "p-8 sticky top-0 z-30 flex items-center justify-between border-b backdrop-blur-md",
-        isAdult ? "bg-[#0F172A]/80 border-slate-800" : "bg-white/80 border-slate-100"
-      )}>
-        <Button 
-          variant="ghost" 
-          size="sm"
-          onClick={() => {
-            resetAll();
-            window.location.href = '/';
-          }}
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] font-black opacity-40 hover:opacity-100"
-        >
-          SAIR
-        </Button>
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10">
-            <PolyMascot size="full" />
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans flex flex-col justify-between">
+      {/* Barra de Navegação Editorial */}
+      <header className="border-b border-slate-200/80 bg-white/90 backdrop-blur-sm sticky top-0 z-30 px-6 py-4">
+        <div className="mx-auto max-w-4xl flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-9 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-lg shadow-sm">
+              P
+            </div>
+            <div>
+              <span className="text-base font-black tracking-tight text-slate-900 block leading-none">
+                POLYBOT
+              </span>
+              <span className="text-[10px] font-bold tracking-widest uppercase text-blue-600">
+                School
+              </span>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-black uppercase font-space tracking-tighter">Sala Principal</h1>
-            <p className="text-[10px] font-bold opacity-60">Olá, {displayName}!</p>
+
+          <div className="flex items-center gap-3">
+            <Link
+              to="/debug"
+              className="text-xs font-semibold text-slate-500 hover:text-blue-600 px-3 py-1.5 rounded-xl hover:bg-slate-100 transition-colors"
+            >
+              Laboratório
+            </Link>
+            <Link
+              to="/profile"
+              className="text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3.5 py-1.5 rounded-xl transition-colors flex items-center gap-1.5"
+            >
+              <User className="h-3.5 w-3.5" />
+              {displayName || "Perfil"}
+            </Link>
           </div>
         </div>
-        <Button 
-          variant="ghost" 
-          onClick={() => navigate({ to: '/profile' })}
-          className="rounded-2xl p-2"
-        >
-          <User size={24} />
-        </Button>
       </header>
 
-      <main className="p-8 max-w-4xl mx-auto space-y-8">
+      {/* Conteúdo Principal */}
+      <main className="mx-auto max-w-4xl w-full p-6 md:p-10 space-y-12">
+        {/* Cartão Hero Editorial */}
+        <section className="rounded-3xl border border-blue-100 bg-gradient-to-br from-white via-blue-50/40 to-amber-50/20 p-8 md:p-12 shadow-sm relative overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+            <div className="md:col-span-8 space-y-4 text-left">
+              <span className="inline-block rounded-full bg-blue-100/80 px-3.5 py-1 text-xs font-black uppercase tracking-wider text-blue-800">
+                Sua jornada começa aqui
+              </span>
+              <h1 className="text-3xl md:text-5xl font-black tracking-tight text-slate-950 leading-[1.15]">
+                Você não precisa saber inglês para começar.
+              </h1>
+              <p className="text-base md:text-lg text-slate-600 max-w-xl leading-relaxed">
+                Aprenda através de situações reais do cotidiano, com prática de fala guiada por Alex, o companheiro humano da sua jornada.
+              </p>
+
+              <div className="pt-3">
+                <Button
+                  onClick={() => navigate({ to: "/unit/1" })}
+                  className="rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-lg px-8 py-7 shadow-md shadow-blue-600/20 gap-3 hover:gap-4 transition-all"
+                >
+                  COMEÇAR
+                  <ArrowRight className="h-5 w-5" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Ilustração Editorial do Alex dando boas-vindas */}
+            <div className="md:col-span-4 flex justify-center md:justify-end">
+              <div className="p-4 rounded-3xl bg-white/80 border border-slate-100 shadow-sm">
+                <AlexCharacter pose="waving" size="md" />
+                <p className="text-center text-xs font-bold text-slate-600 mt-2">
+                  Alex · Companheiro de Jornada
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Trilha da Jornada: HOME → CAFÉ → CIDADE → TRANSPORTE → VIAGEM → HOTEL → MUNDO */}
         <section className="space-y-6">
-          <h2 className="text-xs font-black uppercase tracking-[0.3em] opacity-40">Situações Disponíveis</h2>
-          <div className="grid gap-6">
-            {rooms.map((room) => (
-              <button 
-                key={room.id}
-                onClick={() => navigate({ to: `/chat/${room.id}` })}
-                className={cn(
-                  "poly-card flex items-center justify-between group text-left border-none",
-                  isAdult ? "bg-slate-800 hover:bg-slate-700" : "bg-white hover:shadow-2xl"
-                )}
-              >
-                <div className="flex items-center gap-6">
-                  <div className={cn(
-                    "w-16 h-16 rounded-[1.25rem] flex items-center justify-center shadow-lg transition-transform group-hover:scale-110",
-                    isAdult ? "bg-cyan-600" : "bg-blue-600"
-                  )}>
-                    <MessageSquare size={32} className="text-white" />
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xs font-black uppercase tracking-[0.25em] text-slate-400">
+                Mapa da Jornada
+              </h2>
+              <p className="text-xl font-black text-slate-900">
+                Situações Cotidianas da Vida Real
+              </p>
+            </div>
+            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+              1 de 7 disponíveis
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {JOURNEY_STEPS.map((step) => {
+              const Icon = step.icon;
+              const isAvailable = step.status === "active";
+
+              return (
+                <div
+                  key={step.id}
+                  onClick={() => {
+                    if (isAvailable && step.targetRoute) {
+                      navigate({ to: step.targetRoute });
+                    }
+                  }}
+                  className={cn(
+                    "rounded-3xl border p-6 transition-all flex flex-col justify-between gap-4 text-left",
+                    isAvailable
+                      ? "border-blue-300 bg-white hover:border-blue-500 hover:shadow-md cursor-pointer group"
+                      : "border-slate-200/70 bg-slate-50/70 opacity-60 cursor-not-allowed",
+                  )}
+                >
+                  <div className="flex items-start justify-between">
+                    <div
+                      className={cn(
+                        "h-12 w-12 rounded-2xl flex items-center justify-center",
+                        isAvailable
+                          ? "bg-blue-600 text-white shadow-sm group-hover:scale-105 transition-transform"
+                          : "bg-slate-200 text-slate-400",
+                      )}
+                    >
+                      <Icon className="h-6 w-6" />
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                        {step.levelBadge}
+                      </span>
+                      {isAvailable ? (
+                        <span className="rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-0.5 uppercase tracking-wider">
+                          Disponível
+                        </span>
+                      ) : (
+                        <span className="rounded-full bg-slate-200 text-slate-500 text-[10px] font-bold px-2 py-0.5 flex items-center gap-1">
+                          <Lock className="h-3 w-3" /> Bloqueado
+                        </span>
+                      )}
+                    </div>
                   </div>
+
                   <div>
-                    <h3 className="text-2xl font-black tracking-tight">{room.title}</h3>
-                    <p className="text-sm font-medium opacity-60">{room.desc}</p>
+                    <h3 className={cn("text-xl font-black", isAvailable ? "text-slate-900 group-hover:text-blue-700" : "text-slate-500")}>
+                      {step.title}
+                    </h3>
+                    <p className="text-xs font-medium text-slate-500 mt-1">
+                      {step.situationPt}
+                    </p>
                   </div>
+
+                  {isAvailable && (
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-blue-600 group-hover:translate-x-1 transition-transform">
+                      <span>Iniciar lição agora</span>
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center gap-4">
-                  <span className={cn(
-                    "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest",
-                    isAdult ? "bg-cyan-500/10 text-cyan-500" : "bg-blue-100 text-blue-600"
-                  )}>Nível {room.level}</span>
-                  <ArrowRight size={24} className="opacity-20 group-hover:opacity-100 group-hover:translate-x-2 transition-all" />
-                </div>
-              </button>
-            ))}
+              );
+            })}
           </div>
         </section>
       </main>
+
+      {/* Rodapé Editorial */}
+      <footer className="border-t border-slate-200/70 bg-white py-6 px-8 text-center text-xs text-slate-400">
+        Polybot School · Inglês para a vida real · Sem pressão, sem julgamento
+      </footer>
     </div>
   );
 }
