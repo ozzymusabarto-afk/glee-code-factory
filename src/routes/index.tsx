@@ -1,110 +1,102 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
-  Sparkles,
-  Coffee,
-  Compass,
-  CarTaxiFront,
+  Flame,
+  Star,
+  BookOpen,
+  Trophy,
+  Crown,
+  Settings,
   Plane,
-  Hotel,
-  Globe,
-  Lock,
-  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AlexCharacter } from "@/components/character/AlexCharacter";
+import { AlexCharacter, AlexAvatar, AlexCompanionCard, AlexDicaCard } from "@/components/character/AlexCharacter";
+import { ScenarioCard, ScenarioCardProps } from "@/components/scenario/ScenarioCard";
+import { CharacterRoster, InterfaceElementsShowcase } from "@/components/character/CharacterRoster";
 import { useAppStore } from "@/hooks/use-app-store";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
   component: PolybotSchoolHome,
   head: () => ({
-    title: "Polybot School — Sua jornada começa aqui",
+    title: "Polybot School — Your journey into English starts here",
     meta: [
       {
         name: "description",
-        content: "Curso completo de inglês em situações cotidianas reais. Você não precisa saber inglês para começar.",
+        content: "Curso completo de inglês em situações cotidianas reais com Alex. Você não precisa saber inglês para começar.",
       },
     ],
   }),
 });
 
-interface JourneyStep {
-  id: string;
-  unitNumber?: number | undefined;
-  title: string;
-  situationPt: string;
-  icon: typeof Sparkles;
-  status: "active" | "locked" | "completed";
+interface ScenarioDefinition extends Omit<ScenarioCardProps, "onClick"> {
   targetRoute?: string | undefined;
-  levelBadge: string;
 }
 
-const JOURNEY_STEPS: JourneyStep[] = [
+const SCENARIOS_LIST: ScenarioDefinition[] = [
   {
+    number: 1,
     id: "unit-1",
-    unitNumber: 1,
     title: "HOME & HOTEL",
-    situationPt: "Unit 1: Hello! — Conhecendo Alex no saguão",
-    icon: Sparkles,
+    situationPt: "Unit 1: Hello! — Conhecendo Alex no saguão.",
+    imageSrc: "/assets/scenarios/scenario-1-hotel.jpg",
+    levelBadge: "Iniciante · A0",
     status: "active",
     targetRoute: "/unit/1",
-    levelBadge: "Iniciante · A0",
   },
   {
+    number: 2,
     id: "unit-2",
-    unitNumber: 2,
     title: "CAFÉ",
-    situationPt: "Unit 2: Ordering Coffee — Pedindo um café e algo para comer",
-    icon: Coffee,
+    situationPt: "Unit 2: Ordering Coffee — Pedindo um café e algo para comer.",
+    imageSrc: "/assets/scenarios/scenario-2-cafe.jpg",
+    levelBadge: "Iniciante · A1",
     status: "locked",
-    levelBadge: "Iniciante · A0",
   },
   {
+    number: 3,
     id: "unit-3",
-    unitNumber: 3,
     title: "CIDADE",
-    situationPt: "Unit 3: Lost in Town — Perguntando direções nas ruas",
-    icon: Compass,
-    status: "locked",
+    situationPt: "Unit 3: Lost in Town — Perguntando direções nas ruas.",
+    imageSrc: "/assets/scenarios/scenario-3-cidade.jpg",
     levelBadge: "Iniciante · A1",
+    status: "locked",
   },
   {
+    number: 4,
     id: "unit-4",
-    unitNumber: 4,
     title: "TRANSPORTE",
-    situationPt: "Unit 4: Taxi & Metro — Pegando transporte com segurança",
-    icon: CarTaxiFront,
+    situationPt: "Unit 4: Taxi & Metro — Pegando transporte com segurança.",
+    imageSrc: "/assets/scenarios/scenario-4-transporte.jpg",
+    levelBadge: "Intermediário · A2",
     status: "locked",
-    levelBadge: "Iniciante · A1",
   },
   {
+    number: 5,
     id: "unit-5",
-    unitNumber: 5,
     title: "VIAGEM",
-    situationPt: "Unit 5: Airport Gate — Passando pela imigração e portão",
-    icon: Plane,
+    situationPt: "Unit 5: Airport Gate — Passando pela imigração e portão.",
+    imageSrc: "/assets/scenarios/scenario-5-viagem.jpg",
+    levelBadge: "Intermediário · A2",
     status: "locked",
     targetRoute: "/missions/airport",
-    levelBadge: "Intermediário · A2",
   },
   {
+    number: 6,
     id: "unit-6",
-    unitNumber: 6,
     title: "HOTEL",
-    situationPt: "Unit 6: Check-in & Estadia — Resolvendo detalhes do quarto",
-    icon: Hotel,
+    situationPt: "Unit 6: Check-in & Estadia — Resolvendo detalhes do quarto.",
+    imageSrc: "/assets/scenarios/scenario-6-room.jpg",
+    levelBadge: "Fluência Cotidiana",
     status: "locked",
-    levelBadge: "Intermediário · A2",
   },
   {
+    number: 7,
     id: "unit-7",
-    unitNumber: 7,
     title: "MUNDO",
-    situationPt: "Unit 7: Conexões Globais — Conversas livres do dia a dia",
-    icon: Globe,
-    status: "locked",
+    situationPt: "Unit 7: Conexões Globais — Conversas livres do dia a dia.",
+    imageSrc: "/assets/scenarios/scenario-7-mundo.jpg",
     levelBadge: "Fluência Cotidiana",
+    status: "locked",
   },
 ];
 
@@ -114,170 +106,309 @@ function PolybotSchoolHome() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans flex flex-col justify-between">
-      {/* Barra de Navegação Editorial */}
-      <header className="border-b border-slate-200/80 bg-white/90 backdrop-blur-sm sticky top-0 z-30 px-6 py-4">
-        <div className="mx-auto max-w-4xl flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-lg shadow-sm">
-              P
+      {/* ============================================================ */}
+      {/* 1. HEADER DA APLICAÇÃO (CONFORME REFERÊNCIA VISUAL)          */}
+      {/* ============================================================ */}
+      <header className="border-b border-slate-200/80 bg-white/95 backdrop-blur-md sticky top-0 z-40 px-6 py-3.5 shadow-xs">
+        <div className="mx-auto max-w-7xl flex items-center justify-between gap-4">
+          {/* Logo Polybot School Oficial */}
+          <Link to="/" className="flex items-center gap-3 select-none group">
+            <div className="h-10 w-10 rounded-2xl bg-amber-400 flex items-center justify-center text-slate-950 font-black shadow-md shadow-amber-400/20 group-hover:scale-105 transition-transform">
+              {/* Ícone estilizado do balão de fala */}
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                <path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-6l-4 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
+              </svg>
             </div>
             <div>
-              <span className="text-base font-black tracking-tight text-slate-900 block leading-none">
-                POLYBOT
-              </span>
-              <span className="text-[10px] font-bold tracking-widest uppercase text-blue-600">
-                School
+              <div className="flex items-baseline gap-1">
+                <span className="text-xl font-black tracking-tight text-slate-900">
+                  Polybot
+                </span>
+                <span className="text-xl font-black tracking-tight text-amber-500">
+                  School
+                </span>
+              </div>
+              <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase block -mt-1">
+                Inglês para a vida real
               </span>
             </div>
-          </div>
+          </Link>
 
-          <div className="flex items-center gap-3">
-            <Link
-              to="/debug"
-              className="text-xs font-semibold text-slate-500 hover:text-blue-600 px-3 py-1.5 rounded-xl hover:bg-slate-100 transition-colors"
-            >
-              Laboratório
-            </Link>
+          {/* Painel do Aluno: Status, Jornada, Conquistas e Dica */}
+          <div className="hidden lg:flex items-center gap-6">
+            {/* Dica do Alex */}
+            <AlexDicaCard className="py-2 px-3.5" />
+
+            {/* Progresso da Jornada */}
+            <div className="flex flex-col gap-1 w-36">
+              <div className="flex justify-between text-[11px] font-bold">
+                <span className="text-slate-500">Sua jornada</span>
+                <span className="text-blue-700 font-black">1 de 7</span>
+              </div>
+              <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full w-[14%]" />
+              </div>
+            </div>
+
+            {/* Conquistas (Medalhas) */}
+            <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-50 border border-slate-200/70">
+              <div className="h-7 w-7 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center" title="Primeira Conquista">
+                <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
+              </div>
+              <div className="h-7 w-7 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center" title="Foco diário">
+                <Flame className="h-4 w-4" />
+              </div>
+              <div className="h-7 w-7 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center" title="Vocabulário ativo">
+                <BookOpen className="h-4 w-4" />
+              </div>
+              <div className="h-7 w-7 rounded-xl bg-slate-200/60 text-slate-400 flex items-center justify-center" title="Troféu desbloqueável">
+                <Trophy className="h-4 w-4" />
+              </div>
+              <div className="h-7 w-7 rounded-xl bg-slate-200/60 text-slate-400 flex items-center justify-center" title="Fluência total">
+                <Crown className="h-4 w-4" />
+              </div>
+            </div>
+
+            {/* Perfil do Usuário */}
             <Link
               to="/profile"
-              className="text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3.5 py-1.5 rounded-xl transition-colors flex items-center gap-1.5"
+              className="flex items-center gap-2.5 pl-3 border-l border-slate-200 text-left hover:opacity-90"
             >
-              <User className="h-3.5 w-3.5" />
-              {displayName || "Perfil"}
+              <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black text-xs flex items-center justify-center shadow-xs">
+                {(displayName || "M").charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <span className="text-xs font-black text-slate-900 block leading-tight">
+                  {displayName ? `Olá, ${displayName}` : "Olá, Estudante"}
+                </span>
+                <span className="text-[10px] font-bold text-slate-400 block">
+                  Iniciante · A0
+                </span>
+              </div>
+              <Settings className="h-4 w-4 text-slate-400 hover:text-slate-700 ml-1" />
+            </Link>
+          </div>
+
+          {/* Acesso rápido mobile */}
+          <div className="flex lg:hidden items-center gap-2">
+            <Link
+              to="/profile"
+              className="p-2 rounded-xl bg-slate-100 text-slate-700"
+            >
+              <Settings className="h-5 w-5" />
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Conteúdo Principal */}
-      <main className="mx-auto max-w-4xl w-full p-6 md:p-10 space-y-12">
-        {/* Cartão Hero Editorial */}
-        <section className="rounded-3xl border border-blue-100 bg-gradient-to-br from-white via-blue-50/40 to-amber-50/20 p-8 md:p-12 shadow-sm relative overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-            <div className="md:col-span-8 space-y-4 text-left">
-              <span className="inline-block rounded-full bg-blue-100/80 px-3.5 py-1 text-xs font-black uppercase tracking-wider text-blue-800">
-                Sua jornada começa aqui
-              </span>
-              <h1 className="text-3xl md:text-5xl font-black tracking-tight text-slate-950 leading-[1.15]">
-                Você não precisa saber inglês para começar.
-              </h1>
-              <p className="text-base md:text-lg text-slate-600 max-w-xl leading-relaxed">
-                Aprenda através de situações reais do cotidiano, com prática de fala guiada por Alex, o companheiro humano da sua jornada.
-              </p>
+      {/* ============================================================ */}
+      {/* 2. HERO BANNER CINEMATOGRÁFICO COM ALEX E DESTAQUE DA UNIT 1 */}
+      {/* ============================================================ */}
+      <main className="mx-auto max-w-7xl w-full p-4 md:p-8 space-y-10">
+        <section className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-[#0B132B] via-[#0F172A] to-[#1E293B] text-white p-6 md:p-12 shadow-2xl border border-slate-800">
+          {/* Efeito de luz ambiente e partículas suaves de fundo */}
+          <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 right-1/4 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
 
-              <div className="pt-3">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+            {/* Lado Esquerdo do Hero: Apresentação, Alex e CTA */}
+            <div className="lg:col-span-7 space-y-6 text-left">
+              <div className="flex items-center gap-2">
+                <span className="rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 px-3.5 py-1 text-xs font-black uppercase tracking-wider">
+                  Sua jornada começa aqui
+                </span>
+                <span className="text-xs text-slate-400">
+                  · Método Natural A0
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-[1.12]">
+                  Your journey into English{" "}
+                  <span className="text-amber-400 font-serif italic block md:inline font-bold">
+                    starts here.
+                  </span>
+                </h1>
+                <p className="text-sm md:text-base text-slate-300 font-medium max-w-lg leading-relaxed">
+                  Mais do que um app. Uma jornada para o seu mundo.
+                  Você não precisa saber inglês para começar: Alex acompanha cada fala com você.
+                </p>
+              </div>
+
+              {/* Botão Primário "Começar →" em Amarelo/Dourado Oficial */}
+              <div className="flex flex-wrap items-center gap-4 pt-2">
                 <Button
                   onClick={() => navigate({ to: "/unit/1" })}
-                  className="rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-lg px-8 py-7 shadow-md shadow-blue-600/20 gap-3 hover:gap-4 transition-all"
+                  className="rounded-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-base md:text-lg px-8 py-7 shadow-lg shadow-amber-400/25 gap-3 hover:gap-4 transition-all"
                 >
-                  COMEÇAR
-                  <ArrowRight className="h-5 w-5" />
+                  <span>Começar</span>
+                  <ArrowRight className="h-5 w-5 text-slate-950" />
                 </Button>
+
+                <div className="flex items-center gap-3 text-xs text-slate-300">
+                  <AlexAvatar className="h-9 w-9 border border-amber-400/60" />
+                  <div>
+                    <span className="font-bold text-white block">Alex</span>
+                    <span className="text-slate-400 text-[11px]">Seu companheiro de jornada</span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Ilustração Editorial do Alex dando boas-vindas */}
-            <div className="md:col-span-4 flex justify-center md:justify-end">
-              <div className="p-4 rounded-3xl bg-white/80 border border-slate-100 shadow-sm">
-                <AlexCharacter pose="waving" size="md" />
-                <p className="text-center text-xs font-bold text-slate-600 mt-2">
-                  Alex · Companheiro de Jornada
-                </p>
+            {/* Lado Direito do Hero: Card de Destaque da Unit 1 (Conforme Referência) */}
+            <div className="lg:col-span-5 flex justify-center lg:justify-end">
+              <div className="w-full max-w-md rounded-3xl bg-white text-slate-900 shadow-2xl p-6 border-2 border-amber-400/80 ring-4 ring-amber-400/15 flex flex-col justify-between gap-4">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center font-bold">
+                      📍
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+                        Mapa da Jornada
+                      </span>
+                      <span className="text-xs font-bold text-slate-800">
+                        Situações Cotidianas da Vida Real
+                      </span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-black text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full">
+                    1 de 7 disponíveis
+                  </span>
+                </div>
+
+                {/* Imagem do Saguão do Hotel */}
+                <div className="relative h-44 w-full rounded-2xl overflow-hidden bg-slate-100 shadow-inner">
+                  <img
+                    src="/assets/scenarios/hotel-lobby.jpg"
+                    alt="Saguão do Hotel"
+                    className="h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white">
+                    <span className="rounded-full bg-slate-900/80 backdrop-blur-md px-2.5 py-1 text-[10px] font-black border border-white/20">
+                      Iniciante · A0
+                    </span>
+                    <span className="text-xs font-bold drop-shadow-sm">
+                      Hotel Lobby
+                    </span>
+                  </div>
+                </div>
+
+                {/* Título e Chamada da Unidade 1 */}
+                <div>
+                  <h3 className="text-xl font-black text-slate-950 tracking-tight">
+                    HOME & HOTEL
+                  </h3>
+                  <p className="text-sm font-bold text-slate-700 mt-0.5">
+                    Unit 1: Hello!
+                  </p>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Conhecendo Alex no saguão de um hotel internacional.
+                  </p>
+                </div>
+
+                {/* Botão de Ação do Card */}
+                <Button
+                  onClick={() => navigate({ to: "/unit/1" })}
+                  className="w-full rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-sm py-6 shadow-md transition-colors gap-2"
+                >
+                  <span>Iniciar lição agora</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Trilha da Jornada: HOME → CAFÉ → CIDADE → TRANSPORTE → VIAGEM → HOTEL → MUNDO */}
+        {/* ============================================================ */}
+        {/* 3. TRILHA DA JORNADA: 7 SITUAÇÕES DA VIDA REAL               */}
+        {/* ============================================================ */}
         <section className="space-y-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <h2 className="text-xs font-black uppercase tracking-[0.25em] text-slate-400">
-                Mapa da Jornada
-              </h2>
-              <p className="text-xl font-black text-slate-900">
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-blue-600" />
+                <h2 className="text-xs font-black uppercase tracking-[0.25em] text-slate-400">
+                  Mapa da Jornada
+                </h2>
+              </div>
+              <p className="text-2xl font-black text-slate-900 tracking-tight mt-1">
                 Situações Cotidianas da Vida Real
               </p>
             </div>
-            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-              1 de 7 disponíveis
-            </span>
+
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-500 bg-white border border-slate-200/80 px-3.5 py-1.5 rounded-full shadow-2xs">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              <span>1 de 7 disponíveis</span>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {JOURNEY_STEPS.map((step) => {
-              const Icon = step.icon;
-              const isAvailable = step.status === "active";
+          {/* Grid dos 7 Cenários da Referência */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
+            {SCENARIOS_LIST.map((scen) => (
+              <ScenarioCard
+                key={scen.id}
+                number={scen.number}
+                id={scen.id}
+                title={scen.title}
+                situationPt={scen.situationPt}
+                imageSrc={scen.imageSrc}
+                levelBadge={scen.levelBadge}
+                status={scen.status}
+                onClick={() => {
+                  if (scen.targetRoute) {
+                    navigate({ to: scen.targetRoute });
+                  }
+                }}
+              />
+            ))}
+          </div>
+        </section>
 
-              return (
-                <div
-                  key={step.id}
-                  onClick={() => {
-                    if (isAvailable && step.targetRoute) {
-                      navigate({ to: step.targetRoute });
-                    }
-                  }}
-                  className={cn(
-                    "rounded-3xl border p-6 transition-all flex flex-col justify-between gap-4 text-left",
-                    isAvailable
-                      ? "border-blue-300 bg-white hover:border-blue-500 hover:shadow-md cursor-pointer group"
-                      : "border-slate-200/70 bg-slate-50/70 opacity-60 cursor-not-allowed",
-                  )}
-                >
-                  <div className="flex items-start justify-between">
-                    <div
-                      className={cn(
-                        "h-12 w-12 rounded-2xl flex items-center justify-center",
-                        isAvailable
-                          ? "bg-blue-600 text-white shadow-sm group-hover:scale-105 transition-transform"
-                          : "bg-slate-200 text-slate-400",
-                      )}
-                    >
-                      <Icon className="h-6 w-6" />
-                    </div>
+        {/* ============================================================ */}
+        {/* 4. SEÇÕES INFERIORES: COMPANHEIRO, PERSONAGENS E INTERFACE   */}
+        {/* ============================================================ */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          {/* Card do Companheiro Alex */}
+          <div className="lg:col-span-4 flex">
+            <AlexCompanionCard className="w-full" />
+          </div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
-                        {step.levelBadge}
-                      </span>
-                      {isAvailable ? (
-                        <span className="rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-0.5 uppercase tracking-wider">
-                          Disponível
-                        </span>
-                      ) : (
-                        <span className="rounded-full bg-slate-200 text-slate-500 text-[10px] font-bold px-2 py-0.5 flex items-center gap-1">
-                          <Lock className="h-3 w-3" /> Bloqueado
-                        </span>
-                      )}
-                    </div>
-                  </div>
+          {/* Os Personagens */}
+          <div className="lg:col-span-5 flex">
+            <CharacterRoster className="w-full" />
+          </div>
 
-                  <div>
-                    <h3 className={cn("text-xl font-black", isAvailable ? "text-slate-900 group-hover:text-blue-700" : "text-slate-500")}>
-                      {step.title}
-                    </h3>
-                    <p className="text-xs font-medium text-slate-500 mt-1">
-                      {step.situationPt}
-                    </p>
-                  </div>
-
-                  {isAvailable && (
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-blue-600 group-hover:translate-x-1 transition-transform">
-                      <span>Iniciar lição agora</span>
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+          {/* Elementos da Interface */}
+          <div className="lg:col-span-3 flex">
+            <InterfaceElementsShowcase className="w-full" />
           </div>
         </section>
       </main>
 
-      {/* Rodapé Editorial */}
-      <footer className="border-t border-slate-200/70 bg-white py-6 px-8 text-center text-xs text-slate-400">
-        Polybot School · Inglês para a vida real · Sem pressão, sem julgamento
+      {/* ============================================================ */}
+      {/* 5. RODAPÉ DA MARCA (CONFORME REFERÊNCIA VISUAL)              */}
+      {/* ============================================================ */}
+      <footer className="border-t border-slate-200/80 bg-white py-8 px-6 mt-12 text-slate-500 text-xs">
+        <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2 font-serif italic text-slate-600 text-sm">
+            <Plane className="h-4 w-4 text-blue-600 transform -rotate-45" />
+            <span>"Small conversations. Big dreams."</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-slate-800">Polybot School</span>
+            <span>·</span>
+            <span>Inglês para a vida real</span>
+            <span>·</span>
+            <Link to="/debug" className="text-blue-600 hover:underline">
+              Laboratório de Testes
+            </Link>
+          </div>
+        </div>
       </footer>
     </div>
   );
 }
+

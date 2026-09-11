@@ -131,68 +131,88 @@ export function ShadowingExercise({
   return (
     <div
       className={cn(
-        "mx-auto w-full max-w-xl rounded-3xl border border-slate-200 bg-white p-6 md:p-8 text-slate-800 shadow-sm",
+        "mx-auto w-full max-w-xl rounded-3xl border border-slate-200/90 bg-white p-6 md:p-8 text-slate-800 shadow-lg shadow-slate-900/5",
         className,
       )}
     >
       {/* Header do Shadowing */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-        <div className="flex items-center gap-2.5">
-          <AlexAvatar />
+        <div className="flex items-center gap-3">
+          <AlexAvatar className="h-10 w-10 ring-2 ring-amber-400/40" />
           <div>
-            <p className="text-xs font-black uppercase tracking-widest text-blue-600">
-              Método Shadowing · {level}
-            </p>
-            <h3 className="text-sm font-semibold text-slate-700">
-              {stage === "listen" && "Passo 1: Ouvir e absorver o som"}
-              {stage === "shadow" && "Passo 2: Acompanhar e repetir junto"}
-              {stage === "try_alone" && "Passo 3: Falar sozinho com naturalidade"}
-              {stage === "feedback" && "Passo 4: Pronto para usar na situação"}
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full">
+                Shadowing com Alex · {level}
+              </span>
+            </div>
+            <h3 className="text-sm font-bold text-slate-800 mt-0.5">
+              {stage === "listen" && "1. Ouvir e absorver a melodia da fala"}
+              {stage === "shadow" && "2. Acompanhar e falar junto com Alex"}
+              {stage === "try_alone" && "3. Falar com a sua voz natural"}
+              {stage === "feedback" && "4. Conexão realizada na situação"}
             </h3>
           </div>
         </div>
 
-        {/* Indicador de progresso das 4 etapas */}
-        <div className="flex items-center gap-1.5">
-          {(["listen", "shadow", "try_alone", "feedback"] as ShadowingStage[]).map((s, idx) => (
-            <div
-              key={s}
-              className={cn(
-                "h-2 rounded-full transition-all duration-300",
-                stage === s ? "w-6 bg-blue-600" : idx < ["listen", "shadow", "try_alone", "feedback"].indexOf(stage) ? "w-2 bg-emerald-500" : "w-2 bg-slate-200",
-              )}
-            />
-          ))}
+        {/* Trilha do Método Oficial */}
+        <div className="flex items-center gap-1">
+          {(["listen", "shadow", "try_alone", "feedback"] as ShadowingStage[]).map((s, idx) => {
+            const currentIdx = ["listen", "shadow", "try_alone", "feedback"].indexOf(stage);
+            return (
+              <div
+                key={s}
+                className={cn(
+                  "h-2 rounded-full transition-all duration-300",
+                  stage === s ? "w-6 bg-amber-400" : idx < currentIdx ? "w-2.5 bg-emerald-500" : "w-2 bg-slate-200",
+                )}
+              />
+            );
+          })}
         </div>
       </div>
 
-      {/* Cartão Central da Frase Alvo */}
-      <div className="my-6 rounded-2xl bg-slate-50 border border-slate-200/80 p-6 text-center space-y-2">
-        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
-          Frase em Inglês
+      {/* Régua explicativa da metodologia oficial: OUVIR → ACOMPANHAR → REPETIR JUNTO → TENTAR SOZINHO → USAR NA SITUAÇÃO */}
+      <div className="mt-3 flex items-center justify-between text-[9px] font-black uppercase tracking-wider text-slate-400 px-1 border-b border-slate-50 pb-2">
+        <span className={cn(stage === "listen" && "text-blue-700 font-bold")}>1. Ouvir</span>
+        <span>→</span>
+        <span className={cn(stage === "shadow" && "text-blue-700 font-bold")}>2. Repetir Junto</span>
+        <span>→</span>
+        <span className={cn(stage === "try_alone" && "text-blue-700 font-bold")}>3. Tentar Sozinho</span>
+        <span>→</span>
+        <span className={cn(stage === "feedback" && "text-emerald-700 font-bold")}>4. Usar na Vida Real</span>
+      </div>
+
+      {/* Cartão Central da Frase Alvo com Estilo Premium */}
+      <div className="my-6 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950 text-white p-7 text-center space-y-3 shadow-xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
+
+        <span className="text-[10px] font-black uppercase tracking-widest text-amber-300/90 block">
+          Frase de Aprendizado
         </span>
-        <h2 className="text-3xl font-black text-slate-900 tracking-tight">
+        <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight">
           "{targetPhrase}"
         </h2>
-        <p className="text-sm font-medium text-slate-500 italic">
+        <p className="text-sm font-semibold text-slate-300 italic">
           "{translationPt}"
         </p>
 
-        {/* Botão Ouvir Áudio */}
+        {/* Botão Ouvir Áudio do Alex */}
         <div className="pt-3">
-          <Button
-            variant="outline"
-            size="sm"
+          <button
+            type="button"
             onClick={playAudio}
             disabled={isPlaying}
             className={cn(
-              "gap-2 rounded-xl border-blue-200 px-4 text-blue-700 hover:bg-blue-50 transition-colors",
-              isPlaying && "bg-blue-100 border-blue-300",
+              "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold transition-all shadow-md",
+              isPlaying
+                ? "bg-amber-400 text-slate-950 scale-105"
+                : "bg-white/20 hover:bg-white/30 text-white border border-white/25",
             )}
+            title="Ouvir a pronúncia natural de Alex"
           >
             <Volume2 className={cn("h-4 w-4", isPlaying && "animate-pulse")} />
-            {isPlaying ? "Reproduzindo..." : "Ouvir Alex falar"}
-          </Button>
+            <span>{isPlaying ? "Alex falando..." : "Ouvir Alex falar"}</span>
+          </button>
         </div>
       </div>
 
@@ -204,7 +224,7 @@ export function ShadowingExercise({
           </div>
           <Button
             onClick={() => setStage("shadow")}
-            className="w-full py-6 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-base shadow-sm gap-2"
+            className="w-full py-6 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-base shadow-md gap-2 transition-all"
           >
             Acompanhar e falar junto <ArrowRight className="h-4 w-4" />
           </Button>
@@ -232,7 +252,7 @@ export function ShadowingExercise({
             </Button>
             <Button
               onClick={() => setStage("try_alone")}
-              className="flex-1 py-6 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold gap-2"
+              className="flex-1 py-6 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black gap-2 shadow-md transition-all"
             >
               Tentar sozinho <ArrowRight className="h-4 w-4" />
             </Button>
@@ -358,7 +378,7 @@ export function ShadowingExercise({
             </Button>
             <Button
               onClick={onComplete}
-              className="flex-1 py-6 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold gap-2 shadow-sm"
+              className="flex-1 py-6 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black gap-2 shadow-md transition-all"
             >
               Levar para a conversa <ArrowRight className="h-4 w-4" />
             </Button>

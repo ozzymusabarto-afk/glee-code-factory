@@ -417,7 +417,7 @@ export function ConversationChat({
           </p>
           <Button
             onClick={onComplete}
-            className="w-full py-6 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold gap-2 shadow-sm"
+            className="w-full py-6 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black gap-2 shadow-md transition-all"
           >
             Continuar para a próxima etapa <ArrowRight className="h-4 w-4" />
           </Button>

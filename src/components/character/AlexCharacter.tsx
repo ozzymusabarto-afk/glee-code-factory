@@ -1,29 +1,82 @@
+import { useState } from "react";
+import { Volume2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { WebSpeechAudioService } from "@/lib/scenario-engine/AudioService";
 
 export interface AlexCharacterProps {
-  pose?: "neutral" | "waving" | "talking" | "encouraging" | "listening" | "celebrating" | undefined;
-  size?: "sm" | "md" | "lg" | "avatar" | undefined;
+  pose?:
+    | "neutral"
+    | "waving"
+    | "talking"
+    | "encouraging"
+    | "listening"
+    | "celebrating"
+    | "hero"
+    | "explaining"
+    | undefined;
+  size?: "sm" | "md" | "lg" | "xl" | "hero" | "avatar" | undefined;
+  variant?: "photo" | "vector" | undefined;
   className?: string | undefined;
 }
 
 /**
- * AlexCharacter — Personagem humano jovem e amigável da jornada Polybot School.
- * Estilo: Ilustração editorial contemporânea (clean vector art, paleta azul navy, amarelo quente, branco e tons suaves).
- * Estático, elegante e expressivo, sem animações caóticas.
+ * AlexCharacter — Personagem oficial do Polybot School.
+ * Representa o modelo visual oficial da referência:
+ * Rapaz jovem, bonito, simpático, cabelo castanho ondulado, fones no pescoço,
+ * jaqueta azul com logotipo dourado e mochila.
  */
 export function AlexCharacter({
-  pose = "neutral",
+  pose = "hero",
   size = "md",
+  variant = "photo",
   className,
 }: AlexCharacterProps) {
+  const [imageError, setImageError] = useState(false);
+
   if (size === "avatar") {
     return <AlexAvatar className={className} />;
+  }
+
+  // Se o modo fotográfico estiver ativo e a imagem carregar com sucesso:
+  if (variant === "photo" && !imageError) {
+    const photoSrc =
+      pose === "explaining" || pose === "talking" || pose === "encouraging"
+        ? "/assets/character/alex-explaining.jpg"
+        : "/assets/character/alex-hero.jpg";
+
+    const dimensions = {
+      sm: "h-32 w-28",
+      md: "h-52 w-44",
+      lg: "h-72 w-60",
+      xl: "h-96 w-80",
+      hero: "h-[380px] w-[300px] max-w-full",
+    }[size];
+
+    return (
+      <div
+        className={cn(
+          "relative flex items-center justify-center select-none overflow-hidden rounded-3xl",
+          dimensions,
+          className,
+        )}
+      >
+        <img
+          src={photoSrc}
+          alt="Alex — Companheiro de Jornada Polybot School"
+          onError={() => setImageError(true)}
+          className="w-full h-full object-cover object-top drop-shadow-md rounded-3xl transition-transform duration-300 hover:scale-[1.02]"
+        />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/20 to-transparent pointer-events-none rounded-b-3xl" />
+      </div>
+    );
   }
 
   const dimensions = {
     sm: "h-28 w-28",
     md: "h-44 w-44",
     lg: "h-64 w-64",
+    xl: "h-80 w-80",
+    hero: "h-96 w-96",
   }[size];
 
   return (
@@ -194,18 +247,128 @@ export function AlexCharacter({
 }
 
 /**
- * AlexAvatar — Versão circular compacta para balões de chat e cabeçalhos.
+ * AlexAvatar — Versão circular de altíssima definição para balões de chat e cabeçalhos.
  */
 export function AlexAvatar({ className }: { className?: string | undefined }) {
+  const [error, setError] = useState(false);
+
   return (
     <div
       className={cn(
-        "relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-blue-200 bg-gradient-to-b from-blue-50 to-blue-100 shadow-sm",
+        "relative h-11 w-11 shrink-0 overflow-hidden rounded-full border-2 border-amber-400 bg-slate-900 shadow-sm",
         className,
       )}
     >
-      <div className="absolute inset-0 flex items-center justify-center transform translate-y-1 scale-125">
-        <AlexCharacter pose="neutral" size="sm" />
+      {!error ? (
+        <img
+          src="/assets/character/alex-avatar.jpg"
+          alt="Alex Avatar"
+          onError={() => setError(true)}
+          className="h-full w-full object-cover object-top"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center bg-blue-700 text-white font-black text-sm">
+          A
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * AlexCompanionCard — Cartão do companheiro Alex (conforme referência visual).
+ * Mostra o Alex com headphones, o balão "Vamos nessa? O inglês é mais simples do que você imagina!"
+ * e botão com áudio real do Alex falando em inglês.
+ */
+export function AlexCompanionCard({ className }: { className?: string | undefined }) {
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const playCompanionVoice = () => {
+    const audioService = new WebSpeechAudioService();
+    setIsPlaying(true);
+    audioService.speak("Let's do this together! English is much simpler than you think.", {
+      lang: "en-US",
+      rate: 0.9,
+    });
+    setTimeout(() => setIsPlaying(false), 3800);
+  };
+
+  return (
+    <div
+      className={cn(
+        "relative overflow-hidden rounded-3xl border border-slate-200/80 bg-gradient-to-b from-slate-900 via-slate-900 to-blue-950 p-6 text-white shadow-xl flex flex-col justify-between min-h-[310px]",
+        className,
+      )}
+    >
+      {/* Imagem de Fundo com Alex */}
+      <div className="absolute inset-0 opacity-40 mix-blend-luminosity overflow-hidden pointer-events-none">
+        <img
+          src="/assets/character/alex-hero.jpg"
+          alt=""
+          className="w-full h-full object-cover object-top scale-110"
+        />
+      </div>
+
+      {/* Balão de Fala do Alex */}
+      <div className="relative z-10 bg-white/95 text-slate-900 p-4 rounded-2xl shadow-md text-xs font-semibold leading-relaxed border border-white/40">
+        <p className="font-bold text-blue-900 mb-1">Vamos nessa?</p>
+        <p className="text-slate-700">
+          O inglês é mais simples do que você imagina! Estou aqui para praticar com você passo a passo.
+        </p>
+      </div>
+
+      {/* Barra de Áudio / Waveform e Identificação */}
+      <div className="relative z-10 mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <AlexAvatar className="h-10 w-10 ring-2 ring-amber-400/40" />
+          <div>
+            <span className="text-sm font-black tracking-tight block">Alex</span>
+            <span className="text-[11px] text-slate-300 font-medium">Seu companheiro de jornada</span>
+          </div>
+        </div>
+
+        {/* Botão de Áudio com Waveform */}
+        <button
+          type="button"
+          onClick={playCompanionVoice}
+          className={cn(
+            "flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold transition-all shadow-sm",
+            isPlaying
+              ? "bg-amber-400 text-slate-950 scale-105"
+              : "bg-white/15 hover:bg-white/25 text-white border border-white/20",
+          )}
+          title="Ouvir a voz do Alex"
+        >
+          <Volume2 className={cn("h-4 w-4", isPlaying && "animate-pulse text-slate-950")} />
+          <span className="text-[10px] uppercase tracking-wider">
+            {isPlaying ? "Falando..." : "Ouvir"}
+          </span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * AlexDicaCard — Widget com a "Dica do Alex" do cabeçalho da referência:
+ * "Little steps make big progress!"
+ */
+export function AlexDicaCard({ className }: { className?: string | undefined }) {
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-3 rounded-2xl border border-blue-100 bg-white/90 backdrop-blur-sm p-3 shadow-sm",
+        className,
+      )}
+    >
+      <AlexAvatar className="h-10 w-10 border border-blue-200" />
+      <div className="text-left">
+        <span className="text-[10px] font-black uppercase tracking-wider text-blue-600 block">
+          Dica do Alex
+        </span>
+        <p className="text-xs font-bold text-slate-800 italic">
+          "Little steps make big progress!"
+        </p>
       </div>
     </div>
   );
