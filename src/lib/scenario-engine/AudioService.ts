@@ -13,6 +13,28 @@ export interface AudioService {
 }
 
 export class WebSpeechAudioService implements AudioService {
+  private cachedVoices: SpeechSynthesisVoice[] = [];
+
+  constructor() {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      this.loadVoices();
+      if (typeof window.speechSynthesis.addEventListener === 'function') {
+        window.speechSynthesis.addEventListener('voiceschanged', () => this.loadVoices());
+      } else if ('onvoiceschanged' in window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = () => this.loadVoices();
+      }
+    }
+  }
+
+  private loadVoices(): void {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      const v = window.speechSynthesis.getVoices();
+      if (v.length > 0) {
+        this.cachedVoices = v;
+      }
+    }
+  }
+
   isSupported(): boolean {
     return (
       typeof window !== 'undefined' &&
@@ -33,7 +55,8 @@ export class WebSpeechAudioService implements AudioService {
     utterance.pitch = options.pitch ?? 0.95;
     if (options.volume !== undefined) utterance.volume = options.volume;
 
-    const availableVoices = window.speechSynthesis.getVoices();
+    const availableVoices =
+      this.cachedVoices.length > 0 ? this.cachedVoices : window.speechSynthesis.getVoices();
     if (availableVoices.length > 0) {
       if (options.voiceName) {
         const customVoice = availableVoices.find((v) => v.name === options.voiceName);

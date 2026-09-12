@@ -8,11 +8,14 @@ import {
   Crown,
   Settings,
   Plane,
+  Sparkles,
+  Headphones,
+  MessageSquare,
+  CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AlexCharacter, AlexAvatar, AlexCompanionCard, AlexDicaCard } from "@/components/character/AlexCharacter";
+import { AlexCompanionCard, AlexDicaCard } from "@/components/character/AlexCharacter";
 import { ScenarioCard, ScenarioCardProps } from "@/components/scenario/ScenarioCard";
-import { CharacterRoster, InterfaceElementsShowcase } from "@/components/character/CharacterRoster";
 import { useAppStore } from "@/hooks/use-app-store";
 
 export const Route = createFileRoute("/")({
@@ -211,46 +214,56 @@ function PolybotSchoolHome() {
           <div className="absolute -bottom-24 right-1/4 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
-            {/* Lado Esquerdo do Hero: Apresentação, Alex e CTA */}
-            <div className="lg:col-span-7 space-y-6 text-left">
-              <div className="flex items-center gap-2">
-                <span className="rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 px-3.5 py-1 text-xs font-black uppercase tracking-wider">
-                  Sua jornada começa aqui
-                </span>
-                <span className="text-xs text-slate-400">
-                  · Método Natural A0
-                </span>
-              </div>
-
-              <div className="space-y-3">
-                <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-[1.12]">
-                  Your journey into English{" "}
-                  <span className="text-amber-400 font-serif italic block md:inline font-bold">
-                    starts here.
-                  </span>
-                </h1>
-                <p className="text-sm md:text-base text-slate-300 font-medium max-w-lg leading-relaxed">
-                  Mais do que um app. Uma jornada para o seu mundo.
-                  Você não precisa saber inglês para começar: Alex acompanha cada fala com você.
-                </p>
-              </div>
-
-              {/* Botão Primário "Começar →" em Amarelo/Dourado Oficial */}
-              <div className="flex flex-wrap items-center gap-4 pt-2">
-                <Button
-                  onClick={() => navigate({ to: "/unit/1" })}
-                  className="rounded-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-base md:text-lg px-8 py-7 shadow-lg shadow-amber-400/25 gap-3 hover:gap-4 transition-all"
-                >
-                  <span>Começar</span>
-                  <ArrowRight className="h-5 w-5 text-slate-950" />
-                </Button>
-
-                <div className="flex items-center gap-3 text-xs text-slate-300">
-                  <AlexAvatar className="h-9 w-9 border border-amber-400/60" />
-                  <div>
-                    <span className="font-bold text-white block">Alex</span>
-                    <span className="text-slate-400 text-[11px]">Seu companheiro de jornada</span>
+            {/* Lado Esquerdo do Hero: Alex em Meio-Corpo + Apresentação e CTA */}
+            <div className="lg:col-span-7 flex flex-col sm:flex-row items-center sm:items-start gap-6 text-left">
+              {/* Modelo Visual Oficial do Alex em Meio-Corpo */}
+              <div className="shrink-0 relative group">
+                <div className="w-36 h-48 sm:w-44 sm:h-56 md:w-52 md:h-64 rounded-3xl overflow-hidden shadow-2xl border-2 border-amber-400/50 bg-slate-900 ring-4 ring-amber-400/10 transition-transform duration-300 group-hover:scale-[1.02]">
+                  <img
+                    src="/assets/character/alex-hero.jpg"
+                    alt="Alex — Companheiro Oficial do Polybot School"
+                    className="w-full h-full object-cover object-top"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-2.5 text-center">
+                    <span className="text-xs font-black text-amber-400 block">Alex</span>
+                    <span className="text-[10px] text-slate-300">Seu companheiro de jornada</span>
                   </div>
+                </div>
+              </div>
+
+              {/* Textos de Apresentação e Botão Principal */}
+              <div className="space-y-4 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 px-3.5 py-1 text-xs font-black uppercase tracking-wider">
+                    Sua jornada começa aqui
+                  </span>
+                  <span className="text-xs text-slate-400">
+                    · Método Natural A0
+                  </span>
+                </div>
+
+                <div className="space-y-2">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-[1.12]">
+                    Your journey into English{" "}
+                    <span className="text-amber-400 font-serif italic block sm:inline font-bold">
+                      starts here.
+                    </span>
+                  </h1>
+                  <p className="text-xs sm:text-sm text-slate-300 font-medium leading-relaxed">
+                    Mais do que um app. Uma jornada para o seu mundo.
+                    Você não precisa saber inglês para começar: Alex acompanha cada fala com você em situações reais da vida cotidiana.
+                  </p>
+                </div>
+
+                {/* Botão Primário "Começar Agora" em Amarelo/Dourado Oficial */}
+                <div className="pt-2">
+                  <Button
+                    onClick={() => navigate({ to: "/unit/1" })}
+                    className="rounded-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-sm sm:text-base px-7 py-6 shadow-lg shadow-amber-400/25 gap-3 hover:gap-4 transition-all"
+                  >
+                    <span>Começar Agora</span>
+                    <ArrowRight className="h-5 w-5 text-slate-950" />
+                  </Button>
                 </div>
               </div>
             </div>
@@ -367,22 +380,74 @@ function PolybotSchoolHome() {
         </section>
 
         {/* ============================================================ */}
-        {/* 4. SEÇÕES INFERIORES: COMPANHEIRO, PERSONAGENS E INTERFACE   */}
+        {/* 4. SEÇÃO DO ALUNO: COMPANHEIRO ALEX E O MÉTODO POLYBOT       */}
         {/* ============================================================ */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          {/* Card do Companheiro Alex */}
-          <div className="lg:col-span-4 flex">
+          {/* Card do Companheiro Alex Interativo com Áudio */}
+          <div className="lg:col-span-5 flex">
             <AlexCompanionCard className="w-full" />
           </div>
 
-          {/* Os Personagens */}
-          <div className="lg:col-span-5 flex">
-            <CharacterRoster className="w-full" />
-          </div>
+          {/* Card de Metodologia e Apoio ao Aluno */}
+          <div className="lg:col-span-7 flex flex-col justify-between bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-blue-600 text-xs font-black uppercase tracking-wider">
+                <Sparkles className="h-4 w-4" />
+                <span>Como você aprende com o Polybot School</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                Inglês contextualizado para o mundo real
+              </h3>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Você não precisa decorar listas nem se preocupar com testes mecânicos. Aqui cada etapa faz parte de uma conversa viva com Alex.
+              </p>
+            </div>
 
-          {/* Elementos da Interface */}
-          <div className="lg:col-span-3 flex">
-            <InterfaceElementsShowcase className="w-full" />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+              <div className="rounded-2xl bg-slate-50 p-4 border border-slate-100 space-y-2">
+                <div className="h-8 w-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                  <Headphones className="h-4 w-4" />
+                </div>
+                <h4 className="text-xs font-black text-slate-900">1. Shadowing Natural</h4>
+                <p className="text-[11px] text-slate-500 leading-relaxed">
+                  Ouça no ritmo nativo e repita junto até ganhar segurança na pronúncia.
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-slate-50 p-4 border border-slate-100 space-y-2">
+                <div className="h-8 w-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center">
+                  <CheckCircle2 className="h-4 w-4" />
+                </div>
+                <h4 className="text-xs font-black text-slate-900">2. Prática Contextual</h4>
+                <p className="text-[11px] text-slate-500 leading-relaxed">
+                  Responda diretamente ao que Alex pergunta na situação, usando voz ou escrita.
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-slate-50 p-4 border border-slate-100 space-y-2">
+                <div className="h-8 w-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center">
+                  <MessageSquare className="h-4 w-4" />
+                </div>
+                <h4 className="text-xs font-black text-slate-900">3. Conversa Viva</h4>
+                <p className="text-[11px] text-slate-500 leading-relaxed">
+                  Interaja sem medo de errar: feedback acolhedor e sem punições ou vidas perdidas.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-100">
+              <span className="text-xs text-slate-500">
+                Pronto para praticar seu primeiro contato em inglês?
+              </span>
+              <Button
+                onClick={() => navigate({ to: "/unit/1" })}
+                variant="outline"
+                className="rounded-xl border-amber-400/80 text-slate-900 hover:bg-amber-50 font-bold text-xs px-4 py-2"
+              >
+                <span>Continuar Unit 1</span>
+                <ArrowRight className="h-3.5 w-3.5 ml-1.5 text-amber-500" />
+              </Button>
+            </div>
           </div>
         </section>
       </main>
