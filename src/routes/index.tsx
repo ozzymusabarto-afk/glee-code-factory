@@ -1,20 +1,18 @@
+import { useState, useRef } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
-  Flame,
-  Star,
-  BookOpen,
-  Trophy,
-  Crown,
+  Volume2,
   Settings,
   Plane,
   Sparkles,
+  MapPin,
   Headphones,
-  MessageSquare,
   CheckCircle2,
+  Compass,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AlexCompanionCard, AlexDicaCard } from "@/components/character/AlexCharacter";
+import { WebSpeechAudioService } from "@/lib/scenario-engine/AudioService";
 import { ScenarioCard, ScenarioCardProps } from "@/components/scenario/ScenarioCard";
 import { useAppStore } from "@/hooks/use-app-store";
 
@@ -106,18 +104,36 @@ const SCENARIOS_LIST: ScenarioDefinition[] = [
 function PolybotSchoolHome() {
   const navigate = useNavigate();
   const displayName = useAppStore((state) => state.displayName);
+  const audioServiceRef = useRef<WebSpeechAudioService | null>(null);
+  const [isPlayingGreeting, setIsPlayingGreeting] = useState(false);
+
+  if (!audioServiceRef.current) {
+    audioServiceRef.current = new WebSpeechAudioService();
+  }
+
+  const handlePlayAlexGreeting = () => {
+    if (!audioServiceRef.current) return;
+    setIsPlayingGreeting(true);
+    audioServiceRef.current.speak(
+      "Hi! I'm Alex. Nice to meet you! Let's start with a very simple conversation.",
+      {
+        rate: 0.95,
+        pitch: 0.95,
+      },
+    );
+    setTimeout(() => setIsPlayingGreeting(false), 4500);
+  };
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans flex flex-col justify-between">
       {/* ============================================================ */}
-      {/* 1. HEADER DA APLICAÇÃO (CONFORME REFERÊNCIA VISUAL)          */}
+      {/* 1. HEADER SERENO E ELEGANTE (SEM GAMIFICAÇÃO INFANTIL)      */}
       {/* ============================================================ */}
-      <header className="border-b border-slate-200/80 bg-white/95 backdrop-blur-md sticky top-0 z-40 px-6 py-3.5 shadow-xs">
+      <header className="border-b border-slate-200/80 bg-white/95 backdrop-blur-md sticky top-0 z-40 px-4 sm:px-6 py-3.5 shadow-2xs">
         <div className="mx-auto max-w-7xl flex items-center justify-between gap-4">
           {/* Logo Polybot School Oficial */}
           <Link to="/" className="flex items-center gap-3 select-none group">
             <div className="h-10 w-10 rounded-2xl bg-amber-400 flex items-center justify-center text-slate-950 font-black shadow-md shadow-amber-400/20 group-hover:scale-105 transition-transform">
-              {/* Ícone estilizado do balão de fala */}
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                 <path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-6l-4 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
               </svg>
@@ -137,55 +153,30 @@ function PolybotSchoolHome() {
             </div>
           </Link>
 
-          {/* Painel do Aluno: Status, Jornada, Conquistas e Dica */}
-          <div className="hidden lg:flex items-center gap-6">
-            {/* Dica do Alex */}
-            <AlexDicaCard className="py-2 px-3.5" />
-
-            {/* Progresso da Jornada */}
-            <div className="flex flex-col gap-1 w-36">
-              <div className="flex justify-between text-[11px] font-bold">
-                <span className="text-slate-500">Sua jornada</span>
-                <span className="text-blue-700 font-black">1 de 7</span>
-              </div>
-              <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full w-[14%]" />
-              </div>
+          {/* Painel do Aluno: Ponto Atual e Perfil Limpo */}
+          <div className="hidden sm:flex items-center gap-6">
+            {/* Indicador do Ponto Atual */}
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-600 bg-slate-100/80 px-3.5 py-1.5 rounded-full border border-slate-200/60">
+              <MapPin className="h-3.5 w-3.5 text-amber-600" />
+              <span>Ponto de partida: Saguão do Hotel</span>
+              <span className="text-slate-300">·</span>
+              <span className="text-slate-500 font-medium">Nível Inicial A0</span>
             </div>
 
-            {/* Conquistas (Medalhas) */}
-            <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-50 border border-slate-200/70">
-              <div className="h-7 w-7 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center" title="Primeira Conquista">
-                <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
-              </div>
-              <div className="h-7 w-7 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center" title="Foco diário">
-                <Flame className="h-4 w-4" />
-              </div>
-              <div className="h-7 w-7 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center" title="Vocabulário ativo">
-                <BookOpen className="h-4 w-4" />
-              </div>
-              <div className="h-7 w-7 rounded-xl bg-slate-200/60 text-slate-400 flex items-center justify-center" title="Troféu desbloqueável">
-                <Trophy className="h-4 w-4" />
-              </div>
-              <div className="h-7 w-7 rounded-xl bg-slate-200/60 text-slate-400 flex items-center justify-center" title="Fluência total">
-                <Crown className="h-4 w-4" />
-              </div>
-            </div>
-
-            {/* Perfil do Usuário */}
+            {/* Perfil do Estudante */}
             <Link
               to="/profile"
-              className="flex items-center gap-2.5 pl-3 border-l border-slate-200 text-left hover:opacity-90"
+              className="flex items-center gap-2.5 pl-3 border-l border-slate-200 text-left hover:opacity-90 transition-opacity"
             >
-              <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black text-xs flex items-center justify-center shadow-xs">
+              <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-blue-700 to-slate-900 text-white font-black text-xs flex items-center justify-center shadow-xs">
                 {(displayName || "M").charAt(0).toUpperCase()}
               </div>
               <div>
                 <span className="text-xs font-black text-slate-900 block leading-tight">
                   {displayName ? `Olá, ${displayName}` : "Olá, Estudante"}
                 </span>
-                <span className="text-[10px] font-bold text-slate-400 block">
-                  Iniciante · A0
+                <span className="text-[10px] font-medium text-slate-400 block">
+                  Meu perfil
                 </span>
               </div>
               <Settings className="h-4 w-4 text-slate-400 hover:text-slate-700 ml-1" />
@@ -193,7 +184,7 @@ function PolybotSchoolHome() {
           </div>
 
           {/* Acesso rápido mobile */}
-          <div className="flex lg:hidden items-center gap-2">
+          <div className="flex sm:hidden items-center gap-2">
             <Link
               to="/profile"
               className="p-2 rounded-xl bg-slate-100 text-slate-700"
@@ -205,20 +196,20 @@ function PolybotSchoolHome() {
       </header>
 
       {/* ============================================================ */}
-      {/* 2. HERO BANNER CINEMATOGRÁFICO COM ALEX E DESTAQUE DA UNIT 1 */}
+      {/* 2. O ENCONTRO COM ALEX NO SAGUÃO DO HOTEL (HERO CONTÍNUO)   */}
       {/* ============================================================ */}
-      <main className="mx-auto max-w-7xl w-full p-4 md:p-8 space-y-10">
-        <section className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-[#0B132B] via-[#0F172A] to-[#1E293B] text-white p-6 md:p-12 shadow-2xl border border-slate-800">
-          {/* Efeito de luz ambiente e partículas suaves de fundo */}
-          <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-24 right-1/4 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+      <main className="mx-auto max-w-7xl w-full p-4 md:p-8 space-y-12">
+        <section className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-[#0B132B] via-[#0F172A] to-[#16203D] text-white p-6 sm:p-10 md:p-12 shadow-2xl border border-slate-800">
+          {/* Efeitos suaves de luz ambiente */}
+          <div className="absolute -top-28 -left-28 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-28 -right-12 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
-            {/* Lado Esquerdo do Hero: Alex em Meio-Corpo + Apresentação e CTA */}
-            <div className="lg:col-span-7 flex flex-col sm:flex-row items-center sm:items-start gap-6 text-left">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
+            {/* Lado Esquerdo: Alex Esperando o Aluno e o Convite Pessoal */}
+            <div className="lg:col-span-6 flex flex-col sm:flex-row items-center sm:items-start gap-6 text-left">
               {/* Modelo Visual Oficial do Alex em Meio-Corpo */}
               <div className="shrink-0 relative group">
-                <div className="w-36 h-48 sm:w-44 sm:h-56 md:w-52 md:h-64 rounded-3xl overflow-hidden shadow-2xl border-2 border-amber-400/50 bg-slate-900 ring-4 ring-amber-400/10 transition-transform duration-300 group-hover:scale-[1.02]">
+                <div className="w-40 h-52 sm:w-48 sm:h-64 md:w-56 md:h-72 rounded-3xl overflow-hidden shadow-2xl border-2 border-amber-400/50 bg-slate-900 ring-4 ring-amber-400/10 transition-transform duration-300 group-hover:scale-[1.02]">
                   <img
                     src="/assets/character/alex-hero.jpg"
                     alt="Alex — Companheiro Oficial do Polybot School"
@@ -231,102 +222,100 @@ function PolybotSchoolHome() {
                 </div>
               </div>
 
-              {/* Textos de Apresentação e Botão Principal */}
+              {/* O Convite Direto do Alex */}
               <div className="space-y-4 flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 px-3.5 py-1 text-xs font-black uppercase tracking-wider">
-                    Sua jornada começa aqui
-                  </span>
-                  <span className="text-xs text-slate-400">
-                    · Método Natural A0
-                  </span>
+                <div className="inline-flex items-center gap-2 rounded-full bg-amber-400/15 text-amber-300 border border-amber-400/25 px-3 py-1 text-[11px] font-bold">
+                  <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  <span>Alex está esperando por você</span>
                 </div>
 
-                <div className="space-y-2">
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-[1.12]">
-                    Your journey into English{" "}
-                    <span className="text-amber-400 font-serif italic block sm:inline font-bold">
-                      starts here.
+                <div className="relative rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 p-4 sm:p-5 space-y-2.5 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black uppercase tracking-wider text-amber-400">
+                      Alex diz:
                     </span>
-                  </h1>
-                  <p className="text-xs sm:text-sm text-slate-300 font-medium leading-relaxed">
-                    Mais do que um app. Uma jornada para o seu mundo.
-                    Você não precisa saber inglês para começar: Alex acompanha cada fala com você em situações reais da vida cotidiana.
+                    <button
+                      type="button"
+                      onClick={handlePlayAlexGreeting}
+                      className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-300 hover:text-amber-200 bg-white/10 hover:bg-white/15 px-2.5 py-1 rounded-full border border-amber-400/30 transition-colors"
+                      title="Ouvir a voz de Alex"
+                    >
+                      <Volume2 className={`h-3.5 w-3.5 ${isPlayingGreeting ? "animate-pulse text-amber-400" : ""}`} />
+                      <span>{isPlayingGreeting ? "Falando..." : "Ouvir Alex"}</span>
+                    </button>
+                  </div>
+
+                  <p className="text-xl sm:text-2xl font-black text-white tracking-tight leading-snug">
+                    "Hi! I'm Alex."
+                  </p>
+                  <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
+                    Que bom que você chegou. Vamos começar com uma conversa bem simples no saguão do hotel?
                   </p>
                 </div>
 
-                {/* Botão Primário "Começar Agora" em Amarelo/Dourado Oficial */}
-                <div className="pt-2">
-                  <Button
-                    onClick={() => navigate({ to: "/unit/1" })}
-                    className="rounded-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-sm sm:text-base px-7 py-6 shadow-lg shadow-amber-400/25 gap-3 hover:gap-4 transition-all"
-                  >
-                    <span>Começar Agora</span>
-                    <ArrowRight className="h-5 w-5 text-slate-950" />
-                  </Button>
-                </div>
+                <p className="text-xs text-slate-300/80 leading-relaxed">
+                  Você não precisa saber falar inglês antes de começar. Alex acompanha cada frase com você.
+                </p>
               </div>
             </div>
 
-            {/* Lado Direito do Hero: Card de Destaque da Unit 1 (Conforme Referência) */}
-            <div className="lg:col-span-5 flex justify-center lg:justify-end">
-              <div className="w-full max-w-md rounded-3xl bg-white text-slate-900 shadow-2xl p-6 border-2 border-amber-400/80 ring-4 ring-amber-400/15 flex flex-col justify-between gap-4">
+            {/* Lado Direito: A Situação Atual (Home & Hotel) Naturalmente Conectada */}
+            <div className="lg:col-span-6 flex justify-center lg:justify-end">
+              <div className="w-full max-w-lg rounded-3xl bg-white text-slate-900 shadow-2xl p-6 sm:p-7 border-2 border-amber-400/90 ring-4 ring-amber-400/15 flex flex-col justify-between gap-5">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center font-bold">
-                      📍
+                  <div className="flex items-center gap-2.5">
+                    <div className="h-8 w-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-black text-xs">
+                      1
                     </div>
                     <div>
                       <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
-                        Mapa da Jornada
+                        Situação Atual · Ponto de Partida
                       </span>
                       <span className="text-xs font-bold text-slate-800">
-                        Situações Cotidianas da Vida Real
+                        Home & Hotel: Hello!
                       </span>
                     </div>
                   </div>
-                  <span className="text-[10px] font-black text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full">
-                    1 de 7 disponíveis
+                  <span className="text-[10px] font-black text-slate-900 bg-amber-400 px-3 py-1 rounded-full shadow-2xs">
+                    📍 Comece Aqui
                   </span>
                 </div>
 
-                {/* Imagem do Saguão do Hotel */}
-                <div className="relative h-44 w-full rounded-2xl overflow-hidden bg-slate-100 shadow-inner">
+                {/* Imagem Atraente do Saguão do Hotel */}
+                <div className="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-slate-100 shadow-inner group">
                   <img
                     src="/assets/scenarios/hotel-lobby.jpg"
-                    alt="Saguão do Hotel"
-                    className="h-full w-full object-cover"
+                    alt="Saguão do Hotel Internacional"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
                   <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white">
-                    <span className="rounded-full bg-slate-900/80 backdrop-blur-md px-2.5 py-1 text-[10px] font-black border border-white/20">
+                    <span className="rounded-full bg-slate-950/80 backdrop-blur-md px-2.5 py-1 text-[10px] font-black border border-white/20">
                       Iniciante · A0
                     </span>
-                    <span className="text-xs font-bold drop-shadow-sm">
-                      Hotel Lobby
+                    <span className="text-xs font-bold drop-shadow-sm flex items-center gap-1.5">
+                      <MapPin className="h-3.5 w-3.5 text-amber-400" />
+                      <span>Saguão do Hotel</span>
                     </span>
                   </div>
                 </div>
 
-                {/* Título e Chamada da Unidade 1 */}
-                <div>
+                {/* Descrição Imersiva da Situação */}
+                <div className="space-y-1">
                   <h3 className="text-xl font-black text-slate-950 tracking-tight">
-                    HOME & HOTEL
+                    Seu primeiro encontro em inglês
                   </h3>
-                  <p className="text-sm font-bold text-slate-700 mt-0.5">
-                    Unit 1: Hello!
-                  </p>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Conhecendo Alex no saguão de um hotel internacional.
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    Você acabou de chegar a um hotel internacional e Alex está na recepção para receber você. Diga um simples "Hello" e aprenda a se apresentar com naturalidade.
                   </p>
                 </div>
 
-                {/* Botão de Ação do Card */}
+                {/* Ação Primária Contínua */}
                 <Button
                   onClick={() => navigate({ to: "/unit/1" })}
-                  className="w-full rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-sm py-6 shadow-md transition-colors gap-2"
+                  className="w-full rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-sm sm:text-base py-6 shadow-md transition-all gap-2 hover:gap-3"
                 >
-                  <span>Iniciar lição agora</span>
+                  <span>Entrar no hotel com Alex</span>
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
@@ -335,29 +324,32 @@ function PolybotSchoolHome() {
         </section>
 
         {/* ============================================================ */}
-        {/* 3. TRILHA DA JORNADA: 7 SITUAÇÕES DA VIDA REAL               */}
+        {/* 3. A ROTA PELO MUNDO: ONDE O INGLÊS ACONTECE                  */}
         {/* ============================================================ */}
         <section className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-2 border-b border-slate-200/60">
             <div>
               <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-blue-600" />
-                <h2 className="text-xs font-black uppercase tracking-[0.25em] text-slate-400">
-                  Mapa da Jornada
+                <Compass className="h-4 w-4 text-blue-600" />
+                <h2 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">
+                  Sua Rota Pelo Mundo
                 </h2>
               </div>
-              <p className="text-2xl font-black text-slate-900 tracking-tight mt-1">
-                Situações Cotidianas da Vida Real
+              <p className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mt-1">
+                Onde o inglês acontece com você e Alex
+              </p>
+              <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl">
+                Você começa hoje no hotel e, passo a passo, descobre como se comunicar em cafés, ruas, transportes e viagens pelo mundo.
               </p>
             </div>
 
-            <div className="flex items-center gap-2 text-xs font-bold text-slate-500 bg-white border border-slate-200/80 px-3.5 py-1.5 rounded-full shadow-2xs">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              <span>1 de 7 disponíveis</span>
+            <div className="shrink-0 flex items-center gap-2 text-xs font-bold text-slate-600 bg-white border border-slate-200/80 px-3.5 py-1.5 rounded-full shadow-2xs">
+              <span className="h-2 w-2 rounded-full bg-amber-400" />
+              <span>1 de 7 disponíveis hoje</span>
             </div>
           </div>
 
-          {/* Grid dos 7 Cenários da Referência */}
+          {/* Grid dos 7 Cenários da Jornada */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
             {SCENARIOS_LIST.map((scen) => (
               <ScenarioCard
@@ -380,80 +372,60 @@ function PolybotSchoolHome() {
         </section>
 
         {/* ============================================================ */}
-        {/* 4. SEÇÃO DO ALUNO: COMPANHEIRO ALEX E O MÉTODO POLYBOT       */}
+        {/* 4. ACOLHIMENTO E ORIENTAÇÃO (SUBORDINADA, SEGURANÇA P/ ADULTOS)*/}
         {/* ============================================================ */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          {/* Card do Companheiro Alex Interativo com Áudio */}
-          <div className="lg:col-span-5 flex">
-            <AlexCompanionCard className="w-full" />
-          </div>
-
-          {/* Card de Metodologia e Apoio ao Aluno */}
-          <div className="lg:col-span-7 flex flex-col justify-between bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-blue-600 text-xs font-black uppercase tracking-wider">
-                <Sparkles className="h-4 w-4" />
-                <span>Como você aprende com o Polybot School</span>
+        <section className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-2xs">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="space-y-1.5 max-w-md">
+              <div className="flex items-center gap-2 text-blue-700 text-xs font-black uppercase tracking-wider">
+                <Sparkles className="h-4 w-4 text-amber-500" />
+                <span>Como nós vamos praticar juntos</span>
               </div>
-              <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                Inglês contextualizado para o mundo real
+              <h3 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
+                Um método tranquilo e feito para adultos
               </h3>
-              <p className="text-sm text-slate-600 leading-relaxed">
-                Você não precisa decorar listas nem se preocupar com testes mecânicos. Aqui cada etapa faz parte de uma conversa viva com Alex.
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Sem testes de decoreba, sem notas punitivas e sem sensação de aplicativo infantil. Aqui o foco é você se sentir seguro para falar.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-              <div className="rounded-2xl bg-slate-50 p-4 border border-slate-100 space-y-2">
-                <div className="h-8 w-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center">
-                  <Headphones className="h-4 w-4" />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 flex-1 w-full">
+              <div className="rounded-2xl bg-slate-50/80 p-3.5 border border-slate-100 space-y-1">
+                <div className="flex items-center gap-2 text-xs font-black text-slate-900">
+                  <Headphones className="h-4 w-4 text-blue-600 shrink-0" />
+                  <span>1. No seu ritmo</span>
                 </div>
-                <h4 className="text-xs font-black text-slate-900">1. Shadowing Natural</h4>
                 <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Ouça no ritmo nativo e repita junto até ganhar segurança na pronúncia.
+                  Ouça Alex no ritmo natural e repita quantas vezes precisar (Shadowing).
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-slate-50 p-4 border border-slate-100 space-y-2">
-                <div className="h-8 w-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center">
-                  <CheckCircle2 className="h-4 w-4" />
+              <div className="rounded-2xl bg-slate-50/80 p-3.5 border border-slate-100 space-y-1">
+                <div className="flex items-center gap-2 text-xs font-black text-slate-900">
+                  <CheckCircle2 className="h-4 w-4 text-amber-600 shrink-0" />
+                  <span>2. Situação real</span>
                 </div>
-                <h4 className="text-xs font-black text-slate-900">2. Prática Contextual</h4>
                 <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Responda diretamente ao que Alex pergunta na situação, usando voz ou escrita.
+                  Responda diretamente ao que Alex pergunta, usando voz ou escrita.
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-slate-50 p-4 border border-slate-100 space-y-2">
-                <div className="h-8 w-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center">
-                  <MessageSquare className="h-4 w-4" />
+              <div className="rounded-2xl bg-slate-50/80 p-3.5 border border-slate-100 space-y-1">
+                <div className="flex items-center gap-2 text-xs font-black text-slate-900">
+                  <Sparkles className="h-4 w-4 text-indigo-600 shrink-0" />
+                  <span>3. Sem punições</span>
                 </div>
-                <h4 className="text-xs font-black text-slate-900">3. Conversa Viva</h4>
                 <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Interaja sem medo de errar: feedback acolhedor e sem punições ou vidas perdidas.
+                  Sem vidas perdidas nem pressa. Cada tentativa aproxima você da fluência.
                 </p>
               </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-100">
-              <span className="text-xs text-slate-500">
-                Pronto para praticar seu primeiro contato em inglês?
-              </span>
-              <Button
-                onClick={() => navigate({ to: "/unit/1" })}
-                variant="outline"
-                className="rounded-xl border-amber-400/80 text-slate-900 hover:bg-amber-50 font-bold text-xs px-4 py-2"
-              >
-                <span>Continuar Unit 1</span>
-                <ArrowRight className="h-3.5 w-3.5 ml-1.5 text-amber-500" />
-              </Button>
             </div>
           </div>
         </section>
       </main>
 
       {/* ============================================================ */}
-      {/* 5. RODAPÉ DA MARCA (CONFORME REFERÊNCIA VISUAL)              */}
+      {/* 5. RODAPÉ SÉRIO E EDITORIAL                                  */}
       {/* ============================================================ */}
       <footer className="border-t border-slate-200/80 bg-white py-8 px-6 mt-12 text-slate-500 text-xs">
         <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-4">

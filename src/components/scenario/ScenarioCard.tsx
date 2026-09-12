@@ -54,11 +54,14 @@ export function ScenarioCard({
           {number}
         </div>
 
-        {/* Badge de Bloqueio se bloqueado */}
-        {!isAvailable && (
-          <div className="absolute top-3 right-3 flex items-center gap-1 rounded-full bg-slate-900/75 backdrop-blur-md px-2.5 py-1 text-[10px] font-bold text-white shadow-sm border border-white/20">
-            <Lock className="h-3 w-3" />
-            <span>Bloqueado</span>
+        {/* Badge da Situação */}
+        {isAvailable ? (
+          <div className="absolute top-3 right-3 flex items-center gap-1 rounded-full bg-amber-400 text-slate-950 px-2.5 py-1 text-[10px] font-black shadow-sm">
+            <span>📍 Ponto atual</span>
+          </div>
+        ) : (
+          <div className="absolute top-3 right-3 flex items-center gap-1 rounded-full bg-slate-950/70 backdrop-blur-md px-2.5 py-1 text-[10px] font-medium text-slate-200 border border-white/10">
+            <span>Próximo destino</span>
           </div>
         )}
       </div>
@@ -75,7 +78,7 @@ export function ScenarioCard({
         </div>
 
         {/* Nível e Ação */}
-        <div className="space-y-3 pt-2 border-t border-slate-100">
+        <div className="space-y-2.5 pt-2 border-t border-slate-100">
           <div className="flex items-center justify-between text-[10px] font-bold text-slate-500">
             <span className="rounded-md bg-slate-100 px-2 py-0.5 text-slate-700">
               {levelBadge}
@@ -87,12 +90,12 @@ export function ScenarioCard({
               type="button"
               className="w-full flex items-center justify-center gap-2 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-xs py-2.5 shadow-sm transition-colors"
             >
-              <span>Continuar</span>
+              <span>Entrar com Alex</span>
               <ArrowRight className="h-3.5 w-3.5" />
             </button>
           ) : (
-            <div className="w-full text-center py-2 text-[11px] font-bold text-slate-400 bg-slate-50 rounded-xl">
-              Em breve
+            <div className="w-full text-center py-2 text-[10px] font-semibold text-slate-400 bg-slate-50 rounded-xl border border-slate-100">
+              Destino seguinte
             </div>
           )}
         </div>
