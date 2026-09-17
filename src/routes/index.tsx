@@ -222,101 +222,71 @@ function PolybotSchoolHome() {
                 </div>
               </div>
 
-              {/* O Convite Direto do Alex */}
-              <div className="space-y-4 flex-1">
-                <div className="inline-flex items-center gap-2 rounded-full bg-amber-400/15 text-amber-300 border border-amber-400/25 px-3 py-1 text-[11px] font-bold">
-                  <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
-                  <span>Alex está esperando por você</span>
-                </div>
+              {/* O Convite Direto do Alex em formato de balão real */}
+              <div className="flex-1 w-full relative">
+                <div className="relative rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 p-5 sm:p-6 text-white shadow-lg space-y-2">
+                  {/* Rabicho do balão apontando para o Alex */}
+                  <div className="hidden sm:block absolute -left-2.5 top-8 w-0 h-0 border-t-8 border-t-transparent border-r-[11px] border-r-white/20 border-b-8 border-b-transparent" />
 
-                <div className="relative rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 p-4 sm:p-5 space-y-2.5 shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-black uppercase tracking-wider text-amber-400">
-                      Alex diz:
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                      "Hi! I'm Alex."
                     </span>
                     <button
                       type="button"
                       onClick={handlePlayAlexGreeting}
-                      className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-300 hover:text-amber-200 bg-white/10 hover:bg-white/15 px-2.5 py-1 rounded-full border border-amber-400/30 transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-300 hover:text-amber-200 bg-amber-400/15 hover:bg-amber-400/25 px-3 py-1.5 rounded-full border border-amber-400/30 transition-all shrink-0"
                       title="Ouvir a voz de Alex"
                     >
-                      <Volume2 className={`h-3.5 w-3.5 ${isPlayingGreeting ? "animate-pulse text-amber-400" : ""}`} />
-                      <span>{isPlayingGreeting ? "Falando..." : "Ouvir Alex"}</span>
+                      <Volume2 className={`h-4 w-4 ${isPlayingGreeting ? "animate-pulse text-amber-400" : ""}`} />
+                      <span>{isPlayingGreeting ? "Ouvindo..." : "Ouvir Alex"}</span>
                     </button>
                   </div>
 
-                  <p className="text-xl sm:text-2xl font-black text-white tracking-tight leading-snug">
-                    "Hi! I'm Alex."
-                  </p>
-                  <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
-                    Que bom que você chegou. Vamos começar com uma conversa bem simples no saguão do hotel?
+                  <p className="text-sm sm:text-base text-slate-200 font-medium leading-relaxed">
+                    Que bom que você chegou. Vamos começar com uma conversa bem simples?
                   </p>
                 </div>
-
-                <p className="text-xs text-slate-300/80 leading-relaxed">
-                  Você não precisa saber falar inglês antes de começar. Alex acompanha cada frase com você.
-                </p>
               </div>
             </div>
 
             {/* Lado Direito: A Situação Atual (Home & Hotel) Naturalmente Conectada */}
             <div className="lg:col-span-6 flex justify-center lg:justify-end">
-              <div className="w-full max-w-lg rounded-3xl bg-white text-slate-900 shadow-2xl p-6 sm:p-7 border-2 border-amber-400/90 ring-4 ring-amber-400/15 flex flex-col justify-between gap-5">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                  <div className="flex items-center gap-2.5">
-                    <div className="h-8 w-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-black text-xs">
-                      1
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
-                        Situação Atual · Ponto de Partida
-                      </span>
-                      <span className="text-xs font-bold text-slate-800">
-                        Home & Hotel: Hello!
-                      </span>
-                    </div>
-                  </div>
-                  <span className="text-[10px] font-black text-slate-900 bg-amber-400 px-3 py-1 rounded-full shadow-2xs">
-                    📍 Comece Aqui
-                  </span>
-                </div>
-
-                {/* Imagem Atraente do Saguão do Hotel */}
-                <div className="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-slate-100 shadow-inner group">
+              <div className="w-full max-w-md rounded-3xl bg-white text-slate-900 shadow-2xl p-6 sm:p-7 border border-slate-100 flex flex-col justify-between gap-5">
+                {/* Imagem do Saguão do Hotel */}
+                <div className="relative h-44 sm:h-52 w-full rounded-2xl overflow-hidden bg-slate-100 shadow-inner group">
                   <img
                     src="/assets/scenarios/hotel-lobby.jpg"
                     alt="Saguão do Hotel Internacional"
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white">
-                    <span className="rounded-full bg-slate-950/80 backdrop-blur-md px-2.5 py-1 text-[10px] font-black border border-white/20">
-                      Iniciante · A0
-                    </span>
-                    <span className="text-xs font-bold drop-shadow-sm flex items-center gap-1.5">
-                      <MapPin className="h-3.5 w-3.5 text-amber-400" />
-                      <span>Saguão do Hotel</span>
-                    </span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
+                  <div className="absolute bottom-3 left-3 flex items-center gap-1.5 text-white">
+                    <MapPin className="h-4 w-4 text-amber-400" />
+                    <span className="text-xs font-bold drop-shadow-sm">Saguão do Hotel</span>
                   </div>
                 </div>
 
-                {/* Descrição Imersiva da Situação */}
-                <div className="space-y-1">
-                  <h3 className="text-xl font-black text-slate-950 tracking-tight">
-                    Seu primeiro encontro em inglês
+                {/* Título e Subtítulo Essenciais (Sem excesso de texto) */}
+                <div className="space-y-0.5">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-amber-600 block">
+                    Primeira Situação
+                  </span>
+                  <h3 className="text-2xl font-black text-slate-950 tracking-tight">
+                    HOME & HOTEL
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    Você acabou de chegar a um hotel internacional e Alex está na recepção para receber você. Diga um simples "Hello" e aprenda a se apresentar com naturalidade.
+                  <p className="text-sm font-medium text-slate-600">
+                    Seu primeiro encontro em inglês.
                   </p>
                 </div>
 
-                {/* Ação Primária Contínua */}
+                {/* Ação Primária Direta e Convidativa */}
                 <Button
                   onClick={() => navigate({ to: "/unit/1" })}
-                  className="w-full rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-sm sm:text-base py-6 shadow-md transition-all gap-2 hover:gap-3"
+                  className="w-full rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-base py-6 shadow-md transition-all gap-2 hover:gap-3"
                 >
                   <span>Entrar no hotel com Alex</span>
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-5 w-5" />
                 </Button>
               </div>
             </div>
@@ -327,26 +297,19 @@ function PolybotSchoolHome() {
         {/* 3. A ROTA PELO MUNDO: ONDE O INGLÊS ACONTECE                  */}
         {/* ============================================================ */}
         <section className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-2 border-b border-slate-200/60">
-            <div>
-              <div className="flex items-center gap-2">
-                <Compass className="h-4 w-4 text-blue-600" />
-                <h2 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">
-                  Sua Rota Pelo Mundo
-                </h2>
-              </div>
-              <p className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mt-1">
-                Onde o inglês acontece com você e Alex
-              </p>
-              <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl">
-                Você começa hoje no hotel e, passo a passo, descobre como se comunicar em cafés, ruas, transportes e viagens pelo mundo.
-              </p>
+          <div className="pb-2 border-b border-slate-200/60">
+            <div className="flex items-center gap-2">
+              <Compass className="h-4 w-4 text-blue-600" />
+              <h2 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">
+                Sua Rota Pelo Mundo
+              </h2>
             </div>
-
-            <div className="shrink-0 flex items-center gap-2 text-xs font-bold text-slate-600 bg-white border border-slate-200/80 px-3.5 py-1.5 rounded-full shadow-2xs">
-              <span className="h-2 w-2 rounded-full bg-amber-400" />
-              <span>1 de 7 disponíveis hoje</span>
-            </div>
+            <p className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mt-1">
+              Onde o inglês acontece com você e Alex
+            </p>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl">
+              Você começa hoje no hotel e, passo a passo, descobre como se comunicar em cafés, ruas, transportes e viagens pelo mundo.
+            </p>
           </div>
 
           {/* Grid dos 7 Cenários da Jornada */}
