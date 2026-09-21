@@ -21,6 +21,8 @@ export interface ShadowingExerciseProps {
   suggestedReps?: number | undefined;
   onComplete: () => void;
   className?: string | undefined;
+  variant?: "light" | "dark" | undefined;
+  nextActionLabel?: string | undefined;
 }
 
 export function ShadowingExercise({
@@ -31,6 +33,8 @@ export function ShadowingExercise({
   suggestedReps = 2,
   onComplete,
   className,
+  variant = "dark",
+  nextActionLabel = "Levar para a próxima etapa",
 }: ShadowingExerciseProps) {
   const [stage, setStage] = useState<ShadowingStage>("listen");
   const [repsCount, setRepsCount] = useState(0);
@@ -103,17 +107,17 @@ export function ShadowingExercise({
       if (result.result === "accepted") {
         setEvaluation({
           status: "success",
-          feedback: "Ritmo e clareza excelentes! Você pegou a melodia da frase.",
+          feedback: "Boa! O ritmo ficou natural e você disse a frase com clareza.",
         });
       } else if (result.result === "near_match") {
         setEvaluation({
           status: "partial",
-          feedback: "Muito bom! Quase perfeito no som. Quer tentar mais uma vez ou avançar?",
+          feedback: "Muito bom! O ritmo está quase lá. Sinta a entonação da frase e tente mais uma vez se quiser.",
         });
       } else {
         setEvaluation({
           status: "retry",
-          feedback: "O som saiu um pouco diferente. Sem problemas, você pode repetir com calma!",
+          feedback: "O som saiu um pouco diferente. Ouça como Alex pronuncia mais uma vez antes de repetir.",
         });
       }
       setStage("feedback");
@@ -128,24 +132,32 @@ export function ShadowingExercise({
     }
   }, [handleEvaluateAttempt, recognitionResult, stage]);
 
+  const isDark = variant === "dark";
+
   return (
     <div
       className={cn(
-        "mx-auto w-full max-w-xl rounded-3xl border border-slate-200/90 bg-white p-6 md:p-8 text-slate-800 shadow-lg shadow-slate-900/5",
+        "mx-auto w-full max-w-xl rounded-3xl transition-all",
+        isDark
+          ? "border border-white/15 bg-slate-900/90 backdrop-blur-md p-6 md:p-8 text-white shadow-2xl"
+          : "border border-slate-200/90 bg-white p-6 md:p-8 text-slate-800 shadow-lg shadow-slate-900/5",
         className,
       )}
     >
       {/* Header do Shadowing */}
-      <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+      <div className={cn("flex items-center justify-between pb-4 border-b", isDark ? "border-white/10" : "border-slate-100")}>
         <div className="flex items-center gap-3">
           <AlexAvatar className="h-10 w-10 ring-2 ring-amber-400/40" />
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-widest text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full">
+              <span className={cn(
+                "text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full",
+                isDark ? "text-amber-400 bg-amber-400/15 border border-amber-400/30" : "text-blue-700 bg-blue-50"
+              )}>
                 Shadowing com Alex · {level}
               </span>
             </div>
-            <h3 className="text-sm font-bold text-slate-800 mt-0.5">
+            <h3 className={cn("text-sm font-bold mt-0.5", isDark ? "text-slate-100" : "text-slate-800")}>
               {stage === "listen" && "1. Ouvir e absorver a melodia da fala"}
               {stage === "shadow" && "2. Acompanhar e falar junto com Alex"}
               {stage === "try_alone" && "3. Falar com a sua voz natural"}
@@ -163,7 +175,7 @@ export function ShadowingExercise({
                 key={s}
                 className={cn(
                   "h-2 rounded-full transition-all duration-300",
-                  stage === s ? "w-6 bg-amber-400" : idx < currentIdx ? "w-2.5 bg-emerald-500" : "w-2 bg-slate-200",
+                  stage === s ? "w-6 bg-amber-400" : idx < currentIdx ? "w-2.5 bg-emerald-500" : (isDark ? "w-2 bg-white/20" : "w-2 bg-slate-200"),
                 )}
               />
             );
@@ -172,21 +184,24 @@ export function ShadowingExercise({
       </div>
 
       {/* Régua explicativa da metodologia oficial: OUVIR → ACOMPANHAR → REPETIR JUNTO → TENTAR SOZINHO → USAR NA SITUAÇÃO */}
-      <div className="mt-3 flex items-center justify-between text-[9px] font-black uppercase tracking-wider text-slate-400 px-1 border-b border-slate-50 pb-2">
-        <span className={cn(stage === "listen" && "text-blue-700 font-bold")}>1. Ouvir</span>
+      <div className={cn(
+        "mt-3 flex items-center justify-between text-[9px] font-black uppercase tracking-wider px-1 border-b pb-2",
+        isDark ? "text-slate-400 border-white/10" : "text-slate-400 border-slate-50"
+      )}>
+        <span className={cn(stage === "listen" && (isDark ? "text-amber-400 font-bold" : "text-blue-700 font-bold"))}>1. Ouvir</span>
         <span>→</span>
-        <span className={cn(stage === "shadow" && "text-blue-700 font-bold")}>2. Repetir Junto</span>
+        <span className={cn(stage === "shadow" && (isDark ? "text-amber-400 font-bold" : "text-blue-700 font-bold"))}>2. Acompanhar</span>
         <span>→</span>
-        <span className={cn(stage === "try_alone" && "text-blue-700 font-bold")}>3. Tentar Sozinho</span>
+        <span className={cn(stage === "try_alone" && (isDark ? "text-amber-400 font-bold" : "text-blue-700 font-bold"))}>3. Tentar Sozinho</span>
         <span>→</span>
-        <span className={cn(stage === "feedback" && "text-emerald-700 font-bold")}>4. Usar na Vida Real</span>
+        <span className={cn(stage === "feedback" && "text-emerald-400 font-bold")}>4. Usar na Situação</span>
       </div>
 
       {/* Cartão Central da Frase Alvo com Estilo Premium */}
-      <div className="my-6 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950 text-white p-7 text-center space-y-3 shadow-xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
+      <div className="my-6 rounded-3xl bg-gradient-to-br from-[#0B132B] via-[#0F172A] to-[#16203D] border border-white/15 text-white p-7 text-center space-y-3 shadow-2xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-amber-400/15 rounded-full blur-2xl pointer-events-none" />
 
-        <span className="text-[10px] font-black uppercase tracking-widest text-amber-300/90 block">
+        <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 block">
           Frase de Aprendizado
         </span>
         <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight">
@@ -219,24 +234,25 @@ export function ShadowingExercise({
       {/* Conteúdo Dinâmico por Fase */}
       {stage === "listen" && (
         <div className="space-y-4">
-          <div className="rounded-xl bg-blue-50/70 p-4 text-xs font-medium text-blue-900 leading-relaxed">
-            <span className="font-bold">Dica do Alex:</span> Feche os olhos por um segundo e apenas escute a entonação da palavra. Não se preocupe em ler letra por letra, apenas absorva o som geral.
+          <div className={cn("rounded-2xl p-4 text-xs font-medium leading-relaxed", isDark ? "bg-white/10 text-slate-200 border border-white/15" : "bg-blue-50/70 text-blue-900")}>
+            <span className="font-bold text-amber-400">Dica do Alex:</span> Feche os olhos por um segundo e apenas escute a entonação da palavra. Não se preocupe em ler letra por letra, apenas absorva o som geral.
           </div>
           <Button
             onClick={() => setStage("shadow")}
             className="w-full py-6 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-base shadow-md gap-2 transition-all"
           >
-            Acompanhar e falar junto <ArrowRight className="h-4 w-4" />
+            <span>Acompanhar e falar junto</span>
+            <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
       )}
 
       {stage === "shadow" && (
         <div className="space-y-4">
-          <div className="rounded-xl bg-amber-50/70 p-4 text-xs font-medium text-amber-900 leading-relaxed">
+          <div className={cn("rounded-2xl p-4 text-xs font-medium leading-relaxed", isDark ? "bg-amber-400/10 border border-amber-400/30 text-amber-200" : "bg-amber-50/70 text-amber-900")}>
             <span className="font-bold">Agora é a sua vez:</span> Clique em ouvir e repita <strong>junto com a voz</strong>. Sinta o tempo que a frase leva.
             {repsCount >= suggestedReps && (
-              <span className="block mt-1 text-emerald-700 font-bold">
+              <span className="block mt-1 text-emerald-400 font-bold">
                 ✓ Você já repetiu {repsCount} vezes! Ótimo ritmo.
               </span>
             )}
@@ -245,7 +261,7 @@ export function ShadowingExercise({
             <Button
               variant="outline"
               onClick={playAudio}
-              className="flex-1 py-6 rounded-2xl border-slate-300 font-bold text-slate-700 gap-2"
+              className={cn("flex-1 py-6 rounded-2xl font-bold gap-2", isDark ? "border-white/20 bg-white/5 hover:bg-white/10 text-white" : "border-slate-300 text-slate-700")}
             >
               <RotateCcw className="h-4 w-4" />
               Repetir mais uma vez ({repsCount})
@@ -254,7 +270,8 @@ export function ShadowingExercise({
               onClick={() => setStage("try_alone")}
               className="flex-1 py-6 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black gap-2 shadow-md transition-all"
             >
-              Tentar sozinho <ArrowRight className="h-4 w-4" />
+              <span>Tentar sozinho</span>
+              <ArrowRight className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -262,7 +279,7 @@ export function ShadowingExercise({
 
       {stage === "try_alone" && (
         <div className="space-y-4">
-          <p className="text-center text-xs font-bold uppercase tracking-wider text-slate-500">
+          <p className={cn("text-center text-xs font-bold uppercase tracking-wider", isDark ? "text-slate-400" : "text-slate-500")}>
             Diga a frase com naturalidade
           </p>
 
@@ -273,15 +290,15 @@ export function ShadowingExercise({
                 onClick={isListening ? stopListening : startListening}
                 disabled={!speechSupported}
                 className={cn(
-                  "h-20 w-20 rounded-full flex items-center justify-center text-white shadow-md transition-all active:scale-95",
+                  "h-20 w-20 rounded-full flex items-center justify-center text-slate-950 shadow-lg transition-all active:scale-95 font-bold",
                   isListening
-                    ? "bg-rose-600 animate-pulse"
-                    : "bg-blue-600 hover:bg-blue-700",
+                    ? "bg-rose-500 animate-pulse text-white"
+                    : "bg-amber-400 hover:bg-amber-500",
                 )}
               >
                 <Mic className="h-8 w-8" />
               </button>
-              <p className="text-xs font-semibold text-slate-600">
+              <p className={cn("text-xs font-semibold", isDark ? "text-slate-300" : "text-slate-600")}>
                 {isListening ? "Ouvindo você falar..." : "Toque no microfone para falar"}
               </p>
 
@@ -289,16 +306,16 @@ export function ShadowingExercise({
                 <button
                   type="button"
                   onClick={() => setInputMode("text")}
-                  className="text-xs font-semibold text-slate-500 hover:text-slate-800 underline flex items-center gap-1"
+                  className={cn("text-xs font-semibold underline flex items-center gap-1", isDark ? "text-slate-400 hover:text-slate-200" : "text-slate-500 hover:text-slate-800")}
                 >
                   <Keyboard className="h-3.5 w-3.5" />
                   Prefiro digitar
                 </button>
-                <span className="text-slate-300">·</span>
+                <span className="text-slate-500">·</span>
                 <button
                   type="button"
                   onClick={() => handleEvaluateAttempt(targetPhrase)}
-                  className="text-xs font-semibold text-blue-600 hover:text-blue-800"
+                  className="text-xs font-bold text-amber-400 hover:text-amber-300"
                 >
                   Já falei em voz alta ✓
                 </button>
@@ -312,7 +329,12 @@ export function ShadowingExercise({
                   value={typedText}
                   onChange={(e) => setTypedText(e.target.value)}
                   placeholder={`Digite: "${targetPhrase}"`}
-                  className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-blue-500 focus:outline-none"
+                  className={cn(
+                    "flex-1 rounded-2xl border px-4 py-3 text-sm focus:outline-none",
+                    isDark
+                      ? "bg-slate-950/80 border-white/20 text-white placeholder-slate-500 focus:border-amber-400"
+                      : "border-slate-300 focus:border-blue-500"
+                  )}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && typedText.trim()) {
                       handleEvaluateAttempt(typedText.trim());
@@ -322,7 +344,7 @@ export function ShadowingExercise({
                 <Button
                   onClick={() => handleEvaluateAttempt(typedText.trim())}
                   disabled={!typedText.trim()}
-                  className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold px-5"
+                  className="rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold px-5"
                 >
                   Enviar
                 </Button>
@@ -330,7 +352,7 @@ export function ShadowingExercise({
               <button
                 type="button"
                 onClick={() => setInputMode("voice")}
-                className="text-xs font-semibold text-slate-500 hover:text-slate-800 underline flex items-center gap-1"
+                className={cn("text-xs font-semibold underline flex items-center gap-1", isDark ? "text-slate-400 hover:text-slate-200" : "text-slate-500 hover:text-slate-800")}
               >
                 <Mic className="h-3.5 w-3.5" />
                 Voltar ao microfone
@@ -346,17 +368,17 @@ export function ShadowingExercise({
             className={cn(
               "rounded-2xl p-4 text-sm flex items-start gap-3",
               evaluation.status === "success"
-                ? "bg-emerald-50 text-emerald-900 border border-emerald-200"
+                ? (isDark ? "bg-emerald-950/80 text-emerald-200 border border-emerald-500/40" : "bg-emerald-50 text-emerald-900 border border-emerald-200")
                 : evaluation.status === "partial"
-                  ? "bg-amber-50 text-amber-900 border border-amber-200"
-                  : "bg-blue-50 text-blue-900 border border-blue-200",
+                  ? (isDark ? "bg-amber-950/80 text-amber-200 border border-amber-500/40" : "bg-amber-50 text-amber-900 border border-amber-200")
+                  : (isDark ? "bg-blue-950/80 text-blue-200 border border-blue-500/40" : "bg-blue-50 text-blue-900 border border-blue-200"),
             )}
           >
-            <CheckCircle2 className="h-5 w-5 shrink-0 mt-0.5 text-emerald-600" />
+            <CheckCircle2 className="h-5 w-5 shrink-0 mt-0.5 text-emerald-400" />
             <div>
               <p className="font-bold">{evaluation.feedback}</p>
               {recognizedText && (
-                <p className="text-xs opacity-75 mt-1">
+                <p className="text-xs opacity-80 mt-1">
                   Você produziu: "{recognizedText}"
                 </p>
               )}
@@ -371,7 +393,7 @@ export function ShadowingExercise({
                 setEvaluation(null);
                 setRecognizedText(null);
               }}
-              className="flex-1 py-6 rounded-2xl border-slate-300 font-bold text-slate-700 gap-2"
+              className={cn("flex-1 py-6 rounded-2xl font-bold gap-2", isDark ? "border-white/20 bg-white/5 hover:bg-white/10 text-white" : "border-slate-300 text-slate-700")}
             >
               <RotateCcw className="h-4 w-4" />
               Tentar de novo
@@ -380,7 +402,8 @@ export function ShadowingExercise({
               onClick={onComplete}
               className="flex-1 py-6 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black gap-2 shadow-md transition-all"
             >
-              Levar para a conversa <ArrowRight className="h-4 w-4" />
+              <span>{nextActionLabel}</span>
+              <ArrowRight className="h-4 w-4" />
             </Button>
           </div>
         </div>
