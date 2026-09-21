@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   Sparkles,
   Plane,
+  MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AlexCharacter, AlexAvatar } from "@/components/character/AlexCharacter";
@@ -88,62 +89,81 @@ export function UnitOnePage() {
   const currentStageIndex = STAGES_LIST.indexOf(stage);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans flex flex-col justify-between relative overflow-hidden">
-      {/* Camada de Cenário Real: Saguão do Hotel em profundidade suave */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.07] overflow-hidden">
+    <div className="min-h-screen bg-[#0B132B] text-white font-sans flex flex-col justify-between relative overflow-hidden">
+      {/* Camada de Cenário Real: Saguão do Hotel em profundidade suave com gradiente dark navy */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <img
           src="/assets/scenarios/hotel-lobby.jpg"
           alt=""
-          className="w-full h-full object-cover object-center filter blur-xs"
+          className="w-full h-full object-cover object-center filter blur-[1px] opacity-25 scale-105"
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0B132B]/85 via-[#0F172A]/90 to-[#0B132B]/95" />
       </div>
 
+      {/* Efeitos sutis de iluminação ambiente */}
+      <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-24 -right-12 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+
       {/* ============================================================ */}
-      {/* HEADER EDITORIAL COM NAVEGAÇÃO E PROGRESSO                   */}
+      {/* HEADER EDITORIAL CONTÍNUO (AZUL-MARINHO & OURO)              */}
       {/* ============================================================ */}
-      <header className="border-b border-slate-200/80 bg-white/95 backdrop-blur-md sticky top-0 z-40 px-6 py-3.5 shadow-xs">
-        <div className="mx-auto max-w-5xl flex items-center justify-between gap-4">
+      <header className="border-b border-white/10 bg-[#0B132B]/85 backdrop-blur-md sticky top-0 z-40 px-4 sm:px-6 py-3.5 shadow-md">
+        <div className="mx-auto max-w-6xl flex items-center justify-between gap-4">
           <Link
             to="/"
-            className="flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors"
+            className="flex items-center gap-2 text-xs font-bold text-slate-300 hover:text-white transition-colors group"
           >
-            <ArrowLeft className="h-4 w-4" />
-            <span>Mapa da Jornada</span>
+            <ArrowLeft className="h-4 w-4 text-amber-400 group-hover:-translate-x-0.5 transition-transform" />
+            <span className="hidden sm:inline">Voltar ao Mapa</span>
+            <span className="sm:hidden">Voltar</span>
           </Link>
 
-          {/* Indicador Central da Unidade e Estágios */}
-          <div className="flex flex-col items-center">
-            <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-black uppercase tracking-widest text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full">
-                Cenário 1 · Home & Hotel
+          {/* Indicador Central da Situação & Estágio Atual */}
+          <div className="flex flex-col items-center text-center">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 bg-amber-400/15 border border-amber-400/30 px-2.5 py-0.5 rounded-full">
+                HOME & HOTEL
+              </span>
+              <span className="text-xs font-bold text-slate-300 hidden md:inline">
+                · Situação 1
               </span>
             </div>
-            <span className="text-xs font-black text-slate-900 mt-0.5">
-              Unit 1: Hello! (Conhecendo Alex no saguão)
+            <span className="text-xs sm:text-sm font-black text-white mt-0.5">
+              Saguão do Hotel Internacional
             </span>
 
-            {/* Cápsulas de Progresso */}
-            <div className="flex items-center gap-1.5 mt-2">
-              {STAGES_LIST.map((s, idx) => (
-                <div
-                  key={s}
-                  className={cn(
-                    "h-1.5 rounded-full transition-all duration-300",
-                    idx === currentStageIndex
-                      ? "w-6 bg-amber-400"
-                      : idx < currentStageIndex
-                        ? "w-2.5 bg-emerald-500"
-                        : "w-2 bg-slate-200",
-                  )}
-                />
-              ))}
+            {/* Fases da Entrada Controlada (Sem gamificação infantil) */}
+            <div className="flex items-center gap-1.5 mt-1.5 text-[11px] font-bold">
+              <span
+                className={cn(
+                  "px-2.5 py-0.5 rounded-full transition-all text-[10px] uppercase tracking-wider",
+                  stage === "prepare"
+                    ? "bg-amber-400 text-slate-950 font-black shadow-xs"
+                    : "bg-white/10 text-slate-300"
+                )}
+              >
+                1. Primeiro Contato
+              </span>
+              <span className="text-slate-500 font-normal">→</span>
+              <span
+                className={cn(
+                  "px-2.5 py-0.5 rounded-full transition-all text-[10px] uppercase tracking-wider",
+                  stage === "expose"
+                    ? "bg-amber-400 text-slate-950 font-black shadow-xs"
+                    : "bg-white/10 text-slate-400"
+                )}
+              >
+                2. Observação
+              </span>
             </div>
           </div>
 
           <div className="text-right">
-            <span className="text-[11px] font-bold text-slate-500 block">
-              Etapa {currentStageIndex + 1} de {STAGES_LIST.length}
-            </span>
+            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full">
+              <MapPin className="h-3.5 w-3.5 text-amber-400" />
+              <span className="hidden sm:inline">Nível Inicial A0</span>
+              <span className="sm:hidden">A0</span>
+            </div>
           </div>
         </div>
       </header>
@@ -151,61 +171,78 @@ export function UnitOnePage() {
       {/* ============================================================ */}
       {/* CONTEÚDO NARRATIVO DINÂMICO DA ETAPA                         */}
       {/* ============================================================ */}
-      <main className="flex-1 max-w-3xl w-full mx-auto p-4 md:p-8 flex flex-col justify-center relative z-10">
+      <main className="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 md:p-8 flex flex-col justify-center relative z-10">
         {/* ------------------------------------------------------------ */}
-        {/* 1. PREPARE — A Recepção com Alex no Hotel                    */}
+        {/* 1. ENTRADA NO HOTEL & PRIMEIRO CONTATO COM ALEX              */}
         {/* ------------------------------------------------------------ */}
         {stage === "prepare" && (
-          <div className="rounded-[32px] border border-slate-200/90 bg-white p-6 md:p-10 shadow-xl space-y-6 text-center animate-in fade-in duration-300">
-            {/* Alex recepcionando na entrada do saguão */}
-            <div className="mx-auto flex justify-center">
-              <AlexCharacter pose="hero" size="hero" />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center animate-in fade-in duration-300">
+            {/* Alex presente em destaque na cena com modelo visual oficial */}
+            <div className="lg:col-span-5 flex justify-center">
+              <div className="w-48 h-64 sm:w-56 sm:h-76 md:w-64 md:h-84 rounded-3xl overflow-hidden shadow-2xl border-2 border-amber-400/60 bg-slate-950 ring-4 ring-amber-400/15 relative group">
+                <img
+                  src="/assets/character/alex-hero.jpg"
+                  alt="Alex no Saguão do Hotel"
+                  className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-3 text-center">
+                  <span className="text-xs font-black text-amber-400 block">Alex</span>
+                  <span className="text-[10px] text-slate-300">Recepção do Hotel</span>
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-2 max-w-xl mx-auto">
-              <span className="inline-block rounded-full bg-amber-400/20 text-amber-900 border border-amber-400/40 px-3.5 py-1 text-xs font-black uppercase tracking-wider">
-                Bem-vindo ao Polybot School
-              </span>
-              <h1 className="text-3xl md:text-4xl font-black text-slate-950 tracking-tight leading-tight">
-                Você não precisa saber inglês para começar.
-              </h1>
-              <p className="text-sm md:text-base text-slate-600 leading-relaxed">
-                Você acabou de entrar no saguão de um hotel internacional na Europa.
-                Este é o <strong>Alex</strong>, e ele está vindo na sua direção com um sorriso acolhedor para cumprimentar você.
-              </p>
-            </div>
-
-            {/* Cartão de Apresentação da Primeira Expressão */}
-            <div className="rounded-3xl border border-blue-200/80 bg-gradient-to-br from-blue-50/70 to-amber-50/30 p-6 max-w-md mx-auto space-y-3 shadow-sm">
-              <span className="text-[10px] font-black uppercase tracking-widest text-blue-700 block">
-                Alex cumprimenta você
-              </span>
-
-              <div className="flex items-center justify-center gap-3">
-                <span className="text-4xl font-black text-slate-900 tracking-tight">
-                  "Hello!"
-                </span>
-                <button
-                  type="button"
-                  onClick={() => speak("Hello!")}
-                  className="rounded-full bg-amber-400 hover:bg-amber-500 p-3 text-slate-950 shadow-md transition-all active:scale-95"
-                  title="Ouvir a fala de Alex"
-                >
-                  <Volume2 className="h-5 w-5" />
-                </button>
+            {/* Primeiro Contato: Fala do Alex, Balão Real e Pequena Vitória */}
+            <div className="lg:col-span-7 space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs text-amber-300 font-bold">
+                <MapPin className="h-3.5 w-3.5 text-amber-400" />
+                <span>Você acabou de entrar no saguão do hotel</span>
               </div>
 
-              <p className="text-sm font-semibold text-slate-700">
-                Significa: <em>"Olá!"</em>
-              </p>
-            </div>
+              {/* Balão de Fala do Alex */}
+              <div className="relative rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 p-6 sm:p-7 text-white shadow-2xl space-y-4">
+                {/* Rabicho apontando para o Alex em telas médias/grandes */}
+                <div className="hidden lg:block absolute -left-2.5 top-12 w-0 h-0 border-t-8 border-t-transparent border-r-[11px] border-r-white/20 border-b-8 border-b-transparent" />
 
-            <div className="pt-2 max-w-md mx-auto">
+                <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4">
+                  <div>
+                    <span className="text-[11px] font-black uppercase tracking-wider text-amber-400 block">
+                      Alex cumprimenta você
+                    </span>
+                    <span className="text-4xl sm:text-5xl font-black text-white tracking-tight">
+                      "Hello!"
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => speak("Hello!")}
+                    className="flex items-center gap-2 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-sm px-4 py-3 shadow-md transition-all active:scale-95 shrink-0"
+                    title="Ouvir Alex falar Hello!"
+                  >
+                    <Volume2 className="h-5 w-5" />
+                    <span>Ouvir</span>
+                  </button>
+                </div>
+
+                {/* Significado direto e acolhimento */}
+                <div className="space-y-1.5">
+                  <p className="text-lg font-bold text-amber-300">
+                    Significa: <span className="text-white underline decoration-amber-400 decoration-2">"Olá!"</span>
+                  </p>
+                  <p className="text-sm text-slate-200 leading-relaxed">
+                    Você acabou de ouvir e entender sua primeira palavra em inglês dentro de uma situação real.
+                    Sem regras complicadas, sem nenhuma pressão.
+                  </p>
+                </div>
+              </div>
+
+              {/* Ação de Continuidade da Jornada */}
               <Button
                 onClick={() => setStage("expose")}
-                className="w-full py-7 rounded-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-base shadow-lg shadow-amber-400/25 gap-2 transition-all"
+                className="w-full py-6 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-base shadow-lg shadow-amber-400/20 gap-2 transition-all hover:gap-3"
               >
-                <span>Entrar no saguão com Alex</span>
+                <span>Conhecer as palavras da recepção</span>
                 <ArrowRight className="h-5 w-5" />
               </Button>
             </div>
@@ -213,94 +250,136 @@ export function UnitOnePage() {
         )}
 
         {/* ------------------------------------------------------------ */}
-        {/* 2. EXPOSE — Observação e Reconhecimento de Saudações         */}
+        {/* 2. EXPOSE — FASE 2 · OBSERVAÇÃO (OUVIR E PERCEBER)           */}
         {/* ------------------------------------------------------------ */}
         {stage === "expose" && (
-          <div className="rounded-[32px] border border-slate-200/90 bg-white p-6 md:p-10 shadow-xl space-y-6 animate-in fade-in duration-300">
+          <div className="max-w-3xl w-full mx-auto space-y-6 animate-in fade-in duration-300">
             {/* Header da Fase com Alex orientando */}
-            <div className="flex items-start gap-4 p-4 rounded-2xl bg-blue-50/70 border border-blue-100">
-              <AlexAvatar className="h-12 w-12 ring-2 ring-amber-400/40 shrink-0" />
-              <div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-blue-700 block">
-                  Alex explica a situação
+            <div className="flex items-start sm:items-center gap-4 p-4 sm:p-5 rounded-3xl bg-white/10 backdrop-blur-md border border-white/15 text-white shadow-xl">
+              <div className="h-14 w-14 rounded-2xl overflow-hidden shrink-0 border-2 border-amber-400/60 shadow-md">
+                <img
+                  src="/assets/character/alex-avatar.jpg"
+                  alt="Alex"
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+              <div className="space-y-0.5">
+                <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 block">
+                  Fase 2 · Observação
                 </span>
-                <p className="text-xs md:text-sm font-bold text-slate-800 leading-relaxed mt-0.5">
-                  "No saguão, estas são as 4 frases mais naturais que você vai ouvir e usar.
-                  Toque em cada uma para ouvir minha pronúncia e se familiarizar com o ritmo."
+                <p className="text-sm sm:text-base font-bold text-slate-100 leading-snug">
+                  "Agora vamos ouvir e perceber antes de falar."
+                </p>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  No saguão do hotel, estas são 4 palavras que você provavelmente vai ouvir nesta situação.
+                  Toque em cada uma para escutar o som e se acostumar com o ritmo.
                 </p>
               </div>
             </div>
 
-            <div className="text-center space-y-1">
-              <h2 className="text-2xl font-black text-slate-900 tracking-tight">
-                Ouça e reconheça as saudações
-              </h2>
-              <p className="text-xs text-slate-500">
-                Toque nos cartões abaixo para ouvir como um nativo pronuncia.
-              </p>
-            </div>
-
-            {/* 4 Cartões de Saudação Estilizados */}
+            {/* Grid das 4 Palavras Limpas e Elegantes */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
-                { en: "Hello!", pt: "Olá!", desc: "A saudação mais comum e versátil." },
-                { en: "Hi!", pt: "Oi!", desc: "Mais casual e descontraída." },
-                { en: "Thank you!", pt: "Obrigado(a)!", desc: "Para agradecer gentilmente ao recepcionista." },
-                { en: "Goodbye!", pt: "Tchau / Até logo!", desc: "Para se despedir no saguão." },
+                { en: "Hello!", pt: "Olá!", context: "A saudação mais comum ao chegar." },
+                { en: "Hi!", pt: "Oi!", context: "Mais rápida, amigável e descontraída." },
+                { en: "Thank you!", pt: "Obrigado(a)!", context: "Para agradecer pela chave ou ajuda." },
+                { en: "Goodbye!", pt: "Tchau / Até logo!", context: "Para se despedir ao sair do saguão." },
               ].map((item) => {
                 const isHeard = heardGreetings[item.en];
                 return (
-                  <button
+                  <div
                     key={item.en}
-                    type="button"
                     onClick={() => {
                       speak(item.en);
                       setHeardGreetings((prev) => ({ ...prev, [item.en]: true }));
                     }}
                     className={cn(
-                      "rounded-3xl border p-5 text-left transition-all flex flex-col justify-between gap-3 group relative overflow-hidden",
+                      "cursor-pointer rounded-3xl p-5 sm:p-6 transition-all border flex flex-col justify-between gap-4 group relative overflow-hidden select-none",
                       isHeard
-                        ? "border-emerald-300 bg-emerald-50/30 shadow-xs"
-                        : "border-slate-200 bg-white hover:border-amber-400 hover:shadow-md",
+                        ? "bg-white/15 border-amber-400/70 shadow-lg ring-2 ring-amber-400/20"
+                        : "bg-white/10 hover:bg-white/15 border-white/15 hover:border-amber-400/50 shadow-md",
                     )}
                   >
                     <div className="flex items-center justify-between w-full">
-                      <span className="text-2xl font-black text-slate-900 group-hover:text-blue-700 tracking-tight">
+                      <span className="text-3xl font-black text-white group-hover:text-amber-300 tracking-tight transition-colors">
                         {item.en}
                       </span>
-                      <div className="rounded-full bg-amber-100 group-hover:bg-amber-400 p-2.5 text-slate-900 transition-colors shadow-2xs">
-                        <Volume2 className="h-4 w-4" />
-                      </div>
-                    </div>
-                    <div>
-                      <span className="text-sm font-bold text-slate-800 block">{item.pt}</span>
-                      <span className="text-xs text-slate-400 font-medium">{item.desc}</span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          speak(item.en);
+                          setHeardGreetings((prev) => ({ ...prev, [item.en]: true }));
+                        }}
+                        className="rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 p-3 shadow-md transition-transform active:scale-95 group-hover:scale-105"
+                        title={`Ouvir ${item.en}`}
+                      >
+                        <Volume2 className="h-5 w-5" />
+                      </button>
                     </div>
 
-                    {isHeard && (
-                      <div className="absolute top-2 right-2">
-                        <span className="h-2 w-2 rounded-full bg-emerald-500 block" />
+                    <div>
+                      <span className="text-base font-bold text-amber-300 block">
+                        {item.pt}
+                      </span>
+                      <span className="text-xs text-slate-300 font-medium">
+                        {item.context}
+                      </span>
+                    </div>
+
+                    {isHeard ? (
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-300 pt-2 border-t border-white/10">
+                        <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                        <span>Ouvido com atenção</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-400 pt-2 border-t border-white/10">
+                        <span>Toque para escutar</span>
                       </div>
                     )}
-                  </button>
+                  </div>
                 );
               })}
             </div>
 
-            <div className="rounded-2xl bg-amber-50 border border-amber-200/70 p-4 text-xs font-semibold text-amber-950 flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-amber-600 shrink-0" />
-              <span>
-                <strong>Percepção natural:</strong> Em inglês, <em>"Hello"</em> e <em>"Hi"</em> abrem portas em qualquer lugar do mundo. Agora vamos praticar a sua pronúncia com a técnica oficial do Shadowing!
-              </span>
-            </div>
+            {/* Bloco de Conclusão da Observação & Pausa Controlada para Avaliação Visual */}
+            <div className="rounded-3xl bg-slate-900/80 backdrop-blur-md border border-white/15 p-6 sm:p-7 space-y-4 text-center">
+              <div className="space-y-1">
+                <span className="text-xs font-black uppercase tracking-wider text-amber-400 block">
+                  Etapa de Observação Concluída
+                </span>
+                <p className="text-sm font-semibold text-slate-200">
+                  Você percebeu e reconheceu as 4 saudações essenciais do saguão do hotel.
+                </p>
+              </div>
 
-            <Button
-              onClick={() => setStage("shadow_1")}
-              className="w-full py-7 rounded-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-base gap-2 shadow-lg shadow-amber-400/20 transition-all"
-            >
-              <span>Praticar o ritmo com Alex (Shadowing)</span>
-              <ArrowRight className="h-5 w-5" />
-            </Button>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center pt-1">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setHeardGreetings({});
+                    speak("Hello!");
+                  }}
+                  className="rounded-2xl border-white/20 bg-white/5 hover:bg-white/10 text-white font-bold py-6 px-6"
+                >
+                  <Volume2 className="h-4 w-4 mr-2 text-amber-400" />
+                  <span>Ouvir de novo</span>
+                </Button>
+
+                <Button
+                  variant="outline"
+                  onClick={() => setStage("prepare")}
+                  className="rounded-2xl border-white/20 bg-white/5 hover:bg-white/10 text-slate-300 font-bold py-6 px-6"
+                >
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  <span>Rever primeiro contato</span>
+                </Button>
+              </div>
+
+              <p className="text-[11px] text-slate-400 italic">
+                Fase 2 pausada aqui para sua avaliação visual antes de avançarmos para as próximas etapas (Shadowing).
+              </p>
+            </div>
           </div>
         )}
 
@@ -633,10 +712,10 @@ export function UnitOnePage() {
       </main>
 
       {/* Rodapé Oficial da Unidade */}
-      <footer className="border-t border-slate-200/60 bg-white/80 py-4 px-6 text-center text-xs text-slate-400 relative z-10">
+      <footer className="border-t border-white/10 bg-[#0B132B]/80 py-4 px-6 text-center text-xs text-slate-400 relative z-10">
         <div className="flex items-center justify-center gap-2">
-          <Plane className="h-3.5 w-3.5 text-blue-600" />
-          <span>Polybot School · Método Natural de Aquisição de Linguagem · Situações da Vida Real</span>
+          <Plane className="h-3.5 w-3.5 text-amber-400" />
+          <span>Polybot School · Home & Hotel · Saguão do Hotel</span>
         </div>
       </footer>
     </div>
