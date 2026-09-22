@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Volume2, Mic, CheckCircle2, RotateCcw, ArrowRight, Keyboard } from "lucide-react";
+import { Volume2, Mic, CheckCircle2, RotateCcw, ArrowRight, Keyboard, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WebSpeechAudioService } from "@/lib/scenario-engine/AudioService";
 import { ResponseValidator } from "@/lib/scenario-engine/ResponseValidator";
@@ -41,6 +41,7 @@ export function ShadowingExercise({
   const [isPlaying, setIsPlaying] = useState(false);
   const [inputMode, setInputMode] = useState<"voice" | "text">("voice");
   const [typedText, setTypedText] = useState("");
+  const [showAlexHelp, setShowAlexHelp] = useState(false);
   const [recognizedText, setRecognizedText] = useState<string | null>(null);
   const [evaluation, setEvaluation] = useState<{
     status: "success" | "partial" | "retry";
@@ -84,24 +85,88 @@ export function ShadowingExercise({
     return () => clearTimeout(timer);
   }, [playAudio]);
 
+  // Reseta estado de ajuda e texto digitado ao mudar de fase ou frase
+  useEffect(() => {
+    setShowAlexHelp(false);
+    setTypedText("");
+  }, [stage, targetPhrase]);
+
   const handleEvaluateAttempt = useCallback(
     (spokenOrTyped: string) => {
       setRecognizedText(spokenOrTyped);
       const validator = validatorRef.current;
       if (!validator) return;
 
-      const result = validator.validate({
-        transcript: spokenOrTyped,
-        completionRule: "single_accept",
-        expectedResponses: [
+      const normalizedTarget = targetPhrase.toLowerCase().replace(/[^a-z0-9\s]/g, "").trim();
+
+      const expectedResponses: Array<{
+        id: string;
+        responseText: string;
+        normalizedText: string;
+        matchType: "normalized" | "exact" | "contains_required_terms";
+        isPrimary: boolean;
+      }> = [
+        {
+          id: "target",
+          responseText: targetPhrase,
+          normalizedText: normalizedTarget,
+          matchType: "normalized",
+          isPrimary: true,
+        },
+      ];
+
+      // Aceita variações naturais: para "Hello!" aceita também "Hi!", "Hey!", "Hi there!"
+      if (normalizedTarget === "hello" || normalizedTarget.startsWith("hello")) {
+        expectedResponses.push(
           {
-            id: "target",
-            responseText: targetPhrase,
-            normalizedText: targetPhrase.toLowerCase().replace(/[^a-z0-9\s]/g, ""),
+            id: "var_hi",
+            responseText: "Hi!",
+            normalizedText: "hi",
             matchType: "normalized",
             isPrimary: true,
           },
-        ],
+          {
+            id: "var_hey",
+            responseText: "Hey!",
+            normalizedText: "hey",
+            matchType: "normalized",
+            isPrimary: true,
+          },
+          {
+            id: "var_hi_there",
+            responseText: "Hi there!",
+            normalizedText: "hi there",
+            matchType: "normalized",
+            isPrimary: true,
+          },
+        );
+      }
+
+      // Para "My name is Alex." aceita também "I'm Alex.", "I am Alex."
+      if (normalizedTarget.startsWith("my name is")) {
+        const namePart = normalizedTarget.replace("my name is", "").trim();
+        expectedResponses.push(
+          {
+            id: "var_im",
+            responseText: `I'm ${namePart}`,
+            normalizedText: `im ${namePart}`,
+            matchType: "normalized",
+            isPrimary: true,
+          },
+          {
+            id: "var_i_am",
+            responseText: `I am ${namePart}`,
+            normalizedText: `i am ${namePart}`,
+            matchType: "normalized",
+            isPrimary: true,
+          },
+        );
+      }
+
+      const result = validator.validate({
+        transcript: spokenOrTyped,
+        completionRule: "single_accept",
+        expectedResponses,
       });
 
       if (result.result === "accepted") {
@@ -202,33 +267,37 @@ export function ShadowingExercise({
         <div className="absolute top-0 right-0 w-32 h-32 bg-amber-400/15 rounded-full blur-2xl pointer-events-none" />
 
         <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 block">
-          Frase de Aprendizado
+          {stage === "try_alone" && !showAlexHelp ? "Como você diz em inglês?" : "Frase de Aprendizado"}
         </span>
         <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight">
-          "{targetPhrase}"
+          {stage === "try_alone" && !showAlexHelp ? `"${translationPt}"` : `"${targetPhrase}"`}
         </h2>
         <p className="text-sm font-semibold text-slate-300 italic">
-          "{translationPt}"
+          {stage === "try_alone" && !showAlexHelp
+            ? "Tente lembrar como falar ou escrever antes de pedir ajuda."
+            : `"${translationPt}"`}
         </p>
 
         {/* Botão Ouvir Áudio do Alex */}
-        <div className="pt-3">
-          <button
-            type="button"
-            onClick={playAudio}
-            disabled={isPlaying}
-            className={cn(
-              "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold transition-all shadow-md",
-              isPlaying
-                ? "bg-amber-400 text-slate-950 scale-105"
-                : "bg-white/20 hover:bg-white/30 text-white border border-white/25",
-            )}
-            title="Ouvir a pronúncia natural de Alex"
-          >
-            <Volume2 className={cn("h-4 w-4", isPlaying && "animate-pulse")} />
-            <span>{isPlaying ? "Alex falando..." : "Ouvir Alex falar"}</span>
-          </button>
-        </div>
+        {(stage !== "try_alone" || showAlexHelp) && (
+          <div className="pt-3">
+            <button
+              type="button"
+              onClick={playAudio}
+              disabled={isPlaying}
+              className={cn(
+                "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold transition-all shadow-md",
+                isPlaying
+                  ? "bg-amber-400 text-slate-950 scale-105"
+                  : "bg-white/20 hover:bg-white/30 text-white border border-white/25",
+              )}
+              title="Ouvir a pronúncia natural de Alex"
+            >
+              <Volume2 className={cn("h-4 w-4", isPlaying && "animate-pulse")} />
+              <span>{isPlaying ? "Alex falando..." : "Ouvir Alex falar"}</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Conteúdo Dinâmico por Fase */}
@@ -283,6 +352,61 @@ export function ShadowingExercise({
             Diga a frase com naturalidade
           </p>
 
+          {/* Card de Ajuda do Alex (quando solicitado pelo aluno) */}
+          {showAlexHelp && (
+            <div
+              className={cn(
+                "rounded-2xl p-4 text-xs font-medium space-y-3 border transition-all animate-in fade-in-50",
+                isDark
+                  ? "bg-amber-400/10 border-amber-400/30 text-amber-200"
+                  : "bg-amber-50 border-amber-200 text-amber-950",
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <AlexAvatar className="h-8 w-8 ring-2 ring-amber-400/50" />
+                  <div>
+                    <span className="font-bold text-amber-400 block text-xs">
+                      Ajuda do Alex
+                    </span>
+                    <span className="text-[11px] opacity-80">
+                      Dica para produzir com naturalidade
+                    </span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={playAudio}
+                  disabled={isPlaying}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-400 text-slate-950 font-bold text-xs hover:bg-amber-300 shadow-sm transition-all active:scale-95"
+                  title="Ouvir como Alex pronuncia"
+                >
+                  <Volume2 className={cn("h-3.5 w-3.5", isPlaying && "animate-pulse")} />
+                  <span>{isPlaying ? "Falando..." : "Ouvir Alex"}</span>
+                </button>
+              </div>
+
+              <div className="space-y-1.5 pt-1 border-t border-amber-400/20 text-xs leading-relaxed">
+                {targetPhrase.toLowerCase().includes("hello") ? (
+                  <p>
+                    Para saudar alguém de forma amigável, você pode dizer <strong>"Hello!"</strong> ou uma opção casual como <strong>"Hi!"</strong>.
+                  </p>
+                ) : targetPhrase.toLowerCase().includes("my name is") ? (
+                  <p>
+                    Para dizer o seu nome, você pode usar <strong>"My name is..."</strong> ou a forma contraída e comum <strong>"I'm..."</strong>.
+                  </p>
+                ) : (
+                  <p>
+                    Em português dizemos <em>"{translationPt}"</em>. Em inglês, a frase correspondente é <strong>"{targetPhrase}"</strong>.
+                  </p>
+                )}
+                <p className="text-[11px] opacity-80 font-medium">
+                  Tente dizer em voz alta ou digite como você falaria!
+                </p>
+              </div>
+            </div>
+          )}
+
           {inputMode === "voice" ? (
             <div className="flex flex-col items-center gap-3">
               <button
@@ -302,7 +426,7 @@ export function ShadowingExercise({
                 {isListening ? "Ouvindo você falar..." : "Toque no microfone para falar"}
               </p>
 
-              <div className="flex items-center gap-4 pt-2">
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => setInputMode("text")}
@@ -310,6 +434,22 @@ export function ShadowingExercise({
                 >
                   <Keyboard className="h-3.5 w-3.5" />
                   Prefiro digitar
+                </button>
+                <span className="text-slate-500">·</span>
+                <button
+                  type="button"
+                  onClick={() => setShowAlexHelp((prev) => !prev)}
+                  className={cn(
+                    "text-xs font-semibold flex items-center gap-1 transition-colors",
+                    showAlexHelp
+                      ? "text-amber-400 font-bold"
+                      : isDark
+                        ? "text-slate-400 hover:text-amber-300"
+                        : "text-slate-500 hover:text-blue-700",
+                  )}
+                >
+                  <HelpCircle className="h-3.5 w-3.5" />
+                  <span>{showAlexHelp ? "Ocultar ajuda" : "Pedir ajuda ao Alex"}</span>
                 </button>
                 <span className="text-slate-500">·</span>
                 <button
@@ -328,7 +468,7 @@ export function ShadowingExercise({
                   type="text"
                   value={typedText}
                   onChange={(e) => setTypedText(e.target.value)}
-                  placeholder={`Digite: "${targetPhrase}"`}
+                  placeholder="Digite a frase em inglês..."
                   className={cn(
                     "flex-1 rounded-2xl border px-4 py-3 text-sm focus:outline-none",
                     isDark
@@ -349,14 +489,33 @@ export function ShadowingExercise({
                   Enviar
                 </Button>
               </div>
-              <button
-                type="button"
-                onClick={() => setInputMode("voice")}
-                className={cn("text-xs font-semibold underline flex items-center gap-1", isDark ? "text-slate-400 hover:text-slate-200" : "text-slate-500 hover:text-slate-800")}
-              >
-                <Mic className="h-3.5 w-3.5" />
-                Voltar ao microfone
-              </button>
+
+              <div className="flex items-center justify-between pt-1">
+                <button
+                  type="button"
+                  onClick={() => setInputMode("voice")}
+                  className={cn("text-xs font-semibold underline flex items-center gap-1", isDark ? "text-slate-400 hover:text-slate-200" : "text-slate-500 hover:text-slate-800")}
+                >
+                  <Mic className="h-3.5 w-3.5" />
+                  Voltar ao microfone
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowAlexHelp((prev) => !prev)}
+                  className={cn(
+                    "text-xs font-semibold flex items-center gap-1 transition-colors",
+                    showAlexHelp
+                      ? "text-amber-400 font-bold"
+                      : isDark
+                        ? "text-slate-400 hover:text-amber-300"
+                        : "text-slate-500 hover:text-blue-700",
+                  )}
+                >
+                  <HelpCircle className="h-3.5 w-3.5" />
+                  <span>{showAlexHelp ? "Ocultar ajuda" : "Pedir ajuda ao Alex"}</span>
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -392,6 +551,8 @@ export function ShadowingExercise({
                 setStage("try_alone");
                 setEvaluation(null);
                 setRecognizedText(null);
+                setShowAlexHelp(false);
+                setTypedText("");
               }}
               className={cn("flex-1 py-6 rounded-2xl font-bold gap-2", isDark ? "border-white/20 bg-white/5 hover:bg-white/10 text-white" : "border-slate-300 text-slate-700")}
             >
