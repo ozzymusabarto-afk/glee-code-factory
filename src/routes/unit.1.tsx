@@ -8,6 +8,7 @@ import {
   Sparkles,
   Plane,
   MapPin,
+  HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AlexCharacter, AlexAvatar } from "@/components/character/AlexCharacter";
@@ -37,6 +38,8 @@ export function UnitOnePage() {
   const navigate = useNavigate();
   const [stage, setStage] = useState<UnitStage>("prepare");
   const [rehearseInput, setRehearseInput] = useState("");
+  const [showHint, setShowHint] = useState(false);
+  const [showExample, setShowExample] = useState(false);
   const [rehearseValidation, setRehearseValidation] = useState<{
     valid: boolean;
     message: string;
@@ -82,54 +85,66 @@ export function UnitOnePage() {
     if (!raw) {
       setRehearseValidation({
         valid: false,
-        message: "Por favor, digite sua apresentação com seu nome.",
-        suggestedPhrase: "My name is [Seu Nome]",
+        message: "Digite como você se apresentaria ao Alex.",
       });
       return;
     }
 
-    const lower = raw.toLowerCase();
-    const hasMyNameIs =
-      lower.startsWith("my name is") &&
-      lower.replace("my name is", "").trim().length > 0;
-    const hasIm =
-      (lower.startsWith("i'm ") || lower.startsWith("im ") || lower.startsWith("i am ")) &&
-      lower.replace(/^(i'm|im|i am)\s*/, "").trim().length > 0;
+    // Normaliza texto: remove pontuação final
+    const clean = raw.replace(/[.!,?]+$/, "").trim();
+    const lower = clean.toLowerCase();
 
-    if (hasMyNameIs || hasIm) {
+    // Aceita variações naturais: "My name is [nome]" ou "I'm [nome]" (incluindo "Im" e "I am")
+    const myNameIsMatch = lower.match(/^my name is\s+(.+)$/i);
+    const imMatch = lower.match(/^(i'm|im|i am)\s+(.+)$/i);
+
+    if (myNameIsMatch && myNameIsMatch[1]?.trim()) {
       setRehearseValidation({
         valid: true,
-        message: "Perfeito! Sua apresentação está clara, correta e natural para o saguão.",
+        message: "Excelente! Você se apresentou de forma clara e natural.",
       });
-      speak(raw);
+      speak(clean);
       return;
     }
 
-    // Se o aluno digitou apenas o nome (ex: "Carlos")
-    if (!lower.includes("name") && !lower.includes("i'm") && !lower.includes("im")) {
+    if (imMatch && imMatch[2]?.trim()) {
+      setRehearseValidation({
+        valid: true,
+        message: "Perfeito! Apresentação autêntica, direta e muito natural.",
+      });
+      speak(clean);
+      return;
+    }
+
+    // Se o aluno escreveu apenas o nome (ex: "Adriana", "Carlos")
+    const words = clean.split(/\s+/).filter(Boolean);
+    const hasStructureKeywords =
+      lower.includes("name") ||
+      lower.includes("i'm") ||
+      lower.includes("im") ||
+      lower.includes("i am");
+
+    if (!hasStructureKeywords && words.length <= 3) {
       setRehearseValidation({
         valid: false,
-        message: "Você informou seu nome! No saguão, para soar polido e acolhedor, use a frase inteira:",
-        suggestedPhrase: `My name is ${raw} (ou I'm ${raw})`,
+        message: "Você disse seu nome. Agora vamos colocar isso em uma frase completa.",
       });
       return;
     }
 
-    // Se digitou "My name [Nome]" sem "is"
+    // Se esqueceu o "is" (ex: "My name Adriana")
     if (lower.startsWith("my name") && !lower.includes("is")) {
-      const rest = raw.replace(/^my name/i, "").trim();
       setRehearseValidation({
         valid: false,
-        message: "Quase lá! No inglês acrescentamos 'is':",
-        suggestedPhrase: `My name is ${rest}`,
+        message: "Quase lá! No inglês acrescentamos 'is': 'My name is...'.",
       });
       return;
     }
 
+    // Outros casos
     setRehearseValidation({
       valid: false,
-      message: "Tente usar uma das duas estruturas sugeridas:",
-      suggestedPhrase: "My name is [Nome] ou I'm [Nome]",
+      message: "Tente estruturar sua frase começando com 'My name is...' ou 'I'm...'.",
     });
   };
 
@@ -533,69 +548,18 @@ export function UnitOnePage() {
               </div>
             </div>
 
-            {/* Explicação pedagógica de Alex sobre as 2 formas reais */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-amber-400" />
-                <h3 className="text-xs font-black uppercase tracking-wider text-amber-300">
-                  Como formular sua resposta no saguão:
-                </h3>
-              </div>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Para responder ao recepcionista ou a um novo conhecido, você pode escolher entre duas formas naturais e autênticas:
+            {/* Orientação Contextual Limpa (Sem revelar antecipadamente a frase) */}
+            <div className="space-y-1">
+              <h3 className="text-lg font-black text-white">
+                Apresente-se ao Alex.
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300">
+                Escreva como você falaria.
               </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setRehearseInput((prev) => {
-                      const name = prev.replace(/^(my name is|i'm|im|i am)\s*/i, "").trim();
-                      return name ? `My name is ${name}` : "My name is ";
-                    });
-                  }}
-                  className="rounded-2xl p-4 text-left border border-white/15 bg-white/5 hover:bg-white/10 transition-all group"
-                >
-                  <span className="text-[10px] font-black uppercase text-amber-400 block mb-1">
-                    Opção 1 · Clássica & Clara
-                  </span>
-                  <span className="text-base font-black text-white group-hover:text-amber-300 transition-colors">
-                    "My name is [Seu Nome]"
-                  </span>
-                  <p className="text-xs text-slate-400 mt-1">
-                    Significa: "Meu nome é..."
-                  </p>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setRehearseInput((prev) => {
-                      const name = prev.replace(/^(my name is|i'm|im|i am)\s*/i, "").trim();
-                      return name ? `I'm ${name}` : "I'm ";
-                    });
-                  }}
-                  className="rounded-2xl p-4 text-left border border-white/15 bg-white/5 hover:bg-white/10 transition-all group"
-                >
-                  <span className="text-[10px] font-black uppercase text-amber-400 block mb-1">
-                    Opção 2 · Direta & Descontraída
-                  </span>
-                  <span className="text-base font-black text-white group-hover:text-amber-300 transition-colors">
-                    "I'm [Seu Nome]"
-                  </span>
-                  <p className="text-xs text-slate-400 mt-1">
-                    Significa: "Eu sou..." ou "Eu me chamo..."
-                  </p>
-                </button>
-              </div>
             </div>
 
-            {/* Campo de Escrita Comunicativa Contextual */}
+            {/* Campo de Escrita — Começa vazio, sem atalhos que entregam a resposta */}
             <div className="rounded-3xl border border-white/15 bg-white/5 p-5 sm:p-6 space-y-4">
-              <label htmlFor="rehearse-input" className="text-xs font-bold uppercase tracking-wider text-slate-300 block">
-                Escreva ou complete sua apresentação:
-              </label>
-
               <div className="flex flex-col sm:flex-row gap-2.5">
                 <input
                   id="rehearse-input"
@@ -603,12 +567,12 @@ export function UnitOnePage() {
                   value={rehearseInput}
                   onChange={(e) => {
                     setRehearseInput(e.target.value);
-                    setRehearseValidation(null);
+                    if (rehearseValidation) setRehearseValidation(null);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") handleValidateRehearse();
                   }}
-                  placeholder="Ex: My name is Maria ou I'm Carlos..."
+                  placeholder="Escreva sua apresentação em inglês..."
                   className="flex-1 rounded-2xl border border-white/20 bg-slate-950/80 px-4 py-3.5 text-base font-bold text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none shadow-inner"
                 />
                 <Button
@@ -619,32 +583,55 @@ export function UnitOnePage() {
                 </Button>
               </div>
 
-              {/* Sugestões rápidas de atalho */}
-              <div className="flex flex-wrap items-center gap-2 pt-1">
-                <span className="text-[11px] font-semibold text-slate-400">Atalhos rápidos:</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setRehearseInput("My name is ");
-                    setRehearseValidation(null);
-                  }}
-                  className="text-xs font-bold px-3 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 border border-white/10 transition-colors"
-                >
-                  + "My name is..."
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setRehearseInput("I'm ");
-                    setRehearseValidation(null);
-                  }}
-                  className="text-xs font-bold px-3 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 border border-white/10 transition-colors"
-                >
-                  + "I'm..."
-                </button>
+              {/* Ajuda Progressiva: 1. DICA -> 2. EXEMPLO */}
+              <div className="space-y-2 pt-1">
+                {!showHint ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowHint(true)}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-300/80 hover:text-amber-300 transition-colors"
+                  >
+                    <HelpCircle className="h-3.5 w-3.5" />
+                    <span>Preciso de uma dica</span>
+                  </button>
+                ) : (
+                  <div className="rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-xs text-amber-200 space-y-2.5 animate-in fade-in duration-200">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        <span className="font-black uppercase tracking-wider text-[10px] text-slate-950 bg-amber-400 px-2 py-0.5 rounded-md">
+                          Dica
+                        </span>
+                        <span className="font-semibold text-white">
+                          Comece com: <strong className="text-amber-300">My name is...</strong>
+                        </span>
+                      </div>
+
+                      {!showExample && (
+                        <button
+                          type="button"
+                          onClick={() => setShowExample(true)}
+                          className="text-[11px] font-bold text-amber-300 hover:text-white underline transition-colors shrink-0"
+                        >
+                          Ver exemplo
+                        </button>
+                      )}
+                    </div>
+
+                    {showExample && (
+                      <div className="pt-2 border-t border-amber-400/20 text-xs text-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 animate-in fade-in duration-200">
+                        <span>
+                          Exemplo: <strong className="text-white">"My name is Adriana."</strong>
+                        </span>
+                        <span className="text-[11px] text-amber-300/70 italic">
+                          (Digite sua própria resposta no campo acima)
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
-              {/* Feedback de Validação Claro e Acolhedor */}
+              {/* Feedback de Validação Claro, Acolhedor e Pedagógico */}
               {rehearseValidation && (
                 <div
                   className={cn(
@@ -656,14 +643,14 @@ export function UnitOnePage() {
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 font-black">
-                      <CheckCircle2 className={cn("h-5 w-5 shrink-0", rehearseValidation.valid ? "text-emerald-400" : "text-amber-400")} />
+                      <CheckCircle2
+                        className={cn(
+                          "h-5 w-5 shrink-0",
+                          rehearseValidation.valid ? "text-emerald-400" : "text-amber-400"
+                        )}
+                      />
                       <span>{rehearseValidation.message}</span>
                     </div>
-                    {rehearseValidation.suggestedPhrase && (
-                      <p className="text-xs opacity-90 pl-7">
-                        Experimente: <strong>"{rehearseValidation.suggestedPhrase}"</strong>
-                      </p>
-                    )}
                   </div>
 
                   {rehearseValidation.valid && (
@@ -803,6 +790,8 @@ export function UnitOnePage() {
                 onClick={() => {
                   setStage("prepare");
                   setRehearseInput("");
+                  setShowHint(false);
+                  setShowExample(false);
                   setRehearseValidation(null);
                 }}
                 className="flex-1 py-6 rounded-2xl border-white/20 bg-white/5 hover:bg-white/10 text-slate-300 font-bold"
