@@ -679,12 +679,12 @@ export function UnitOnePage() {
                     : "bg-white/10 text-slate-500 border border-white/10 cursor-not-allowed"
                 )}
               >
-                <span>Praticar na microconversa com Alex</span>
+                <span>Conversar com Alex no hotel</span>
                 <ArrowRight className="h-5 w-5" />
               </Button>
               {!rehearseValidation?.valid && (
                 <p className="text-[11px] text-center text-slate-400 mt-2">
-                  Escreva e confira sua frase acima para desbloquear a microconversa no saguão.
+                  Escreva e confira sua frase acima para desbloquear a conversa no saguão.
                 </p>
               )}
             </div>
@@ -695,7 +695,47 @@ export function UnitOnePage() {
         {/* 5. CONVERSATION — Diálogo Autêntico no Saguão                 */}
         {/* ------------------------------------------------------------ */}
         {stage === "conversation" && (
-          <div className="space-y-4 animate-in fade-in duration-300">
+          <div className="space-y-5 animate-in fade-in duration-300">
+            {/* Header da Etapa / Navegação de retorno */}
+            <div className="flex items-center justify-between px-2">
+              <span className="text-xs font-black uppercase tracking-widest text-amber-400">
+                Etapa 5 de 6 · Conversa na Situação Real
+              </span>
+              <button
+                type="button"
+                onClick={() => setStage("rehearse")}
+                className="text-xs font-bold text-slate-400 hover:text-white transition-colors flex items-center gap-1"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                <span>Voltar à prática</span>
+              </button>
+            </div>
+
+            {/* Ponte Narrativa Integrada ao Hotel */}
+            <div className="rounded-3xl border border-white/15 bg-[#0B132B]/85 backdrop-blur-md p-5 sm:p-6 shadow-xl flex items-center gap-4">
+              <div className="h-14 w-14 rounded-2xl overflow-hidden shrink-0 border-2 border-amber-400/60 bg-slate-950 shadow-md">
+                <img
+                  src="/assets/character/alex-avatar.jpg"
+                  alt="Alex"
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+              <div className="space-y-1 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-xs font-black uppercase tracking-wider text-amber-400">
+                    Alex na recepção do hotel
+                  </span>
+                </div>
+                <p className="text-sm sm:text-base font-bold text-white">
+                  "Você já ouviu, repetiu e praticou. Agora é a vez de usar essas palavras comigo aqui no hotel."
+                </p>
+                <p className="text-xs text-slate-300">
+                  Uma conversa curta e real no saguão. Alex começa e você responde.
+                </p>
+              </div>
+            </div>
+
             <ConversationChat
               scenarioTitle="Saguão do Hotel Internacional"
               scenarioContextPt="Alex está na recepção do hotel pronto para conversar com você."

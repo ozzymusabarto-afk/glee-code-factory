@@ -44,11 +44,24 @@ interface MessageItem {
   } | undefined;
 }
 
+function extractStudentName(raw: string): string {
+  const clean = raw.trim().replace(/[.!,?]+$/, "");
+  const match = clean.match(/^(my name is|i'm|im|i am)\s+(.+)$/i);
+  if (match && match[2]) {
+    const rawName = match[2].trim();
+    return rawName
+      .split(/\s+/)
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+      .join(" ");
+  }
+  return "";
+}
+
 const DEFAULT_UNIT_1_TURNS: ChatTurn[] = [
   {
     id: "turn-1",
     alexText: "Hi! Welcome to our hotel.",
-    helpHintPt: "Responda à saudação do saguão com 'Hello!' ou 'Hi!'.",
+    helpHintPt: "Responda à saudação com uma saudação amigável como 'Hello!' ou 'Hi!'.",
     targetExpected: ["hello", "hi", "hey", "thank you", "thanks"],
     suggestedChips: ["Hello!", "Hi!"],
     validateResponse: (raw: string) => {
@@ -57,18 +70,22 @@ const DEFAULT_UNIT_1_TURNS: ChatTurn[] = [
         clean.includes("hello") ||
         clean.includes("hi") ||
         clean.includes("hey") ||
-        clean.includes("thank");
+        clean.includes("goodmorning") ||
+        clean.includes("goodafternoon") ||
+        clean.includes("goodevening");
+
       if (isGreeting) {
         return {
           communicated: true,
           formAccurate: true,
-          feedbackMessage: "Ótima saudação! Simples, educada e calorosa.",
+          feedbackMessage: "",
         };
       }
+
       return {
         communicated: false,
         formAccurate: false,
-        feedbackMessage: "Alex deu as boas-vindas ao hotel. Responda com 'Hello!' ou 'Hi!'.",
+        feedbackMessage: "Alex deu as boas-vindas ao hotel. Responda à saudação com 'Hello!' ou 'Hi!'.",
         suggestedModel: "Hello!",
       };
     },
@@ -76,64 +93,59 @@ const DEFAULT_UNIT_1_TURNS: ChatTurn[] = [
   {
     id: "turn-2",
     alexText: "My name is Alex. What's your name?",
-    helpHintPt: "Diga seu nome. Você pode dizer: 'My name is [seu nome]' ou 'I'm [seu nome]'.",
+    helpHintPt: "Diga seu nome. Você pode usar: 'My name is [seu nome]' ou 'I'm [seu nome]'.",
     targetExpected: ["my name is", "im", "i am", "my name"],
     suggestedChips: ["My name is...", "I'm..."],
     validateResponse: (raw: string) => {
-      const lower = raw.toLowerCase().trim();
-      const words = lower.replace(/[^a-z\s]/g, "").split(/\s+/).filter(Boolean);
+      const clean = raw.trim().replace(/[.!,?]+$/, "");
+      const lower = clean.toLowerCase();
+      const detectedName = extractStudentName(clean);
 
-      // Comunicação: aluno disse o próprio nome ou usou "my name" / "im"
-      const hasMyNameIs = lower.includes("my name is") || lower.includes("i am") || lower.includes("im");
-      const hasMyNameWithoutIs = lower.includes("my name") && !lower.includes("is");
+      // Comunicação válida: "My name is [nome]" ou "I'm [nome]" ou "I am [nome]"
+      const hasValidIntro =
+        /^(my name is|i'm|im|i am)\s+/i.test(clean) ||
+        lower.startsWith("my name is") ||
+        lower.startsWith("i'm ") ||
+        lower.startsWith("im ") ||
+        lower.startsWith("i am ");
 
-      // Tenta extrair o nome falado
-      let detectedName = "";
-      if (hasMyNameIs) {
-        const parts = lower.split(/my name is|i am|im/);
-        detectedName = (parts[1] || "").trim();
-      } else if (hasMyNameWithoutIs) {
-        const parts = lower.split("my name");
-        detectedName = (parts[1] || "").trim();
-      } else if (words.length > 0) {
-        detectedName = words[words.length - 1] || "";
-      }
-
-      if (hasMyNameIs) {
+      if (hasValidIntro) {
         return {
           communicated: true,
           formAccurate: true,
-          studentName: detectedName,
-          feedbackMessage: "Perfeito! Você disse seu nome com a estrutura gramatical exata.",
+          studentName: detectedName || undefined,
+          feedbackMessage: "",
         };
       }
 
-      if (hasMyNameWithoutIs) {
-        // Exemplo: "My name Adriana" -> Comunicação OK, forma com pequeno ajuste
+      // Falou "My name [nome]" sem o "is"
+      if (lower.startsWith("my name") && !lower.includes("is")) {
+        const namePart = clean.replace(/^my name\s*/i, "").trim();
         return {
           communicated: true,
           formAccurate: false,
-          studentName: detectedName,
-          feedbackMessage: "Comunicação 100%! Entendi seu nome perfeitamente. Dica de forma: no inglês adicionamos 'is' → 'My name is...'.",
-          suggestedModel: `My name is ${detectedName || "..."}`,
+          studentName: namePart || undefined,
+          feedbackMessage: "Quase lá! No inglês dizemos 'My name is...' ou 'I'm...'.",
+          suggestedModel: `My name is ${namePart || "..."}`,
         };
       }
 
-      if (words.length >= 1) {
-        // Apenas falou o nome diretamente (ex: "Adriana")
+      // Apenas falou o nome (ex.: "Adriana")
+      const words = clean.split(/\s+/).filter(Boolean);
+      if (words.length >= 1 && words.length <= 3) {
         return {
           communicated: true,
           formAccurate: false,
-          studentName: raw.trim(),
-          feedbackMessage: "Entendido! Você comunicou seu nome. Para soar mais completo, tente usar a frase inteira: 'My name is...'.",
-          suggestedModel: `My name is ${raw.trim()}`,
+          studentName: clean,
+          feedbackMessage: "Entendido! Para soar mais completo, tente: 'My name is...' ou 'I'm...'.",
+          suggestedModel: `My name is ${clean}`,
         };
       }
 
       return {
         communicated: false,
         formAccurate: false,
-        feedbackMessage: "Não consegui identificar seu nome. Tente dizer: 'My name is [seu nome]'.",
+        feedbackMessage: "Diga seu nome usando 'My name is [seu nome]' ou 'I'm [seu nome]'.",
         suggestedModel: "My name is...",
       };
     },
@@ -141,19 +153,19 @@ const DEFAULT_UNIT_1_TURNS: ChatTurn[] = [
   {
     id: "turn-3",
     alexText: "Nice to meet you!",
-    helpHintPt: "Alex disse que foi um prazer conhecer você! Responda: 'Nice to meet you, too!'.",
+    helpHintPt: "Alex disse que foi um prazer conhecer você! Retribua com: 'Nice to meet you, too!'.",
     targetExpected: ["nice to meet you too", "nice to meet you", "nice to meet you to"],
     suggestedChips: ["Nice to meet you, too!", "Nice to meet you!"],
     validateResponse: (raw: string) => {
       const clean = raw.toLowerCase().trim().replace(/[^a-z\s]/g, "");
       const hasNiceToMeetYou = clean.includes("nice to meet you");
-      const hasToo = clean.includes("too") || clean.includes("to");
+      const hasToo = clean.includes("too") || clean.includes("to") || clean.endsWith("you too") || clean.endsWith("you to");
 
       if (hasNiceToMeetYou && hasToo) {
         return {
           communicated: true,
           formAccurate: true,
-          feedbackMessage: "Excelente cortesia! O 'too' no final expressa 'também'.",
+          feedbackMessage: "",
         };
       }
 
@@ -161,15 +173,23 @@ const DEFAULT_UNIT_1_TURNS: ChatTurn[] = [
         return {
           communicated: true,
           formAccurate: true,
-          feedbackMessage: "Muito bem! Você retribuiu a gentileza com naturalidade.",
+          feedbackMessage: "",
+        };
+      }
+
+      if (clean.includes("you too") || clean.includes("same to you")) {
+        return {
+          communicated: true,
+          formAccurate: true,
+          feedbackMessage: "",
         };
       }
 
       return {
         communicated: false,
         formAccurate: false,
-        feedbackMessage: "Para retribuir, diga: 'Nice to meet you, too.' (Prazer em te conhecer também).",
-        suggestedModel: "Nice to meet you, too.",
+        feedbackMessage: "Para retribuir a cortesia, diga: 'Nice to meet you, too!'.",
+        suggestedModel: "Nice to meet you, too!",
       };
     },
   },
@@ -244,48 +264,92 @@ export function ConversationChat({
 
       const evaluation = currentTurn.validateResponse(trimmed);
 
-      // Adiciona mensagem do usuário com feedback discreto
+      // Adiciona mensagem do usuário (feedback apenas se houver necessidade de ajuste de forma)
       const userMsg: MessageItem = {
         id: `user-${currentTurnIndex}-${Date.now()}`,
         sender: "user",
         text: trimmed,
-        feedback: {
-          communicated: evaluation.communicated,
-          formAccurate: evaluation.formAccurate,
-          message: evaluation.feedbackMessage,
-          suggestedModel: evaluation.suggestedModel,
-        },
+        feedback: evaluation.formAccurate
+          ? undefined
+          : {
+              communicated: evaluation.communicated,
+              formAccurate: evaluation.formAccurate,
+              message: evaluation.feedbackMessage,
+              suggestedModel: evaluation.suggestedModel,
+            },
       };
 
       setMessages((prev) => [...prev, userMsg]);
       setInputText("");
 
-      // Se a comunicação foi compreendida, avança para o próximo turno do Alex
+      // Se a comunicação foi compreendida, Alex reage de forma humana e breve
       if (evaluation.communicated) {
-        const nextIndex = currentTurnIndex + 1;
-        if (nextIndex < turns.length) {
-          const nextTurn = turns[nextIndex];
-          if (!nextTurn) return;
+        if (currentTurnIndex === 0) {
+          // Turno 0: Aluno respondeu à saudação ("Hello!" ou "Hi!")
+          // 1. Alex reage: "Nice!"
+          // 2. Alex continua a conversa: "My name is Alex. What's your name?"
           setTimeout(() => {
-            setMessages((prev) => [
-              ...prev,
-              {
-                id: `alex-${nextIndex}-${Date.now()}`,
+            const reactionMsg: MessageItem = {
+              id: `alex-react-0-${Date.now()}`,
+              sender: "alex",
+              text: "Nice!",
+              audioText: "Nice!",
+            };
+            setMessages((prev) => [...prev, reactionMsg]);
+            speakAlex("Nice!");
+
+            setTimeout(() => {
+              const nextTurn = turns[1];
+              if (!nextTurn) return;
+              const nextMsg: MessageItem = {
+                id: `alex-1-${Date.now()}`,
                 sender: "alex",
                 text: nextTurn.alexText,
                 audioText: nextTurn.alexAudioText || nextTurn.alexText,
-              },
-            ]);
-            speakAlex(nextTurn.alexAudioText || nextTurn.alexText);
-            setCurrentTurnIndex(nextIndex);
-            setIsProcessing(false);
-          }, 1100);
-        } else {
-          // Conversa concluída com sucesso!
+              };
+              setMessages((prev) => [...prev, nextMsg]);
+              speakAlex(nextTurn.alexAudioText || nextTurn.alexText);
+              setCurrentTurnIndex(1);
+              setIsProcessing(false);
+            }, 1000);
+          }, 600);
+        } else if (currentTurnIndex === 1) {
+          // Turno 1: Aluno disse seu nome ("My name is Adriana." ou "I'm Adriana.")
+          // Alex reage chamando pelo nome e faz a fala do Turno 3: "Nice to meet you, [nome]!"
+          const studentName = evaluation.studentName;
+          const greetingText = studentName ? `Nice to meet you, ${studentName}!` : "Nice to meet you!";
+
           setTimeout(() => {
-            setConversationComplete(true);
+            const greetMsg: MessageItem = {
+              id: `alex-2-${Date.now()}`,
+              sender: "alex",
+              text: greetingText,
+              audioText: greetingText,
+            };
+            setMessages((prev) => [...prev, greetMsg]);
+            speakAlex(greetingText);
+            setCurrentTurnIndex(2);
             setIsProcessing(false);
-          }, 900);
+          }, 700);
+        } else {
+          // Turno 2: Aluno retribuiu a cortesia ("Nice to meet you, too!")
+          // Alex reage e encerra a conversa naturalmente antes da Consolidação
+          const closingText = "That's it! Nice to meet you, too! Now you're ready for the next part of your journey.";
+          setTimeout(() => {
+            const closeMsg: MessageItem = {
+              id: `alex-close-${Date.now()}`,
+              sender: "alex",
+              text: closingText,
+              audioText: closingText,
+            };
+            setMessages((prev) => [...prev, closeMsg]);
+            speakAlex(closingText);
+
+            setTimeout(() => {
+              setConversationComplete(true);
+              setIsProcessing(false);
+            }, 2000);
+          }, 700);
         }
       } else {
         setIsProcessing(false);
@@ -454,58 +518,32 @@ export function ConversationChat({
       {/* Barra de Rodapé / Entrada de Resposta */}
       {conversationComplete ? (
         <div className={cn(
-          "border-t p-5 text-center space-y-3",
+          "border-t p-6 text-center space-y-3 animate-in fade-in duration-300",
           isDark
-            ? "border-emerald-500/30 bg-emerald-950/90 text-emerald-200"
-            : "border-emerald-100 bg-emerald-50/80 text-emerald-800"
+            ? "border-white/10 bg-slate-950/90 text-white"
+            : "border-slate-200 bg-white text-slate-800"
         )}>
-          <div className="flex items-center justify-center gap-2 font-black text-base">
-            <Sparkles className="h-5 w-5 text-amber-400" />
-            <span>Microconversa concluída no saguão!</span>
+          <div className="space-y-1">
+            <span className="text-[10px] font-black uppercase tracking-widest text-amber-400">
+              Conversa Concluída no Saguão
+            </span>
+            <h4 className="text-base font-bold text-white">
+              Primeiro contato em inglês realizado com sucesso!
+            </h4>
+            <p className="text-xs text-slate-300 max-w-md mx-auto">
+              Você cumprimentou o Alex, disse seu nome e retribuiu a gentileza em uma conversa real.
+            </p>
           </div>
-          <p className="text-xs opacity-90">
-            Você acabou de cumprimentar, apresentar-se e retribuir a cortesia em inglês real!
-          </p>
           <Button
             onClick={onComplete}
-            className="w-full py-6 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black gap-2 shadow-md transition-all text-base"
+            className="w-full py-6 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black gap-2 shadow-lg shadow-amber-400/20 transition-all text-base"
           >
-            <span>Continuar para a consolidação</span>
+            <span>Avançar para a Consolidação</span>
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
       ) : (
         <div className={cn("border-t p-4", isDark ? "border-white/10 bg-slate-950/80" : "border-slate-100 bg-white")}>
-          {currentTurn?.suggestedChips && currentTurn.suggestedChips.length > 0 && !conversationComplete && (
-            <div className="flex flex-wrap items-center gap-2 mb-3">
-              <span className={cn("text-[11px] font-bold", isDark ? "text-slate-400" : "text-slate-500")}>
-                Sugestões guiadas:
-              </span>
-              {currentTurn.suggestedChips.map((chip) => (
-                <button
-                  key={chip}
-                  type="button"
-                  onClick={() => {
-                    if (chip.includes("...")) {
-                      setInputMode("text");
-                      setInputText(chip.replace("...", " "));
-                    } else {
-                      handleStudentResponse(chip);
-                    }
-                  }}
-                  className={cn(
-                    "text-xs font-bold px-3 py-1.5 rounded-xl border transition-all active:scale-95 shadow-2xs",
-                    isDark
-                      ? "border-amber-400/40 bg-amber-400/10 text-amber-300 hover:bg-amber-400/20 hover:border-amber-400"
-                      : "border-blue-200 bg-blue-50 text-blue-800 hover:bg-blue-100",
-                  )}
-                >
-                  {chip}
-                </button>
-              ))}
-            </div>
-          )}
-
           {inputMode === "voice" ? (
             <div className="flex items-center justify-between gap-3">
               <button
@@ -549,42 +587,61 @@ export function ConversationChat({
               )}
             </div>
           ) : (
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                placeholder="Digite sua resposta em inglês..."
-                className={cn(
-                  "flex-1 rounded-2xl border px-4 py-3 text-sm focus:outline-none",
-                  isDark
-                    ? "bg-slate-900/90 border-white/20 text-white placeholder-slate-400 focus:border-amber-400"
-                    : "border-slate-300 focus:border-blue-500"
-                )}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && inputText.trim()) {
-                    handleStudentResponse(inputText);
-                  }
-                }}
-              />
-              <Button
-                onClick={() => handleStudentResponse(inputText)}
-                disabled={!inputText.trim()}
-                className="rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold px-5 py-3"
-              >
-                <Send className="h-4 w-4" />
-              </Button>
-              <button
-                type="button"
-                onClick={() => setInputMode("voice")}
-                className={cn(
-                  "p-3 rounded-xl transition-colors",
-                  isDark ? "text-slate-400 hover:text-amber-400 hover:bg-white/10" : "text-slate-400 hover:text-blue-600 hover:bg-slate-50"
-                )}
-                title="Voltar ao microfone"
-              >
-                <Mic className="h-4 w-4" />
-              </button>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  placeholder="Digite sua resposta em inglês..."
+                  className={cn(
+                    "flex-1 rounded-2xl border px-4 py-3 text-sm focus:outline-none",
+                    isDark
+                      ? "bg-slate-900/90 border-white/20 text-white placeholder-slate-400 focus:border-amber-400"
+                      : "border-slate-300 focus:border-blue-500"
+                  )}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && inputText.trim()) {
+                      handleStudentResponse(inputText);
+                    }
+                  }}
+                />
+                <Button
+                  onClick={() => handleStudentResponse(inputText)}
+                  disabled={!inputText.trim()}
+                  className="rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold px-5 py-3"
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+
+              <div className="flex items-center justify-between pt-0.5 px-1">
+                <button
+                  type="button"
+                  onClick={() => setInputMode("voice")}
+                  className={cn(
+                    "text-xs font-semibold flex items-center gap-1 transition-colors",
+                    isDark ? "text-slate-400 hover:text-white" : "text-slate-500 hover:text-slate-800"
+                  )}
+                >
+                  <Mic className="h-3.5 w-3.5" />
+                  <span>Voltar ao microfone</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowHelp((prev) => !prev)}
+                  className={cn(
+                    "text-xs font-semibold flex items-center gap-1 transition-colors",
+                    showHelp
+                      ? "text-amber-400 font-bold"
+                      : isDark ? "text-slate-400 hover:text-amber-300" : "text-slate-500 hover:text-blue-700"
+                  )}
+                >
+                  <HelpCircle className="h-3.5 w-3.5" />
+                  <span>{showHelp ? "Ocultar dica" : "Preciso de uma dica"}</span>
+                </button>
+              </div>
             </div>
           )}
         </div>
