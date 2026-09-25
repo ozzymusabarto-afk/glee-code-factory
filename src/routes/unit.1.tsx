@@ -16,6 +16,7 @@ import { ShadowingExercise } from "@/components/learning/ShadowingExercise";
 import { ConversationChat } from "@/components/learning/ConversationChat";
 import { WebSpeechAudioService } from "@/lib/scenario-engine/AudioService";
 import { ScenarioProgressService } from "@/lib/scenario-engine/ScenarioProgressService";
+import { LearningEngine } from "@/lib/learning-engine";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/unit/1")({
@@ -36,6 +37,7 @@ type UnitStage =
 
 export function UnitOnePage() {
   const navigate = useNavigate();
+  const lesson = LearningEngine.getLesson("a0-b1-unit1")!;
   const [stage, setStage] = useState<UnitStage>("prepare");
   const [rehearseInput, setRehearseInput] = useState("");
   const [showHint, setShowHint] = useState(false);
@@ -54,12 +56,34 @@ export function UnitOnePage() {
   const progressServiceRef = useRef<ScenarioProgressService | null>(null);
   if (!progressServiceRef.current) progressServiceRef.current = new ScenarioProgressService();
 
-  // Inicia sessão no serviço de progresso
+  const changeStage = (nextStage: UnitStage) => {
+    setStage(nextStage);
+    LearningEngine.mastery.recordStageCompletion(lesson.id, nextStage);
+
+    if (nextStage === "expose") {
+      LearningEngine.mastery.advanceSkillMastery("skill:a0:greeting_someone", "RECOGNIZES");
+    } else if (nextStage === "shadow_1" || nextStage === "shadow_2") {
+      LearningEngine.mastery.advanceSkillMastery("skill:a0:greeting_someone", "REPRODUCES_WITH_SUPPORT");
+      LearningEngine.mastery.advanceSkillMastery("skill:a0:self_introduction", "REPRODUCES_WITH_SUPPORT");
+    } else if (nextStage === "rehearse") {
+      LearningEngine.mastery.advanceSkillMastery("skill:a0:self_introduction", "PRODUCES_ALONE");
+      LearningEngine.mastery.advanceSkillMastery("skill:a0:understand_name_question", "UNDERSTANDS");
+    } else if (nextStage === "conversation") {
+      LearningEngine.mastery.advanceSkillMastery("skill:a0:greeting_someone", "USES_IN_CONTEXT");
+      LearningEngine.mastery.advanceSkillMastery("skill:a0:self_introduction", "USES_IN_CONTEXT");
+      LearningEngine.mastery.advanceSkillMastery("skill:a0:return_courtesy", "USES_IN_CONTEXT");
+    } else if (nextStage === "consolidate") {
+      LearningEngine.mastery.completeLesson(lesson, 1.0);
+    }
+  };
+
+  // Inicia sessão no serviço de progresso e registra início no motor
   useEffect(() => {
     progressServiceRef.current?.startSession("first-contact-meeting-someone", "step-1");
-  }, []);
+    LearningEngine.mastery.recordStageCompletion(lesson.id, "prepare");
+  }, [lesson.id]);
 
-  // Quando chega na consolidação, salva o progresso final
+  // Quando chega na consolidação, salva o progresso final e completa lição
   useEffect(() => {
     if (stage === "consolidate" && !progressSaved) {
       progressServiceRef.current?.updateProgress({
@@ -69,9 +93,10 @@ export function UnitOnePage() {
         isCompleted: true,
         score: 1.0,
       });
+      LearningEngine.mastery.completeLesson(lesson, 1.0);
       setProgressSaved(true);
     }
-  }, [progressSaved, stage]);
+  }, [lesson, progressSaved, stage]);
 
   const speak = (text: string) => {
     audioServiceRef.current?.speak(text, {
@@ -103,6 +128,8 @@ export function UnitOnePage() {
         valid: true,
         message: "Excelente! Você se apresentou de forma clara e natural.",
       });
+      LearningEngine.mastery.advanceSkillMastery("skill:a0:self_introduction", "PRODUCES_ALONE");
+      LearningEngine.mastery.advanceSkillMastery("skill:a0:understand_name_question", "UNDERSTANDS");
       speak(clean);
       return;
     }
@@ -112,6 +139,8 @@ export function UnitOnePage() {
         valid: true,
         message: "Perfeito! Apresentação autêntica, direta e muito natural.",
       });
+      LearningEngine.mastery.advanceSkillMastery("skill:a0:self_introduction", "PRODUCES_ALONE");
+      LearningEngine.mastery.advanceSkillMastery("skill:a0:understand_name_question", "UNDERSTANDS");
       speak(clean);
       return;
     }
@@ -307,7 +336,7 @@ export function UnitOnePage() {
 
               {/* Ação de Continuidade da Jornada */}
               <Button
-                onClick={() => setStage("expose")}
+                onClick={() => changeStage("expose")}
                 className="w-full py-6 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-base shadow-lg shadow-amber-400/20 gap-2 transition-all hover:gap-3"
               >
                 <span>Conhecer as palavras da recepção</span>
@@ -333,26 +362,20 @@ export function UnitOnePage() {
               </div>
               <div className="space-y-0.5">
                 <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 block">
-                  Etapa 2 · Observação
+                  {lesson.activities.observation.title}
                 </span>
                 <p className="text-sm sm:text-base font-bold text-slate-100 leading-snug">
-                  "Agora vamos ouvir e perceber antes de falar."
+                  "{lesson.activities.observation.alexPromptPt}"
                 </p>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  No saguão do hotel, estas são 4 palavras que você provavelmente vai ouvir nesta situação.
-                  Toque em cada uma para escutar o som e se acostumar com o ritmo.
+                  {lesson.activities.observation.subtitlePt}
                 </p>
               </div>
             </div>
 
-            {/* Grid das 4 Palavras Limpas e Elegantes */}
+            {/* Grid das 4 Palavras Limpas e Elegantes a partir do Motor Pedagógico */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[
-                { en: "Hello!", pt: "Olá!", context: "A saudação mais comum ao chegar." },
-                { en: "Hi!", pt: "Oi!", context: "Mais rápida, amigável e descontraída." },
-                { en: "Thank you!", pt: "Obrigado(a)!", context: "Para agradecer pela chave ou ajuda." },
-                { en: "Goodbye!", pt: "Tchau / Até logo!", context: "Para se despedir ao sair do saguão." },
-              ].map((item) => {
+              {lesson.activities.observation.items.map((item) => {
                 const isHeard = heardGreetings[item.en];
                 return (
                   <div
@@ -391,7 +414,7 @@ export function UnitOnePage() {
                         {item.pt}
                       </span>
                       <span className="text-xs text-slate-300 font-medium">
-                        {item.context}
+                        {item.contextPt}
                       </span>
                     </div>
 
@@ -429,7 +452,7 @@ export function UnitOnePage() {
 
               <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2 max-w-md mx-auto">
                 <Button
-                  onClick={() => setStage("shadow_1")}
+                  onClick={() => changeStage("shadow_1")}
                   className="py-6 px-6 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-sm sm:text-base shadow-lg shadow-amber-400/20 gap-2 transition-all"
                 >
                   <span>Praticar no Shadowing com Alex</span>
@@ -462,7 +485,7 @@ export function UnitOnePage() {
               </span>
               <button
                 type="button"
-                onClick={() => setStage("expose")}
+                onClick={() => changeStage("expose")}
                 className="text-xs font-bold text-slate-400 hover:text-white transition-colors flex items-center gap-1"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
@@ -470,13 +493,13 @@ export function UnitOnePage() {
               </button>
             </div>
             <ShadowingExercise
-              targetPhrase="Hello!"
-              translationPt="Olá!"
+              targetPhrase={lesson.activities.shadowing.phrases[0]?.targetPhrase ?? "Hello!"}
+              translationPt={lesson.activities.shadowing.phrases[0]?.translationPt ?? "Olá!"}
               level="A0"
               variant="dark"
-              suggestedReps={2}
+              suggestedReps={lesson.activities.shadowing.phrases[0]?.suggestedReps ?? 2}
               nextActionLabel="Próxima frase: Apresentar-se"
-              onComplete={() => setStage("shadow_2")}
+              onComplete={() => changeStage("shadow_2")}
             />
           </div>
         )}
@@ -492,7 +515,7 @@ export function UnitOnePage() {
               </span>
               <button
                 type="button"
-                onClick={() => setStage("shadow_1")}
+                onClick={() => changeStage("shadow_1")}
                 className="text-xs font-bold text-slate-400 hover:text-white transition-colors flex items-center gap-1"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
@@ -500,13 +523,13 @@ export function UnitOnePage() {
               </button>
             </div>
             <ShadowingExercise
-              targetPhrase="My name is Alex."
-              translationPt="Meu nome é Alex."
+              targetPhrase={lesson.activities.shadowing.phrases[1]?.targetPhrase ?? "My name is Alex."}
+              translationPt={lesson.activities.shadowing.phrases[1]?.translationPt ?? "Meu nome é Alex."}
               level="A0"
               variant="dark"
-              suggestedReps={2}
+              suggestedReps={lesson.activities.shadowing.phrases[1]?.suggestedReps ?? 2}
               nextActionLabel="Avançar para Prática Controlada"
-              onComplete={() => setStage("rehearse")}
+              onComplete={() => changeStage("rehearse")}
             />
           </div>
         )}
@@ -532,7 +555,7 @@ export function UnitOnePage() {
                   </span>
                   <button
                     type="button"
-                    onClick={() => speak("My name is Alex. What's your name?")}
+                    onClick={() => speak(lesson.activities.rehearsal.alexPromptEn)}
                     className="p-1.5 rounded-full bg-amber-400 text-slate-950 hover:bg-amber-500 transition-colors shadow-xs"
                     title="Ouvir Alex se apresentar"
                   >
@@ -540,10 +563,10 @@ export function UnitOnePage() {
                   </button>
                 </div>
                 <p className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                  "My name is Alex. What's your name?"
+                  "{lesson.activities.rehearsal.alexPromptEn}"
                 </p>
                 <p className="text-xs font-semibold text-slate-300">
-                  (Meu nome é Alex. Qual é o seu nome?)
+                  ({lesson.activities.rehearsal.alexPromptPt})
                 </p>
               </div>
             </div>
@@ -551,10 +574,10 @@ export function UnitOnePage() {
             {/* Orientação Contextual Limpa (Sem revelar antecipadamente a frase) */}
             <div className="space-y-1">
               <h3 className="text-lg font-black text-white">
-                Apresente-se ao Alex.
+                {lesson.activities.rehearsal.promptPt}
               </h3>
               <p className="text-xs sm:text-sm text-slate-300">
-                Escreva como você falaria.
+                {lesson.activities.rehearsal.subPromptPt}
               </p>
             </div>
 
@@ -620,7 +643,7 @@ export function UnitOnePage() {
                     {showExample && (
                       <div className="pt-2 border-t border-amber-400/20 text-xs text-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 animate-in fade-in duration-200">
                         <span>
-                          Exemplo: <strong className="text-white">"My name is Adriana."</strong>
+                          Exemplo: <strong className="text-white">"{lesson.activities.rehearsal.exampleFullEn}"</strong>
                         </span>
                         <span className="text-[11px] text-amber-300/70 italic">
                           (Digite sua própria resposta no campo acima)
@@ -670,7 +693,7 @@ export function UnitOnePage() {
             {/* Ação de Continuidade para a Conversa Real */}
             <div className="pt-2">
               <Button
-                onClick={() => setStage("conversation")}
+                onClick={() => changeStage("conversation")}
                 disabled={!rehearseValidation?.valid}
                 className={cn(
                   "w-full py-6 rounded-2xl font-black text-base gap-2 shadow-lg transition-all",
@@ -703,7 +726,7 @@ export function UnitOnePage() {
               </span>
               <button
                 type="button"
-                onClick={() => setStage("rehearse")}
+                onClick={() => changeStage("rehearse")}
                 className="text-xs font-bold text-slate-400 hover:text-white transition-colors flex items-center gap-1"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
@@ -728,7 +751,7 @@ export function UnitOnePage() {
                   </span>
                 </div>
                 <p className="text-sm sm:text-base font-bold text-white">
-                  "Você já ouviu, repetiu e praticou. Agora é a vez de usar essas palavras comigo aqui no hotel."
+                  "{lesson.activities.conversation.alexBridgePt}"
                 </p>
                 <p className="text-xs text-slate-300">
                   Uma conversa curta e real no saguão. Alex começa e você responde.
@@ -737,10 +760,10 @@ export function UnitOnePage() {
             </div>
 
             <ConversationChat
-              scenarioTitle="Saguão do Hotel Internacional"
-              scenarioContextPt="Alex está na recepção do hotel pronto para conversar com você."
+              scenarioTitle={lesson.activities.conversation.scenarioTitle}
+              scenarioContextPt={lesson.activities.conversation.scenarioContextPt}
               variant="dark"
-              onComplete={() => setStage("consolidate")}
+              onComplete={() => changeStage("consolidate")}
             />
           </div>
         )}
@@ -773,32 +796,22 @@ export function UnitOnePage() {
                 Sua primeira conversa em inglês aconteceu aqui.
               </h1>
               <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-                Você começou observando no saguão, treinou a pronúncia no Shadowing e manteve uma conversa real com Alex.
+                {lesson.activities.consolidation.alexClosingQuotePt}
               </p>
             </div>
 
-            {/* Cartão de Conquistas Reais */}
+            {/* Cartão de Conquistas Reais a partir do Motor Pedagógico */}
             <div className="rounded-3xl border border-white/15 bg-white/5 p-6 sm:p-7 text-left space-y-4 max-w-lg mx-auto">
               <h4 className="text-xs font-black uppercase tracking-widest text-amber-400">
-                Suas 4 competências conquistadas nesta unidade:
+                Suas {lesson.activities.consolidation.achievements.length} competências conquistadas nesta unidade:
               </h4>
               <ul className="space-y-3 text-sm font-semibold text-slate-200">
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
-                  <span>Reconhecer e usar saudações cotidianas (<em className="text-amber-300 font-bold">Hello!</em>, <em className="text-amber-300 font-bold">Hi!</em>)</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
-                  <span>Dizer o seu próprio nome com naturalidade (<em className="text-amber-300 font-bold">My name is...</em> e <em className="text-amber-300 font-bold">I'm...</em>)</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
-                  <span>Compreender a pergunta <em className="text-amber-300 font-bold">"What's your name?"</em> no contexto real do hotel</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
-                  <span>Retribuir a cortesia com <em className="text-amber-300 font-bold">"Nice to meet you, too!"</em></span>
-                </li>
+                {lesson.activities.consolidation.achievements.map((ach) => (
+                  <li key={ach.id} className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
+                    <span>{ach.titlePt}</span>
+                  </li>
+                ))}
               </ul>
 
               <div className="pt-3 border-t border-white/10 text-xs text-emerald-400 font-bold flex items-center gap-2">
@@ -816,10 +829,10 @@ export function UnitOnePage() {
                 </span>
               </div>
               <h4 className="text-base font-black text-white">
-                CAFÉ · Ordering Coffee
+                {lesson.activities.consolidation.nextUnitTitlePt} · Ordering Coffee
               </h4>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                "Na próxima parada, vamos pedir alguma coisa em um café. Você vai aprender a pedir um café ou bebida com confiança e naturalidade."
+                "{lesson.activities.consolidation.nextUnitTeaserPt}"
               </p>
             </div>
 
@@ -828,7 +841,7 @@ export function UnitOnePage() {
               <Button
                 variant="outline"
                 onClick={() => {
-                  setStage("prepare");
+                  changeStage("prepare");
                   setRehearseInput("");
                   setShowHint(false);
                   setShowExample(false);

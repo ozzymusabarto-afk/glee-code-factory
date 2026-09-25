@@ -1,0 +1,58 @@
+import type { CurriculumBlock } from "../types";
+
+export const A0_CURRICULUM_BLOCKS: Record<string, CurriculumBlock> = {
+  "a0-b1-first-contacts": {
+    id: "a0-b1-first-contacts",
+    level: "A0",
+    order: 1,
+    titleEn: "First Contacts",
+    titlePt: "Primeiros Contatos",
+    descriptionPt: "Saudações, apresentações, primeiros contatos humanos e cortesia básica.",
+    lessonIds: ["a0-b1-unit1"],
+  },
+  "a0-b2-me-and-my-world": {
+    id: "a0-b2-me-and-my-world",
+    level: "A0",
+    order: 2,
+    titleEn: "Me and My World",
+    titlePt: "Eu e Meu Mundo",
+    descriptionPt: "Identidade, origens, nacionalidade e pessoas próximas.",
+    lessonIds: [],
+  },
+  "a0-b3-concrete-world": {
+    id: "a0-b3-concrete-world",
+    level: "A0",
+    order: 3,
+    titleEn: "The Concrete World",
+    titlePt: "O Mundo Concreto",
+    descriptionPt: "Objetos imediatos, lugares, preços e números fundamentais.",
+    lessonIds: [],
+  },
+  "a0-b4-needs-and-actions": {
+    id: "a0-b4-needs-and-actions",
+    level: "A0",
+    order: 4,
+    titleEn: "Needs and Everyday Actions",
+    titlePt: "Necessidades e Ações Cotidianas",
+    descriptionPt: "Pedir comidas, bebidas, ajuda essencial e expressar vontades simples.",
+    lessonIds: [],
+  },
+  "a0-b5-my-life": {
+    id: "a0-b5-my-life",
+    level: "A0",
+    order: 5,
+    titleEn: "My Life",
+    titlePt: "Minha Vida",
+    descriptionPt: "Rotina simples, horários, hábitos e preferências diretas.",
+    lessonIds: [],
+  },
+  "a0-b6-everyday-survival": {
+    id: "a0-b6-everyday-survival",
+    level: "A0",
+    order: 6,
+    titleEn: "Everyday Survival",
+    titlePt: "Sobrevivência no Dia a Dia",
+    descriptionPt: "Locomoção, direções básicas, imprevistos e comunicação de emergência.",
+    lessonIds: [],
+  },
+};
